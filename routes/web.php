@@ -73,14 +73,22 @@ Route::middleware(['auth', 'role:admin'])
 |--------------------------------------------------------------------------
 */
 
+/*
+|--------------------------------------------------------------------------
+| Bendahara Routes
+|--------------------------------------------------------------------------
+*/
+
 Route::middleware(['auth', 'role:bendahara'])
     ->prefix('bendahara')
     ->name('bendahara.')
     ->group(function () {
 
-        Route::get('/dashboard', function () {
-            return view('bendahara.dashboard');
-        })->name('dashboard');
+        // Dashboard
+        Route::get('/dashboard', [App\Http\Controllers\Bendahara\DashboardController::class, 'index'])
+            ->name('dashboard');
+
+   
 
     });
 
