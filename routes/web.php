@@ -11,22 +11,26 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     if (auth()->check()) {
-        $role = auth()->user()->role->nama_role;
+        $user = auth()->user();
+        
+        if (isset($user->role)) {
+            $role = is_object($user->role) ? $user->role->nama_role : $user->role;
+            
+            if ($role == 'admin') {
+                return redirect()->route('admin.dashboard');
+            }
 
-        if ($role == 'admin') {
-            return redirect()->route('admin.dashboard');
-        }
+            if ($role == 'bendahara') {
+                return redirect()->route('bendahara.dashboard');
+            }
 
-        if ($role == 'bendahara') {
-            return redirect()->route('bendahara.dashboard');
-        }
-
-        if ($role == 'wali') {
-            return redirect()->route('wali.dashboard');
+            if ($role == 'wali') {
+                return redirect()->route('wali.dashboard');
+            }
         }
     }
 
-    return redirect('/login');
+    return redirect()->route('login');
 });
 
 /*
@@ -37,7 +41,6 @@ Route::get('/', function () {
 
 Route::middleware(['auth'])->group(function () {
 
-    // Profile
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -50,17 +53,19 @@ Route::middleware(['auth'])->group(function () {
 |--------------------------------------------------------------------------
 */
 
-Route::middleware(['auth','role:admin'])
+Route::middleware(['auth', 'role:admin'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
 
-        Route::get('/dashboard', function () {
-            return view('admin.dashboard');
-        })->name('dashboard');
+        // Dashboard dengan Controller
+        Route::get('/dashboard', [App\Http\Controllers\Admin\DashboardController::class, 'index'])
+            ->name('dashboard');
 
-        Route::resource('users', \App\Http\Controllers\Admin\UserController::class);
-});
+        // Users Management
+        Route::resource('users', App\Http\Controllers\Admin\UserController::class);
+
+    });
 
 /*
 |--------------------------------------------------------------------------
@@ -68,7 +73,7 @@ Route::middleware(['auth','role:admin'])
 |--------------------------------------------------------------------------
 */
 
-Route::middleware(['auth','role:bendahara'])
+Route::middleware(['auth', 'role:bendahara'])
     ->prefix('bendahara')
     ->name('bendahara.')
     ->group(function () {
@@ -76,7 +81,8 @@ Route::middleware(['auth','role:bendahara'])
         Route::get('/dashboard', function () {
             return view('bendahara.dashboard');
         })->name('dashboard');
-});
+
+    });
 
 /*
 |--------------------------------------------------------------------------
@@ -84,7 +90,7 @@ Route::middleware(['auth','role:bendahara'])
 |--------------------------------------------------------------------------
 */
 
-Route::middleware(['auth','role:wali'])
+Route::middleware(['auth', 'role:wali'])
     ->prefix('wali')
     ->name('wali.')
     ->group(function () {
@@ -92,6 +98,7 @@ Route::middleware(['auth','role:wali'])
         Route::get('/dashboard', function () {
             return view('wali.dashboard');
         })->name('dashboard');
-});
+
+    });
 
 require __DIR__.'/auth.php';
