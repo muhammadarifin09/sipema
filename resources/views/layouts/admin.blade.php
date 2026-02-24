@@ -522,7 +522,7 @@
                     <span class="ml-3 font-medium">Data Akun</span>
                 </a>
 
-                <a href="{{ route('admin.dashboard') }}" class="nav-item {{ request()->routeIs('admin.siswa.*') ? 'active' : '' }}">
+                <a href="{{ route('admin.siswa.index') }}" class="nav-item {{ request()->routeIs('admin.siswa.*') ? 'active' : '' }}">
                     <i class="fas fa-users w-6"></i>
                     <span class="ml-3 font-medium">Data Siswa</span>
                 </a>
@@ -553,12 +553,12 @@
                     <span class="ml-3 font-medium">Data Guru</span>
                 </a>
 
-                <a href="#" class="nav-item">
-                    <i class="fas fa-book w-6"></i>
+               <a href="{{ route('admin.kelas.index') }}" class="nav-item {{ request()->routeIs('admin.kelas.*') ? 'active' : '' }}">
+                    <i class="fas fa-school w-6"></i>
                     <span class="ml-3 font-medium">Data Kelas</span>
                 </a>
 
-                <a href="#" class="nav-item">
+               <a href="{{ route('admin.tahun-ajaran.index') }}" class="nav-item {{ request()->routeIs('admin.tahun-ajaran.*') ? 'active' : '' }}">
                     <i class="fas fa-calendar-alt w-6"></i>
                     <span class="ml-3 font-medium">Tahun Ajaran</span>
                 </a>

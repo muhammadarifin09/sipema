@@ -65,6 +65,14 @@ Route::middleware(['auth', 'role:admin'])
         // Users Management
         Route::resource('users', App\Http\Controllers\Admin\UserController::class);
 
+        // Tahun Ajaran Management
+        Route::resource('tahun-ajaran', App\Http\Controllers\Admin\TahunAjaranController::class);
+
+        // Kelas Management
+        Route::resource('kelas', App\Http\Controllers\Admin\KelasController::class);
+
+        //Data Siswa
+        Route::resource('siswa', App\Http\Controllers\Admin\SiswaController::class);
     });
 
 /*
@@ -88,6 +96,8 @@ Route::middleware(['auth', 'role:bendahara'])
         Route::get('/dashboard', [App\Http\Controllers\Bendahara\DashboardController::class, 'index'])
             ->name('dashboard');
 
+        // Data Siswa
+        // Route::resource('siswa', App\Http\Controllers\Bendahara\SiswaController::class);
    
 
     });
