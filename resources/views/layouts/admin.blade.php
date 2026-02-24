@@ -527,9 +527,9 @@
                     <span class="ml-3 font-medium">Data Siswa</span>
                 </a>
                 
-                <a href="{{ route('admin.dashboard') }}" class="nav-item {{ request()->routeIs('admin.pembayaran.*') ? 'active' : '' }}">
+                <a href="{{ route('admin.tagihan.index') }}" class="nav-item {{ request()->routeIs('admin.pembayaran.*') ? 'active' : '' }}">
                     <i class="fas fa-credit-card w-6"></i>
-                    <span class="ml-3 font-medium">Pembayaran SPP</span>
+                    <span class="ml-3 font-medium">Tagihan Pembayaran</span>
                 </a>
                 
                 <a href="#" class="nav-item">
@@ -568,9 +568,9 @@
                     <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Pengaturan</p>
                 </div>
 
-                <a href="#" class="nav-item">
+                <a href="{{ route('admin.spp-setting.index') }}" class="nav-item {{ request()->routeIs('admin.spp-setting.*') ? 'active' : '' }}">
                     <i class="fas fa-cog w-6"></i>
-                    <span class="ml-3 font-medium">Pengaturan</span>
+                    <span class="ml-3 font-medium">Pengaturan SPP</span>
                 </a>
 
                 <!-- Logout Button -->

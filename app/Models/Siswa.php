@@ -81,4 +81,9 @@ class Siswa extends Model
     {
         return $query->where('status', 'keluar');
     }
+
+    public function tagihans()
+{
+    return $this->hasMany(Tagihan::class);
+}
 }

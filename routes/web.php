@@ -73,6 +73,13 @@ Route::middleware(['auth', 'role:admin'])
 
         //Data Siswa
         Route::resource('siswa', App\Http\Controllers\Admin\SiswaController::class);
+
+        // Pengaturan SPP
+        Route::resource('spp-setting', App\Http\Controllers\Admin\SppSettingController::class);
+
+        // Tagihan
+        Route::get('tagihan', [App\Http\Controllers\Admin\TagihanController::class, 'index'])->name('tagihan.index');
+        Route::post('tagihan/generate', [App\Http\Controllers\Admin\TagihanController::class, 'generate'])->name('tagihan.generate');
     });
 
 /*

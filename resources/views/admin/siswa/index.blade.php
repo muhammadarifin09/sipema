@@ -115,23 +115,7 @@
     </form>
 </div>
 
-<!-- Bulk Actions -->
-<div class="mb-4 flex items-center justify-between animate-slide-in delay-2">
-    <div class="flex items-center space-x-2">
-        <button onclick="selectAll()" class="text-sm text-gray-600 hover:text-gray-800">
-            <i class="far fa-check-square mr-1"></i> Pilih Semua
-        </button>
-        <button onclick="deselectAll()" class="text-sm text-gray-600 hover:text-gray-800">
-            <i class="far fa-square mr-1"></i> Batalkan
-        </button>
-        <button onclick="bulkDelete()" class="text-sm text-red-600 hover:text-red-700">
-            <i class="fas fa-trash-alt mr-1"></i> Hapus Terpilih
-        </button>
-    </div>
-    <a href="" class="text-sm text-green-600 hover:text-green-700">
-        <i class="fas fa-download mr-1"></i> Export Excel
-    </a>
-</div>
+
 
 <!-- Siswa Table -->
 <div class="table-container animate-slide-in delay-2">
@@ -139,9 +123,6 @@
         <table class="w-full" id="siswaTable">
             <thead>
                 <tr class="bg-gradient-to-r from-[#0b4f8c] to-[#1e6f9f] text-white">
-                    <th class="px-6 py-3 text-left text-sm font-semibold rounded-tl-xl w-12">
-                        <input type="checkbox" id="selectAllCheckbox" class="rounded border-gray-300 text-[#0b4f8c] focus:ring-[#0b4f8c]">
-                    </th>
                     <th class="px-6 py-3 text-left text-sm font-semibold">No.</th>
                     <th class="px-6 py-3 text-left text-sm font-semibold">NIS</th>
                     <th class="px-6 py-3 text-left text-sm font-semibold">Nama Lengkap</th>
@@ -154,9 +135,6 @@
             <tbody>
                 @forelse($data as $index => $siswa)
                 <tr class="table-row" data-id="{{ $siswa->id }}">
-                    <td class="px-6 py-4">
-                        <input type="checkbox" class="row-checkbox rounded border-gray-300 text-[#0b4f8c] focus:ring-[#0b4f8c]" value="{{ $siswa->id }}">
-                    </td>
                     <td class="px-6 py-4 text-sm text-gray-700">{{ $data->firstItem() + $index }}</td>
                     <td class="px-6 py-4 text-sm font-mono text-gray-700">{{ $siswa->nis }}</td>
                     <td class="px-6 py-4">
