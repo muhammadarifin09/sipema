@@ -10,26 +10,6 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    if (auth()->check()) {
-        $user = auth()->user();
-        
-        if (isset($user->role)) {
-            $role = is_object($user->role) ? $user->role->nama_role : $user->role;
-            
-            if ($role == 'admin') {
-                return redirect()->route('admin.dashboard');
-            }
-
-            if ($role == 'bendahara') {
-                return redirect()->route('bendahara.dashboard');
-            }
-
-            if ($role == 'wali') {
-                return redirect()->route('wali.dashboard');
-            }
-        }
-    }
-
     return redirect()->route('login');
 });
 
@@ -115,14 +95,20 @@ Route::middleware(['auth', 'role:bendahara'])
 |--------------------------------------------------------------------------
 */
 
+use App\Http\Controllers\Wali\TagihanController;
+
+use App\Http\Controllers\Wali\DashboardController;
+
 Route::middleware(['auth', 'role:wali'])
     ->prefix('wali')
     ->name('wali.')
     ->group(function () {
 
-        Route::get('/dashboard', function () {
-            return view('wali.dashboard');
-        })->name('dashboard');
+        Route::get('/dashboard', [DashboardController::class, 'index'])
+            ->name('dashboard');
+
+        Route::get('/tagihan', [TagihanController::class, 'index'])
+            ->name('tagihan.index');
 
     });
 

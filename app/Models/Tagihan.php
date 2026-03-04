@@ -27,4 +27,9 @@ class Tagihan extends Model
     {
         return $this->belongsTo(TahunAjaran::class);
     }
+
+    public function getNamaBulanAttribute()
+{
+    return \Carbon\Carbon::createFromDate(null, (int) $this->bulan, 1)->translatedFormat('F');
+}
 }

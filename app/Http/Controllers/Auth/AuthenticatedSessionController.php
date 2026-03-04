@@ -28,22 +28,22 @@ class AuthenticatedSessionController extends Controller
 
     $request->session()->regenerate();
 
-    $role = $request->user()->role->nama_role;
+    $user = $request->user();
 
-    if ($role == 'admin') {
-        return redirect('/admin/dashboard');
+    if ($user->role->nama_role === 'admin') {
+        return redirect()->route('admin.dashboard');
     }
 
-    if ($role == 'bendahara') {
-        return redirect('/bendahara/dashboard');
+    if ($user->role->nama_role === 'bendahara') {
+        return redirect()->route('bendahara.dashboard');
     }
 
-    if ($role == 'wali') {
-        return redirect('/wali/dashboard');
+    if ($user->role->nama_role === 'wali') {
+        return redirect()->route('wali.dashboard');
     }
 
-    // fallback kalau role tidak dikenali
-    return redirect('/');
+    // fallback
+    return redirect('/login');
 }
 
     /**
