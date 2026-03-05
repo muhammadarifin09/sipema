@@ -526,7 +526,13 @@
                     <i class="fas fa-users w-6"></i>
                     <span class="ml-3 font-medium">Data Siswa</span>
                 </a>
-                
+
+
+                 <a href="{{ route('admin.wali.index') }}" class="nav-item {{ request()->routeIs('admin.wali.*') ? 'active' : '' }}">
+                    <i class="fas fa-user-friends w-6"></i>
+                    <span class="ml-3 font-medium">Data Wali Murid</span>
+                </a>
+
                 <a href="{{ route('admin.tagihan.index') }}" class="nav-item {{ request()->routeIs('admin.pembayaran.*') ? 'active' : '' }}">
                     <i class="fas fa-credit-card w-6"></i>
                     <span class="ml-3 font-medium">Tagihan Pembayaran</span>

@@ -16,7 +16,9 @@ class User extends Authenticatable
         'email',
         'password',
         'role_id',
-        'siswa_id',  // Pastikan kolom ini ada di tabel users
+        'no_telp',
+        'active',
+        // HAPUS 'siswa_id' dari sini karena tidak digunakan lagi
     ];
 
     protected $hidden = [
@@ -29,6 +31,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'active' => 'boolean',
         ];
     }
 
@@ -38,10 +41,10 @@ class User extends Authenticatable
         return $this->belongsTo(Role::class);
     }
 
-    // Relasi ke siswa
+    // PERBAIKAN: Relasi ke siswa (one-to-many)
     public function siswa()
     {
-        return $this->belongsTo(Siswa::class, 'siswa_id', 'id');
+        return $this->hasMany(Siswa::class, 'wali_id', 'id');
     }
 
     // Helper untuk cek role
@@ -64,6 +67,4 @@ class User extends Authenticatable
     {
         return $this->role && $this->role->nama_role === 'siswa';
     }
-
-
 }

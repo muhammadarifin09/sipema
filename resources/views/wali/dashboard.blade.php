@@ -48,6 +48,12 @@
                         <i class="fas fa-clock mr-1 lg:mr-2"></i>
                         {{ now()->format('l, d F Y') }}
                     </p>
+                    @if(isset($siswaList) && $siswaList->count() > 0)
+                    <p class="text-white/60 text-xs mt-2 flex items-center">
+                        <i class="fas fa-graduation-cap mr-1 lg:mr-2"></i>
+                        {{ $siswaList->count() }} siswa terhubung
+                    </p>
+                    @endif
                 </div>
                 <div class="w-12 h-12 sm:w-16 sm:h-16 lg:w-20 lg:h-20 bg-[#1E3A5F] rounded-2xl lg:rounded-3xl flex items-center justify-center">
                     <i class="fas fa-smile text-2xl sm:text-3xl lg:text-4xl text-white"></i>
@@ -85,7 +91,7 @@
                 <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between">
                     <div>
                         <h3 class="text-xl sm:text-2xl lg:text-3xl font-bold text-red-600">Rp {{ number_format($total_tunggakan ?? 0,0,',','.') }}</h3>
-                        <p class="text-xs text-gray-400 mt-1">{{ $jumlah_bulan_tunggakan ?? 0 }} bulan tertunggak</p>
+                        <p class="text-xs text-gray-400 mt-1">{{ $bulan_belum_dibayar ?? 0 }} bulan tertunggak</p>
                     </div>
                     @if(($total_tunggakan ?? 0) > 0)
                     <span class="mt-2 sm:mt-0 px-2 sm:px-3 py-1 bg-red-50 text-red-600 text-xs rounded-full w-fit">Overdue</span>
@@ -117,44 +123,91 @@
             </div>
         </div>
 
+        <!-- Jika ada banyak siswa, tampilkan daftar siswa -->
+        @if(isset($siswaTerhubung) && count($siswaTerhubung) > 0)
+        <!-- Daftar Siswa Cards -->
+        <div class="mb-6 animate-slide-in delay-2">
+            <h3 class="text-white font-semibold mb-3 flex items-center">
+                <i class="fas fa-users mr-2"></i>
+                Daftar Siswa ({{ count($siswaTerhubung) }})
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                @foreach($siswaTerhubung as $siswa)
+                <div class="bg-white rounded-xl p-4 shadow-lg hover:shadow-xl transition">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 bg-gradient-to-br from-[#0B2A4A] to-[#1E3A5F] rounded-full flex items-center justify-center">
+                                <i class="fas fa-user-graduate text-white text-sm"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-800">{{ $siswa['nama'] }}</h4>
+                                <p class="text-xs text-gray-400">{{ $siswa['kelas'] }}</p>
+                            </div>
+                        </div>
+                        @if($siswa['status_pembayaran'] == 'lunas')
+                        <span class="px-2 py-1 bg-green-100 text-green-700 text-xs rounded-full">Lunas</span>
+                        @elseif($siswa['status_pembayaran'] == 'belum_lunas')
+                        <span class="px-2 py-1 bg-yellow-100 text-yellow-700 text-xs rounded-full">Belum Lunas</span>
+                        @endif
+                    </div>
+                    <div class="grid grid-cols-2 gap-2 text-sm">
+                        <div>
+                            <p class="text-xs text-gray-400">Tagihan Bulan Ini</p>
+                            <p class="font-semibold text-gray-800">Rp {{ number_format($siswa['tagihan_bulan_ini'],0,',','.') }}</p>
+                        </div>
+                        <div>
+                            <p class="text-xs text-gray-400">Tunggakan</p>
+                            <p class="font-semibold text-red-600">Rp {{ number_format($siswa['total_tunggakan'],0,',','.') }}</p>
+                        </div>
+                    </div>
+                    <a href="{{ route('wali.tagihan.index') }}?siswa_id={{ $siswa['id'] }}" class="mt-3 block text-center text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 rounded-lg transition">
+                        Lihat Tagihan
+                    </a>
+                </div>
+                @endforeach
+            </div>
+        </div>
+        @endif
+
         <!-- Grid 2 kolom untuk tablet/desktop: Informasi Siswa dan Ringkasan Pembayaran -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6 mb-6 lg:mb-8">
-            <!-- Informasi Siswa -->
+            <!-- Informasi Siswa (untuk multiple siswa) -->
             <div class="bg-white rounded-xl sm:rounded-2xl lg:rounded-3xl p-4 sm:p-5 lg:p-6 shadow-lg animate-slide-in delay-2">
                 <div class="flex items-center justify-between mb-4">
                     <h3 class="font-semibold text-gray-800 text-sm sm:text-base lg:text-lg flex items-center">
                         <i class="fas fa-graduation-cap text-[#0B2A4A] mr-2"></i>
-                        Profil Siswa
+                        Data Siswa Terhubung
                     </h3>
                     <span class="px-2 sm:px-3 py-1 bg-[#0B2A4A]/10 text-[#0B2A4A] text-xs rounded-full">
-                        {{ auth()->user()->siswa->nis ?? '-' }}
+                        {{ isset($siswaList) ? $siswaList->count() : 0 }} siswa
                     </span>
                 </div>
 
-                <!-- Layout flex untuk desktop -->
-                <div class="flex flex-col sm:flex-row sm:items-start gap-4">
-                    <!-- Foto profil -->
-                    <div class="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 bg-gradient-to-br from-[#0B2A4A] to-[#1E3A5F] rounded-xl lg:rounded-2xl flex items-center justify-center flex-shrink-0">
-                        <i class="fas fa-user-graduate text-2xl sm:text-3xl lg:text-4xl text-white"></i>
-                    </div>
-                    
-                    <!-- Info detail -->
-                    <div class="flex-1">
-                        <p class="font-semibold text-gray-800 text-base sm:text-lg">{{ auth()->user()->siswa->nama ?? '-' }}</p>
-                        <p class="text-xs sm:text-sm text-gray-400 mb-3">Kelas {{ auth()->user()->siswa->kelas->nama_kelas ?? '-' }}</p>
-                        
-                        <div class="grid grid-cols-2 gap-2 sm:gap-3">
-                            <div class="bg-gray-50 rounded-lg lg:rounded-xl p-2 sm:p-3">
-                                <p class="text-xs text-gray-400 mb-1">Tahun Ajaran</p>
-                                <p class="font-medium text-gray-800 text-xs sm:text-sm">{{ $tahun_ajaran ?? '-' }}</p>
+                @if(isset($siswaList) && $siswaList->count() > 0)
+                    <div class="space-y-3 max-h-60 overflow-y-auto pr-2">
+                        @foreach($siswaList as $index => $siswa)
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-8 h-8 bg-gradient-to-br from-[#0B2A4A] to-[#1E3A5F] rounded-full flex items-center justify-center text-white text-xs">
+                                    {{ strtoupper(substr($siswa->nama_lengkap, 0, 1)) }}
+                                </div>
+                                <div>
+                                    <p class="font-medium text-gray-800 text-sm">{{ $siswa->nama_lengkap }}</p>
+                                    <p class="text-xs text-gray-400">{{ $siswa->nis }} • {{ $siswa->kelas->nama_kelas ?? '-' }}</p>
+                                </div>
                             </div>
-                            <div class="bg-gray-50 rounded-lg lg:rounded-xl p-2 sm:p-3">
-                                <p class="text-xs text-gray-400 mb-1">Kontak</p>
-                                <p class="font-medium text-gray-800 text-xs sm:text-sm">{{ auth()->user()->no_telp ?? '-' }}</p>
-                            </div>
+                            <a href="{{ route('wali.tagihan.index') }}?siswa_id={{ $siswa->id }}" class="text-xs text-[#0B2A4A] hover:underline">
+                                Detail
+                            </a>
                         </div>
+                        @endforeach
                     </div>
-                </div>
+                @else
+                    <div class="text-center py-6">
+                        <i class="fas fa-user-slash text-4xl text-gray-300 mb-2"></i>
+                        <p class="text-gray-500 text-sm">Belum ada siswa terhubung</p>
+                    </div>
+                @endif
             </div>
 
             <!-- Ringkasan Pembayaran dengan progress bar -->
@@ -166,7 +219,7 @@
 
                 <h3 class="font-semibold text-gray-800 text-sm sm:text-base lg:text-lg flex items-center mb-4">
                     <i class="fas fa-chart-pie text-[#0B2A4A] mr-2"></i>
-                    Ringkasan Pembayaran
+                    Ringkasan Pembayaran (Semua Siswa)
                 </h3>
 
                 <!-- Progress bar -->
@@ -241,46 +294,45 @@
             </a>
         </div>
 
-        <!-- Bottom Navigation - Hanya untuk mobile, hidden di tablet/desktop -->
-       <!-- Bottom Navigation dengan perbaikan z-index dan pointer-events -->
-<div class="lg:hidden fixed bottom-0 left-0 right-0 bg-white rounded-t-3xl shadow-2xl px-6 py-3 z-20">
-    <div class="flex items-center justify-between max-w-md mx-auto relative" style="z-index: 30;">
-        <!-- Home Link -->
-        <a href="#" class="flex flex-col items-center" style="pointer-events: auto; position: relative; z-index: 40;">
-            <div class="w-10 h-10 bg-[#0B2A4A]/10 rounded-xl flex items-center justify-center">
-                <i class="fas fa-home text-[#0B2A4A]"></i>
-            </div>
-            <span class="text-xs text-[#0B2A4A] mt-1 font-medium">Home</span>
-        </a>
+        <!-- Bottom Navigation dengan perbaikan z-index dan pointer-events -->
+        <div class="lg:hidden fixed bottom-0 left-0 right-0 bg-white rounded-t-3xl shadow-2xl px-6 py-3 z-20">
+            <div class="flex items-center justify-between max-w-md mx-auto relative" style="z-index: 30;">
+                <!-- Home Link -->
+                <a href="{{ route('wali.dashboard') }}" class="flex flex-col items-center" style="pointer-events: auto; position: relative; z-index: 40;">
+                    <div class="w-10 h-10 bg-[#0B2A4A]/10 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-home text-[#0B2A4A]"></i>
+                    </div>
+                    <span class="text-xs text-[#0B2A4A] mt-1 font-medium">Home</span>
+                </a>
 
-        <!-- Tagihan Link -->
-        <a href="{{ route('wali.tagihan.index') }}" class="flex flex-col items-center" style="pointer-events: auto; position: relative; z-index: 40;">
-            <div class="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center">
-                <i class="fas fa-file-invoice text-gray-400"></i>
-            </div>
-            <span class="text-xs text-gray-400 mt-1">Tagihan</span>
-        </a>
+                <!-- Tagihan Link -->
+                <a href="{{ route('wali.tagihan.index') }}" class="flex flex-col items-center" style="pointer-events: auto; position: relative; z-index: 40;">
+                    <div class="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-file-invoice text-gray-400"></i>
+                    </div>
+                    <span class="text-xs text-gray-400 mt-1">Tagihan</span>
+                </a>
 
-        <!-- History Link -->
-        <a href="" class="flex flex-col items-center" style="pointer-events: auto; position: relative; z-index: 40;">
-            <div class="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center">
-                <i class="fas fa-history text-gray-400"></i>
-            </div>
-            <span class="text-xs text-gray-400 mt-1">History</span>
-        </a>
+                <!-- History Link -->
+                <a href="" class="flex flex-col items-center" style="pointer-events: auto; position: relative; z-index: 40;">
+                    <div class="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-history text-gray-400"></i>
+                    </div>
+                    <span class="text-xs text-gray-400 mt-1">History</span>
+                </a>
 
-        <!-- Logout Form -->
-        <form method="POST" action="{{ route('logout') }}" class="flex flex-col items-center" style="pointer-events: auto; position: relative; z-index: 40;">
-            @csrf
-            <button type="submit" class="flex flex-col items-center">
-                <div class="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center">
-                    <i class="fas fa-sign-out-alt text-gray-400"></i>
-                </div>
-                <span class="text-xs text-gray-400 mt-1">Keluar</span>
-            </button>
-        </form>
-    </div>
-</div>
+                <!-- Logout Form -->
+                <form method="POST" action="{{ route('logout') }}" class="flex flex-col items-center" style="pointer-events: auto; position: relative; z-index: 40;">
+                    @csrf
+                    <button type="submit" class="flex flex-col items-center">
+                        <div class="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-sign-out-alt text-gray-400"></i>
+                        </div>
+                        <span class="text-xs text-gray-400 mt-1">Keluar</span>
+                    </button>
+                </form>
+            </div>
+        </div>
 
         <!-- Desktop Logout Button (hidden di mobile) -->
         <div class="hidden lg:flex justify-end mt-8">

@@ -24,7 +24,8 @@ class Siswa extends Model
         'nama_ibu',
         'no_telp_orangtua',
         'foto',
-        'status'
+        'status',
+        'wali_id' // PASTIKAN kolom ini ada di tabel siswa
     ];
 
     protected $casts = [
@@ -37,10 +38,16 @@ class Siswa extends Model
         return $this->belongsTo(Kelas::class);
     }
 
-    // Relasi ke user (untuk login) - PERBAIKAN: tambahkan foreign key
+    // Relasi ke user (untuk login) - PERBAIKAN
     public function user()
     {
-        return $this->hasOne(User::class, 'siswa_id', 'id');
+        return $this->hasOne(User::class, 'siswa_id', 'id'); // Ini untuk login siswa
+    }
+
+    // PERBAIKAN: Relasi ke wali murid
+    public function wali()
+    {
+        return $this->belongsTo(User::class, 'wali_id', 'id');
     }
 
     // Accessor untuk menampilkan jenis kelamin lengkap
@@ -83,10 +90,7 @@ class Siswa extends Model
     }
 
     public function tagihans()
-{
-    return $this->hasMany(Tagihan::class);
-}
-
-
-
+    {
+        return $this->hasMany(Tagihan::class);
+    }
 }

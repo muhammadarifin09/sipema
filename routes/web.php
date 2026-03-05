@@ -60,7 +60,23 @@ Route::middleware(['auth', 'role:admin'])
         // Tagihan
         Route::get('tagihan', [App\Http\Controllers\Admin\TagihanController::class, 'index'])->name('tagihan.index');
         Route::post('tagihan/generate', [App\Http\Controllers\Admin\TagihanController::class, 'generate'])->name('tagihan.generate');
+
+        
     });
+
+
+
+Route::middleware(['auth', 'role:admin'])
+    ->prefix('admin')
+    ->name('admin.')
+    ->group(function () {
+        // ... route lainnya
+        
+        // Route untuk wali murid
+        Route::resource('wali', App\Http\Controllers\WaliMuridController::class);
+    });
+
+
 
 /*
 |--------------------------------------------------------------------------
