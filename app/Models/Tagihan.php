@@ -32,4 +32,10 @@ class Tagihan extends Model
 {
     return \Carbon\Carbon::createFromDate(null, (int) $this->bulan, 1)->translatedFormat('F');
 }
+
+public function pembayaran()
+{
+    return $this->hasOne(Pembayaran::class);
+}
+
 }

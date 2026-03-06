@@ -93,4 +93,9 @@ class Siswa extends Model
     {
         return $this->hasMany(Tagihan::class);
     }
+
+    public function pembayaran()
+{
+    return $this->hasOne(Pembayaran::class);
+}
 }

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PembayaranController;
 
 /*
 |--------------------------------------------------------------------------
@@ -115,6 +116,8 @@ use App\Http\Controllers\Wali\TagihanController;
 
 use App\Http\Controllers\Wali\DashboardController;
 
+use App\Http\Controllers\Wali\RiwayatPembayaranController;
+
 Route::middleware(['auth', 'role:wali'])
     ->prefix('wali')
     ->name('wali.')
@@ -126,6 +129,19 @@ Route::middleware(['auth', 'role:wali'])
         Route::get('/tagihan', [TagihanController::class, 'index'])
             ->name('tagihan.index');
 
+        Route::get('/riwayat', [RiwayatPembayaranController::class, 'index'])
+            ->name('riwayat.index');
+        
     });
 
 require __DIR__.'/auth.php';
+
+
+Route::post('/wali/tagihan/{id}/bayar', [PembayaranController::class, 'bayar'])
+    ->name('wali.tagihan.bayar');
+
+Route::post('/midtrans/callback', [App\Http\Controllers\MidtransCallbackController::class, 'handle'])
+    ->name('midtrans.callback');
+
+// Route::get('/riwayat', [App\Http\Controllers\Wali\RiwayatPembayaranController::class, 'index'])
+//     ->name('riwayat.index');

@@ -88,13 +88,14 @@ class DashboardController extends Controller
     }
 
     // Helper function untuk mendapatkan tagihan bulan ini per siswa
-    private function getTagihanBulanIni($siswaId)
-    {
-        return Tagihan::where('siswa_id', $siswaId)
-            ->whereMonth('tanggal_jatuh_tempo', now()->month)
-            ->whereYear('tanggal_jatuh_tempo', now()->year)
-            ->sum('nominal');
-    }
+      private function getTagihanBulanIni($siswaId)
+{
+    return Tagihan::where('siswa_id', $siswaId)
+        ->where('bulan', now()->month)
+        ->where('tahun', now()->year)
+        ->where('status','belum_bayar')
+        ->sum('nominal');
+}
 
     // Helper function untuk mendapatkan total tunggakan per siswa
     private function getTotalTunggakan($siswaId)

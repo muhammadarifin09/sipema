@@ -314,7 +314,7 @@
                 </a>
 
                 <!-- History Link -->
-                <a href="" class="flex flex-col items-center" style="pointer-events: auto; position: relative; z-index: 40;">
+                <a href="{{ route('wali.riwayat.index') }}" class="flex flex-col items-center" style="pointer-events: auto; position: relative; z-index: 40;">
                     <div class="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center">
                         <i class="fas fa-history text-gray-400"></i>
                     </div>

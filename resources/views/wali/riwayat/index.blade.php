@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Tagihan SPP - SMA PGRI Pelaihari')
+@section('title', 'Riwayat Pembayaran - SMA PGRI Pelaihari')
 
 @section('content')
 <div class="min-h-screen" style="background: linear-gradient(145deg, #0B2A4A 0%, #123456 100%);">
@@ -12,7 +12,7 @@
                     <i class="fas fa-arrow-left text-white text-lg lg:text-xl"></i>
                 </a>
                 <div>
-                    <h1 class="text-lg lg:text-xl font-semibold text-white">Tagihan SPP</h1>
+                    <h1 class="text-lg lg:text-xl font-semibold text-white">Riwayat Pembayaran</h1>
                     <p class="text-xs lg:text-sm text-white/70">SMA PGRI Pelaihari</p>
                 </div>
             </div>
@@ -39,12 +39,12 @@
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div>
                     <p class="text-white/70 text-xs sm:text-sm lg:text-base mb-1">
-                        <i class="fas fa-file-invoice mr-2"></i>
-                        Daftar Tagihan SPP
+                        <i class="fas fa-history mr-2"></i>
+                        Riwayat Transaksi Pembayaran SPP
                     </p>
                     @if(isset($siswaList) && $siswaList->count() > 0)
                         @php
-                            $selectedSiswa = $siswaList->firstWhere('id', $selectedSiswaId);
+                            $selectedSiswa = $siswaList->firstWhere('id', $selectedSiswaId ?? request('siswa_id'));
                         @endphp
                         <h2 class="text-xl sm:text-2xl lg:text-3xl font-bold text-white">{{ $selectedSiswa->nama_lengkap ?? 'Pilih Siswa' }}</h2>
                         <p class="text-white/60 text-xs lg:text-sm mt-2 flex items-center">
@@ -57,7 +57,7 @@
                     @endif
                 </div>
                 <div class="w-12 h-12 sm:w-16 sm:h-16 lg:w-20 lg:h-20 bg-[#1E3A5F] rounded-2xl lg:rounded-3xl flex items-center justify-center">
-                    <i class="fas fa-file-invoice-dollar text-2xl sm:text-3xl lg:text-4xl text-white"></i>
+                    <i class="fas fa-history text-2xl sm:text-3xl lg:text-4xl text-white"></i>
                 </div>
             </div>
         </div>
@@ -72,8 +72,8 @@
                 </div>
                 <div class="flex-1 flex flex-wrap gap-2">
                     @foreach($siswaList as $siswa)
-                    <a href="{{ route('wali.tagihan.index', ['siswa_id' => $siswa->id]) }}" 
-                       class="px-4 py-2 rounded-lg text-sm transition-all {{ $selectedSiswaId == $siswa->id ? 'bg-white text-[#0B2A4A] font-semibold shadow-lg' : 'bg-white/20 text-white hover:bg-white/30' }}">
+                    <a href="{{ route('wali.pembayaran.riwayat', ['siswa_id' => $siswa->id]) }}" 
+                       class="px-4 py-2 rounded-lg text-sm transition-all {{ ($selectedSiswaId ?? request('siswa_id')) == $siswa->id ? 'bg-white text-[#0B2A4A] font-semibold shadow-lg' : 'bg-white/20 text-white hover:bg-white/30' }}">
                         {{ $siswa->nama_lengkap }}
                         <span class="text-xs ml-1 opacity-70">({{ $siswa->kelas->nama_kelas ?? '-' }})</span>
                     </a>
@@ -83,27 +83,40 @@
         </div>
         @endif
 
-        <!-- Statistik Tagihan -->
-        <div class="grid grid-cols-1 sm:grid-cols-4 gap-4 lg:gap-6 mb-6 lg:mb-8">
-            <!-- Total Tagihan -->
+        <!-- Statistik Pembayaran -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 mb-6 lg:mb-8">
+            <!-- Total Transaksi -->
             <div class="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-5 shadow-lg animate-slide-in delay-1">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-gray-400 text-xs sm:text-sm">Total Tagihan</p>
-                        <h3 class="text-xl sm:text-2xl font-bold text-gray-800">{{ $statistik['total_tagihan'] ?? 0 }} Bulan</h3>
+                        <p class="text-gray-400 text-xs sm:text-sm">Total Transaksi</p>
+                        <h3 class="text-xl sm:text-2xl font-bold text-gray-800">{{ $statistik['total_transaksi'] ?? 0 }}</h3>
                     </div>
                     <div class="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center">
-                        <i class="fas fa-calendar-alt text-blue-600"></i>
+                        <i class="fas fa-exchange-alt text-blue-600"></i>
                     </div>
                 </div>
             </div>
 
-            <!-- Sudah Dibayar -->
+            <!-- Total Pembayaran -->
             <div class="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-5 shadow-lg animate-slide-in delay-2">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-gray-400 text-xs sm:text-sm">Sudah Dibayar</p>
-                        <h3 class="text-xl sm:text-2xl font-bold text-green-600">{{ $statistik['total_lunas'] ?? 0 }} Bulan</h3>
+                        <p class="text-gray-400 text-xs sm:text-sm">Total Pembayaran</p>
+                        <h3 class="text-xl sm:text-2xl font-bold text-green-600">Rp {{ number_format($statistik['total_nominal'] ?? 0,0,',','.') }}</h3>
+                    </div>
+                    <div class="w-10 h-10 bg-green-50 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-money-bill-wave text-green-600"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Transaksi Berhasil -->
+            <div class="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-5 shadow-lg animate-slide-in delay-3">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-400 text-xs sm:text-sm">Transaksi Berhasil</p>
+                        <h3 class="text-xl sm:text-2xl font-bold text-green-600">{{ $statistik['berhasil'] ?? 0 }}</h3>
                     </div>
                     <div class="w-10 h-10 bg-green-50 rounded-xl flex items-center justify-center">
                         <i class="fas fa-check-circle text-green-600"></i>
@@ -111,62 +124,30 @@
                 </div>
             </div>
 
-            <!-- Belum Dibayar -->
-            <div class="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-5 shadow-lg animate-slide-in delay-3">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-gray-400 text-xs sm:text-sm">Belum Dibayar</p>
-                        <h3 class="text-xl sm:text-2xl font-bold text-red-600">{{ $statistik['total_belum_bayar'] ?? 0 }} Bulan</h3>
-                    </div>
-                    <div class="w-10 h-10 bg-red-50 rounded-xl flex items-center justify-center">
-                        <i class="fas fa-clock text-red-600"></i>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Total Nominal -->
+            <!-- Transaksi Pending -->
             <div class="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-5 shadow-lg animate-slide-in delay-4">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-gray-400 text-xs sm:text-sm">Total Nominal</p>
-                        <h3 class="text-xl sm:text-2xl font-bold text-purple-600">Rp {{ number_format($statistik['total_nominal'] ?? 0,0,',','.') }}</h3>
+                        <p class="text-gray-400 text-xs sm:text-sm">Transaksi Pending</p>
+                        <h3 class="text-xl sm:text-2xl font-bold text-yellow-600">{{ $statistik['pending'] ?? 0 }}</h3>
                     </div>
-                    <div class="w-10 h-10 bg-purple-50 rounded-xl flex items-center justify-center">
-                        <i class="fas fa-money-bill-wave text-purple-600"></i>
+                    <div class="w-10 h-10 bg-yellow-50 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-clock text-yellow-600"></i>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Info Tambahan Nominal -->
-        @if(isset($statistik) && ($statistik['total_nominal_lunas'] > 0 || $statistik['total_nominal_belum_bayar'] > 0))
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-            <div class="bg-green-50 rounded-xl p-3 flex items-center justify-between">
-                <span class="text-sm text-green-700 flex items-center">
-                    <i class="fas fa-check-circle mr-2"></i>
-                    Total Lunas:
-                </span>
-                <span class="font-bold text-green-700">Rp {{ number_format($statistik['total_nominal_lunas'] ?? 0,0,',','.') }}</span>
-            </div>
-            <div class="bg-red-50 rounded-xl p-3 flex items-center justify-between">
-                <span class="text-sm text-red-700 flex items-center">
-                    <i class="fas fa-exclamation-circle mr-2"></i>
-                    Total Belum Dibayar:
-                </span>
-                <span class="font-bold text-red-700">Rp {{ number_format($statistik['total_nominal_belum_bayar'] ?? 0,0,',','.') }}</span>
-            </div>
-        </div>
-        @endif
-
-        <!-- Filter Status -->
+        <!-- Filter dan Pencarian -->
         <div class="bg-white/10 backdrop-blur-lg rounded-xl p-4 mb-6 flex flex-col sm:flex-row gap-3 justify-between items-center">
             <div class="text-white/80 text-sm">
                 <i class="fas fa-filter mr-2"></i>
                 Filter Status: 
                 <select id="statusFilter" class="ml-2 bg-white/20 border border-white/30 rounded-lg px-3 py-1 text-white text-sm">
                     <option value="all" class="text-gray-800">Semua</option>
-                    <option value="belum_bayar" class="text-gray-800">Belum Bayar</option>
-                    <option value="lunas" class="text-gray-800">Lunas</option>
+                    <option value="berhasil" class="text-gray-800">Berhasil</option>
+                    <option value="pending" class="text-gray-800">Pending</option>
+                    <option value="gagal" class="text-gray-800">Gagal</option>
                 </select>
             </div>
             <div class="text-white/80 text-sm">
@@ -175,126 +156,116 @@
             </div>
         </div>
 
-        <!-- Tabel Tagihan dengan desain modern -->
+        <!-- Tabel Riwayat Pembayaran dengan desain modern -->
         <div class="bg-white rounded-xl sm:rounded-2xl lg:rounded-3xl shadow-xl overflow-hidden animate-slide-in delay-2">
             <!-- Mobile View (Card-based) - Tampil di mobile, hidden di tablet/desktop -->
-            <div class="block sm:hidden divide-y divide-gray-100" id="mobileTagihanList">
-                @forelse($tagihans as $index => $tagihan)
-                <div class="p-4 hover:bg-gray-50 transition tagihan-item" data-status="{{ $tagihan->status }}" data-bulan="{{ strtolower($tagihan->nama_bulan) }}">
+            <div class="block sm:hidden divide-y divide-gray-100" id="mobileRiwayatList">
+                @forelse($riwayat as $index => $item)
+                <div class="p-4 hover:bg-gray-50 transition riwayat-item" data-status="{{ $item->status }}" data-bulan="{{ strtolower($item->tagihan->nama_bulan) }}">
                     <div class="flex items-center justify-between mb-2">
                         <span class="text-xs text-gray-400">Bulan</span>
                         <span class="text-xs text-gray-400">#{{ $index + 1 }}</span>
                     </div>
                     <div class="flex items-center justify-between mb-3">
                         <div>
-                            <h3 class="font-semibold text-gray-800">{{ $tagihan->nama_bulan }} {{ $tagihan->tahun }}</h3>
-                            <p class="text-xs text-gray-400 mt-1">Jatuh tempo: {{ $tagihan->tanggal_jatuh_tempo }}</p>
+                            <h3 class="font-semibold text-gray-800">{{ $item->tagihan->nama_bulan }} {{ $item->tagihan->tahun }}</h3>
+                            <p class="text-xs text-gray-400 mt-1">
+                                <i class="far fa-calendar-alt mr-1"></i>
+                                {{ \Carbon\Carbon::parse($item->tanggal_bayar)->format('d M Y H:i') }}
+                            </p>
                         </div>
-                        @if($tagihan->status == 'belum_bayar')
-                            <span class="px-3 py-1 text-xs bg-yellow-100 text-yellow-700 rounded-full">
-                                Belum Bayar
-                            </span>
-                        @elseif($tagihan->status == 'lunas')
+                        @if($item->status == 'berhasil')
                             <span class="px-3 py-1 text-xs bg-green-100 text-green-700 rounded-full">
+                                <i class="fas fa-check-circle mr-1"></i>
                                 Lunas
                             </span>
+                        @elseif($item->status == 'pending')
+                            <span class="px-3 py-1 text-xs bg-yellow-100 text-yellow-700 rounded-full">
+                                <i class="fas fa-clock mr-1"></i>
+                                Pending
+                            </span>
                         @else
-                            <span class="px-3 py-1 text-xs bg-gray-100 text-gray-700 rounded-full">
-                                Menunggu
+                            <span class="px-3 py-1 text-xs bg-red-100 text-red-700 rounded-full">
+                                <i class="fas fa-times-circle mr-1"></i>
+                                Gagal
                             </span>
                         @endif
                     </div>
-                    <div class="flex items-center justify-between">
+                    <div class="flex items-center justify-between mb-2">
                         <div>
                             <p class="text-xs text-gray-400">Nominal</p>
-                            <p class="font-bold text-gray-800">Rp {{ number_format($tagihan->nominal, 0, ',', '.') }}</p>
+                            <p class="font-bold text-gray-800">Rp {{ number_format($item->jumlah_bayar,0,',','.') }}</p>
                         </div>
-                        @if($tagihan->status == 'belum_bayar')
-                        <button 
-                        onclick="bayarTagihan({{ $tagihan->id }})"
-                        class="px-4 py-2 bg-[#0B2A4A] text-white rounded-xl text-xs hover:bg-[#1E3A5F] transition">
-                        <i class="fas fa-credit-card mr-1"></i>
-                        Bayar Sekarang
-                        </button>
-                        @endif
+                        <div class="text-right">
+                            <p class="text-xs text-gray-400">Metode</p>
+                            <p class="text-sm font-medium text-gray-700">{{ $item->metode_bayar }}</p>
+                        </div>
                     </div>
                 </div>
                 @empty
                 <div class="p-8 text-center">
-                    <i class="fas fa-file-invoice text-4xl text-gray-300 mb-3"></i>
-                    <p class="text-gray-500">Belum ada tagihan SPP untuk siswa ini.</p>
+                    <i class="fas fa-history text-4xl text-gray-300 mb-3"></i>
+                    <p class="text-gray-500">Belum ada riwayat pembayaran</p>
                 </div>
                 @endforelse
             </div>
 
             <!-- Desktop View (Table) - Hidden di mobile, tampil di tablet/desktop -->
             <div class="hidden sm:block overflow-x-auto">
-                <table class="w-full" id="tagihanTable">
+                <table class="w-full" id="riwayatTable">
                     <thead>
                         <tr class="bg-gradient-to-r from-[#0B2A4A] to-[#1E3A5F] text-white">
                             <th class="px-6 py-4 text-left text-sm font-semibold">No</th>
                             <th class="px-6 py-4 text-left text-sm font-semibold">Bulan</th>
                             <th class="px-6 py-4 text-left text-sm font-semibold">Tahun</th>
                             <th class="px-6 py-4 text-left text-sm font-semibold">Nominal</th>
-                            <th class="px-6 py-4 text-left text-sm font-semibold">Jatuh Tempo</th>
+                            <th class="px-6 py-4 text-left text-sm font-semibold">Metode</th>
+                            <th class="px-6 py-4 text-left text-sm font-semibold">Tanggal Bayar</th>
                             <th class="px-6 py-4 text-left text-sm font-semibold">Status</th>
-                            <th class="px-6 py-4 text-left text-sm font-semibold">Aksi</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-100">
-                        @forelse($tagihans as $index => $tagihan)
-                        <tr class="hover:bg-gray-50 transition tagihan-row" data-status="{{ $tagihan->status }}" data-bulan="{{ strtolower($tagihan->nama_bulan) }}">
+                        @forelse($riwayat as $index => $item)
+                        <tr class="hover:bg-gray-50 transition riwayat-row" data-status="{{ $item->status }}" data-bulan="{{ strtolower($item->tagihan->nama_bulan) }}">
                             <td class="px-6 py-4 text-sm text-gray-600">{{ $index + 1 }}</td>
                             <td class="px-6 py-4">
-                                <span class="font-medium text-gray-800">{{ $tagihan->nama_bulan }}</span>
+                                <span class="font-medium text-gray-800">{{ $item->tagihan->nama_bulan }}</span>
                             </td>
-                            <td class="px-6 py-4 text-sm text-gray-600">{{ $tagihan->tahun }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-600">{{ $item->tagihan->tahun }}</td>
                             <td class="px-6 py-4">
-                                <span class="font-semibold text-gray-800">Rp {{ number_format($tagihan->nominal, 0, ',', '.') }}</span>
+                                <span class="font-semibold text-gray-800">Rp {{ number_format($item->jumlah_bayar,0,',','.') }}</span>
+                            </td>
+                            <td class="px-6 py-4">
+                                <span class="text-sm text-gray-600">{{ $item->metode_bayar }}</span>
                             </td>
                             <td class="px-6 py-4 text-sm text-gray-600">
                                 <i class="far fa-calendar-alt text-gray-400 mr-1"></i>
-                                {{ $tagihan->tanggal_jatuh_tempo }}
+                                {{ \Carbon\Carbon::parse($item->tanggal_bayar)->format('d M Y H:i') }}
                             </td>
                             <td class="px-6 py-4">
-                                @if($tagihan->status == 'belum_bayar')
-                                    <span class="px-3 py-1 text-xs bg-yellow-100 text-yellow-700 rounded-full">
-                                        <i class="fas fa-clock mr-1"></i>
-                                        Belum Bayar
-                                    </span>
-                                @elseif($tagihan->status == 'lunas')
+                                @if($item->status == 'berhasil')
                                     <span class="px-3 py-1 text-xs bg-green-100 text-green-700 rounded-full">
                                         <i class="fas fa-check-circle mr-1"></i>
                                         Lunas
                                     </span>
-                                @else
-                                    <span class="px-3 py-1 text-xs bg-gray-100 text-gray-700 rounded-full">
-                                        <i class="fas fa-spinner mr-1"></i>
-                                        Menunggu
+                                @elseif($item->status == 'pending')
+                                    <span class="px-3 py-1 text-xs bg-yellow-100 text-yellow-700 rounded-full">
+                                        <i class="fas fa-clock mr-1"></i>
+                                        Pending
                                     </span>
-                                @endif
-                            </td>
-                            <td class="px-6 py-4">
-                                @if($tagihan->status == 'belum_bayar')
-                               <button
-                                onclick="bayarTagihan({{ $tagihan->id }})"
-                                class="px-4 py-2 bg-[#0B2A4A] text-white rounded-lg text-xs hover:bg-[#1E3A5F] transition inline-flex items-center">
-                                <i class="fas fa-credit-card mr-1"></i>
-                                Bayar
-                                </button>
                                 @else
-                                <button disabled class="px-4 py-2 bg-gray-100 text-gray-400 rounded-lg text-xs cursor-not-allowed">
-                                    <i class="fas fa-check mr-1"></i>
-                                    Selesai
-                                </button>
+                                    <span class="px-3 py-1 text-xs bg-red-100 text-red-700 rounded-full">
+                                        <i class="fas fa-times-circle mr-1"></i>
+                                        Gagal
+                                    </span>
                                 @endif
                             </td>
                         </tr>
                         @empty
                         <tr>
                             <td colspan="7" class="text-center py-12">
-                                <i class="fas fa-file-invoice text-5xl text-gray-300 mb-3"></i>
-                                <p class="text-gray-500">Belum ada tagihan SPP untuk siswa ini.</p>
+                                <i class="fas fa-history text-5xl text-gray-300 mb-3"></i>
+                                <p class="text-gray-500">Belum ada riwayat pembayaran</p>
                             </td>
                         </tr>
                         @endforelse
@@ -305,7 +276,7 @@
             <!-- Footer Tabel -->
             <div class="px-6 py-4 bg-gray-50 border-t border-gray-100 flex flex-col sm:flex-row justify-between items-center gap-3">
                 <p class="text-sm text-gray-600">
-                    Menampilkan {{ $tagihans->count() }} data tagihan
+                    Menampilkan {{ $riwayat->count() }} data riwayat pembayaran
                 </p>
                 <div class="flex items-center space-x-2">
                     <button class="px-3 py-1 bg-white border border-gray-300 rounded-lg text-sm text-gray-600 hover:bg-gray-50">
@@ -339,16 +310,16 @@
                     <span class="text-xs text-gray-400 mt-1">Home</span>
                 </a>
                 <a href="{{ route('wali.tagihan.index') }}" class="flex flex-col items-center">
-                    <div class="w-10 h-10 bg-[#0B2A4A]/10 rounded-xl flex items-center justify-center">
-                        <i class="fas fa-file-invoice text-[#0B2A4A]"></i>
+                    <div class="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-file-invoice text-gray-400"></i>
                     </div>
-                    <span class="text-xs text-[#0B2A4A] mt-1 font-medium">Tagihan</span>
+                    <span class="text-xs text-gray-400 mt-1">Tagihan</span>
                 </a>
                 <a href="{{ route('wali.riwayat.index') }}" class="flex flex-col items-center">
-                    <div class="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center">
-                        <i class="fas fa-history text-gray-400"></i>
+                    <div class="w-10 h-10 bg-[#0B2A4A]/10 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-history text-[#0B2A4A]"></i>
                     </div>
-                    <span class="text-xs text-gray-400 mt-1">History</span>
+                    <span class="text-xs text-[#0B2A4A] mt-1 font-medium">Riwayat</span>
                 </a>
                 <form method="POST" action="{{ route('logout') }}" class="flex flex-col items-center">
                     @csrf
@@ -428,20 +399,14 @@
     tbody tr:hover {
         background-color: #f9fafb;
     }
-
-    /* Responsive table */
-    @media (max-width: 640px) {
-        .table-container {
-            padding: 1rem;
-        }
-    }
 </style>
 
 <script>
     // Filter berdasarkan status
-   
+    document.getElementById('statusFilter')?.addEventListener('change', function() {
+        filterTable();
+    });
 
-    // Search functionality
     document.getElementById('searchInput')?.addEventListener('keyup', function() {
         filterTable();
     });
@@ -451,7 +416,7 @@
         const searchTerm = document.getElementById('searchInput').value.toLowerCase();
         
         // Filter untuk mobile view (cards)
-        const mobileItems = document.querySelectorAll('#mobileTagihanList .tagihan-item');
+        const mobileItems = document.querySelectorAll('#mobileRiwayatList .riwayat-item');
         mobileItems.forEach(item => {
             const itemStatus = item.getAttribute('data-status');
             const itemBulan = item.getAttribute('data-bulan');
@@ -463,7 +428,7 @@
         });
         
         // Filter untuk desktop view (table rows)
-        const rows = document.querySelectorAll('#tagihanTable tbody .tagihan-row');
+        const rows = document.querySelectorAll('#riwayatTable tbody .riwayat-row');
         rows.forEach(row => {
             const rowStatus = row.getAttribute('data-status');
             const rowBulan = row.getAttribute('data-bulan');
@@ -474,97 +439,5 @@
             row.style.display = matchesStatus && matchesSearch ? '' : 'none';
         });
     }
-
-    
-
-
 </script>
-
-<!-- Midtrans Snap -->
-<script src="https://app.sandbox.midtrans.com/snap/snap.js"
-data-client-key="{{ config('midtrans.client_key') }}"></script>
-
-<script>
-
-document.getElementById('statusFilter')?.addEventListener('change', function() {
-    filterTable();
-});
-
-document.getElementById('searchInput')?.addEventListener('keyup', function() {
-    filterTable();
-});
-
-function filterTable() {
-
-    const status = document.getElementById('statusFilter').value;
-    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-
-    const mobileItems = document.querySelectorAll('#mobileTagihanList .tagihan-item');
-    mobileItems.forEach(item => {
-
-        const itemStatus = item.getAttribute('data-status');
-        const itemBulan = item.getAttribute('data-bulan');
-
-        const matchesStatus = status === 'all' || itemStatus === status;
-        const matchesSearch = itemBulan.includes(searchTerm);
-
-        item.style.display = matchesStatus && matchesSearch ? 'block' : 'none';
-
-    });
-
-    const rows = document.querySelectorAll('#tagihanTable tbody .tagihan-row');
-    rows.forEach(row => {
-
-        const rowStatus = row.getAttribute('data-status');
-        const rowBulan = row.getAttribute('data-bulan');
-
-        const matchesStatus = status === 'all' || rowStatus === status;
-        const matchesSearch = rowBulan.includes(searchTerm);
-
-        row.style.display = matchesStatus && matchesSearch ? '' : 'none';
-
-    });
-
-}
-
-function bayarTagihan(tagihanId){
-
-    fetch(`/wali/tagihan/${tagihanId}/bayar`,{
-        method:'POST',
-        headers:{
-            'X-CSRF-TOKEN':'{{ csrf_token() }}',
-            'Content-Type':'application/json'
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-
-        snap.pay(data.snap_token, {
-
-            onSuccess: function(result){
-                alert("Pembayaran berhasil");
-                location.reload();
-            },
-
-            onPending: function(result){
-                alert("Menunggu pembayaran");
-            },
-
-            onError: function(result){
-                alert("Pembayaran gagal");
-            }
-
-        });
-
-    })
-    .catch(error=>{
-        console.error(error);
-        alert("Terjadi kesalahan");
-    });
-
-}
-
-</script>
-
-
 @endsection
