@@ -484,8 +484,45 @@
 <script src="https://app.sandbox.midtrans.com/snap/snap.js"
 data-client-key="{{ config('midtrans.client_key') }}"></script>
 
-<script>
+<style>
+/* Custom styles untuk Midtrans popup di mobile */
+@media (max-width: 640px) {
+    /* Styling untuk popup Midtrans */
+    .snap-container iframe,
+    iframe[src*="midtrans"],
+    .popup-container {
+        max-width: 90% !important;
+        max-height: 80vh !important;
+        margin: 10% auto !important;
+        border-radius: 20px !important;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3) !important;
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        z-index: 999999 !important;
+    }
+    
+    /* Styling untuk overlay Midtrans */
+    .snap-overlay,
+    .popup-overlay {
+        background-color: rgba(0, 0, 0, 0.6) !important;
+        backdrop-filter: blur(4px) !important;
+    }
+    
+    /* Memastikan popup tidak fullscreen */
+    .snap-drawer,
+    .snap-modal {
+        max-width: 90% !important;
+        max-height: 80vh !important;
+        margin: 10% auto !important;
+        border-radius: 20px !important;
+    }
+}
+</style>
 
+<script>
 document.getElementById('statusFilter')?.addEventListener('change', function() {
     filterTable();
 });
@@ -495,13 +532,11 @@ document.getElementById('searchInput')?.addEventListener('keyup', function() {
 });
 
 function filterTable() {
-
     const status = document.getElementById('statusFilter').value;
     const searchTerm = document.getElementById('searchInput').value.toLowerCase();
 
     const mobileItems = document.querySelectorAll('#mobileTagihanList .tagihan-item');
     mobileItems.forEach(item => {
-
         const itemStatus = item.getAttribute('data-status');
         const itemBulan = item.getAttribute('data-bulan');
 
@@ -509,12 +544,10 @@ function filterTable() {
         const matchesSearch = itemBulan.includes(searchTerm);
 
         item.style.display = matchesStatus && matchesSearch ? 'block' : 'none';
-
     });
 
     const rows = document.querySelectorAll('#tagihanTable tbody .tagihan-row');
     rows.forEach(row => {
-
         const rowStatus = row.getAttribute('data-status');
         const rowBulan = row.getAttribute('data-bulan');
 
@@ -522,48 +555,148 @@ function filterTable() {
         const matchesSearch = rowBulan.includes(searchTerm);
 
         row.style.display = matchesStatus && matchesSearch ? '' : 'none';
-
     });
-
 }
 
-function bayarTagihan(tagihanId){
-
-    fetch(`/wali/tagihan/${tagihanId}/bayar`,{
-        method:'POST',
-        headers:{
-            'X-CSRF-TOKEN':'{{ csrf_token() }}',
-            'Content-Type':'application/json'
+function bayarTagihan(tagihanId) {
+    // Tampilkan loading
+    const loadingAlert = alert("Memproses...");
+    
+    fetch(`/wali/tagihan/${tagihanId}/bayar`, {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
         }
     })
-    .then(response => response.json())
-    .then(data => {
-
-        snap.pay(data.snap_token, {
-
-            onSuccess: function(result){
-                alert("Pembayaran berhasil");
-                location.reload();
-            },
-
-            onPending: function(result){
-                alert("Menunggu pembayaran");
-            },
-
-            onError: function(result){
-                alert("Pembayaran gagal");
-            }
-
-        });
-
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
     })
-    .catch(error=>{
-        console.error(error);
-        alert("Terjadi kesalahan");
+    .then(data => {
+        if (data.snap_token) {
+            // Konfigurasi Snap Midtrans
+            snap.pay(data.snap_token, {
+                onSuccess: function(result) {
+                    alert("Pembayaran berhasil");
+                    location.reload();
+                },
+                onPending: function(result) {
+                    alert("Menunggu pembayaran");
+                    location.reload();
+                },
+                onError: function(result) {
+                    alert("Pembayaran gagal");
+                    console.error(result);
+                },
+                onClose: function() {
+                    console.log('Popup ditutup');
+                }
+            });
+            
+            // Setelah popup muncul, terapkan styling untuk mobile
+            setTimeout(function() {
+                // Cari elemen popup Midtrans
+                const popupElements = document.querySelectorAll('[class*="snap"], [class*="popup"], iframe');
+                popupElements.forEach(function(element) {
+                    // Cek apakah ini elemen popup Midtrans
+                    if (element.src && element.src.includes('midtrans')) {
+                        element.style.maxWidth = '90%';
+                        element.style.maxHeight = '80vh';
+                        element.style.margin = '10% auto';
+                        element.style.borderRadius = '20px';
+                        element.style.position = 'fixed';
+                        element.style.top = '0';
+                        element.style.left = '0';
+                        element.style.right = '0';
+                        element.style.bottom = '0';
+                        element.style.zIndex = '999999';
+                    }
+                });
+                
+                // Styling untuk overlay
+                const overlays = document.querySelectorAll('[class*="overlay"]');
+                overlays.forEach(function(overlay) {
+                    overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.6)';
+                    overlay.style.backdropFilter = 'blur(4px)';
+                });
+            }, 1000);
+        } else {
+            throw new Error('Snap token tidak ditemukan');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert("Terjadi kesalahan: " + error.message);
     });
-
 }
 
+// Fungsi untuk mendeteksi dan styling popup secara real-time
+function styleMidtransPopup() {
+    // Interval untuk terus memeriksa keberadaan popup
+    const checkInterval = setInterval(function() {
+        // Cari elemen yang mungkin merupakan popup Midtrans
+        const potentialPopups = document.querySelectorAll(
+            'iframe[src*="midtrans"], ' +
+            '[class*="snap-modal"], ' +
+            '[class*="snap-drawer"], ' +
+            '[class*="popup-container"], ' +
+            '[role="dialog"]'
+        );
+        
+        if (potentialPopups.length > 0) {
+            // Jika di mobile, terapkan styling
+            if (window.innerWidth <= 640) {
+                potentialPopups.forEach(function(popup) {
+                    popup.style.maxWidth = '90%';
+                    popup.style.maxHeight = '80vh';
+                    popup.style.margin = '10% auto';
+                    popup.style.borderRadius = '20px';
+                    
+                    // Jika ini iframe
+                    if (popup.tagName === 'IFRAME') {
+                        popup.style.position = 'fixed';
+                        popup.style.top = '0';
+                        popup.style.left = '0';
+                        popup.style.right = '0';
+                        popup.style.bottom = '0';
+                        popup.style.zIndex = '999999';
+                    }
+                });
+                
+                // Styling overlay
+                const overlays = document.querySelectorAll('[class*="overlay"]');
+                overlays.forEach(function(overlay) {
+                    overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.6)';
+                    overlay.style.backdropFilter = 'blur(4px)';
+                });
+            }
+            
+            // Hentikan interval setelah popup ditemukan
+            clearInterval(checkInterval);
+        }
+    }, 500);
+    
+    // Hentikan interval setelah 10 detik untuk menghindari infinite loop
+    setTimeout(function() {
+        clearInterval(checkInterval);
+    }, 10000);
+}
+
+// Panggil fungsi styling saat halaman dimuat
+document.addEventListener('DOMContentLoaded', function() {
+    styleMidtransPopup();
+});
+
+// Tambahkan event listener untuk resize window
+window.addEventListener('resize', function() {
+    if (window.innerWidth <= 640) {
+        styleMidtransPopup();
+    }
+});
 </script>
 
 
