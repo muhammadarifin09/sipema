@@ -16,7 +16,7 @@ class User extends Authenticatable
         'email',
         'password',
         'role_id',
-        'no_telp',
+        'no_hp',
         'active',
         // HAPUS 'siswa_id' dari sini karena tidak digunakan lagi
     ];

@@ -61,6 +61,27 @@
                     @enderror
                 </div>
 
+                <!-- Nomor HP -->
+                <div>
+                    <label class="form-label flex items-center">
+                        <i class="fas fa-phone text-[#6b21a5] mr-2"></i>
+                        Nomor HP
+                        <span class="text-gray-400 text-xs ml-2">(Opsional)</span>
+                    </label>
+                    <input type="text" 
+                           name="no_hp" 
+                           class="form-input @error('no_hp') border-red-500 @enderror" 
+                           value="{{ old('no_hp') }}"
+                           placeholder="Contoh: 081234567890">
+                    <p class="text-xs text-gray-500 mt-1">
+                        <i class="fas fa-info-circle mr-1"></i>
+                        Masukkan nomor HP aktif untuk komunikasi
+                    </p>
+                    @error('no_hp')
+                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
+
                 <!-- Password -->
                 <div>
                     <label class="form-label flex items-center">
@@ -76,7 +97,6 @@
                         <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                     @enderror
                 </div>
-
             </div>
 
             <!-- Kolom Kanan -->
@@ -153,6 +173,9 @@
                     @error('siswa_id')
                         <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                     @enderror
+                    @error('siswa_id.*')
+                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                    @enderror
                 </div>
 
                 <!-- Status Akun -->
@@ -177,6 +200,7 @@
                     <p class="text-xs text-blue-600 mt-1">
                         • Email digunakan untuk login ke sistem<br>
                         • Password minimal 6 karakter<br>
+                        • Nomor HP digunakan untuk komunikasi dan notifikasi<br>
                         • Wali murid dapat melihat data semua siswa yang terhubung
                     </p>
                 </div>
@@ -317,5 +341,11 @@
 
     // Initial count
     updateSelectedCount();
+
+    // Format nomor HP (hanya angka)
+    document.querySelector('input[name="no_hp"]')?.addEventListener('input', function(e) {
+        // Hanya izinkan angka
+        this.value = this.value.replace(/[^0-9]/g, '');
+    });
 </script>
 @endpush

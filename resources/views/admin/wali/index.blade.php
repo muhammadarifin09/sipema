@@ -112,6 +112,7 @@
             <tbody>
                 @forelse($wali as $index => $w)
                 <tr class="table-row" 
+                    data-id="{{ $w->id }}"
                     data-name="{{ strtolower($w->name) }}" 
                     data-email="{{ strtolower($w->email) }}"
                     data-siswa="{{ $w->siswa ? $w->siswa->pluck('nama_lengkap')->implode(' ') : '' }}"
@@ -129,17 +130,17 @@
                     <td class="px-6 py-4">
                         @if($w->siswa && $w->siswa->count() > 0)
                             <div class="flex flex-col space-y-1">
-                                @foreach($w->siswa as $siswa)
+                                @foreach($w->siswa->take(2) as $siswa)
                                     @if($siswa && is_object($siswa))
                                     <div class="flex items-center space-x-2 bg-purple-50 rounded-lg px-2 py-1">
                                         <i class="fas fa-user-graduate text-purple-600 text-xs"></i>
                                         <span class="text-sm text-gray-700">{{ $siswa->nama_lengkap ?? 'Nama tidak tersedia' }}</span>
-                                        <span class="text-xs px-1.5 py-0.5 bg-purple-100 text-purple-700 rounded-full">
-                                            {{ $siswa->kelas->nama_kelas ?? 'Tanpa Kelas' }}
-                                        </span>
                                     </div>
                                     @endif
                                 @endforeach
+                                @if($w->siswa->count() > 2)
+                                    <span class="text-xs text-purple-600 ml-2">+{{ $w->siswa->count() - 2 }} lainnya</span>
+                                @endif
                             </div>
                         @else
                             <span class="badge-danger">
@@ -159,6 +160,9 @@
                     </td>
                     <td class="px-6 py-4">
                         <div class="flex items-center space-x-2">
+                            <button onclick="showDetail({{ $w->id }})" class="text-blue-600 hover:text-blue-700 p-2 hover:bg-blue-50 rounded-xl transition-all" title="Detail">
+                                <i class="fas fa-eye"></i>
+                            </button>
                             <a href="{{ route('admin.wali.edit', $w->id) }}" class="text-green-600 hover:text-green-700 p-2 hover:bg-green-50 rounded-xl transition-all" title="Edit">
                                 <i class="fas fa-edit"></i>
                             </a>
@@ -189,6 +193,98 @@
     <!-- Pagination Info -->
     <div class="flex items-center justify-between mt-6">
         <p class="text-sm text-gray-500">Menampilkan {{ $wali->count() }} data wali murid</p>
+    </div>
+</div>
+
+<!-- DETAIL MODAL -->
+<div class="modal-overlay" id="detailModal" style="display: none;">
+    <div class="modal-content max-w-2xl">
+        <div class="flex justify-between items-start mb-6">
+            <div class="flex items-center space-x-3">
+                <div class="profile-avatar w-12 h-12 text-sm" id="detailAvatar" style="background: linear-gradient(135deg, #0b4f8c, #0b4f8c);">
+                    <span id="avatarText">WM</span>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold text-gray-800" id="detailName">Nama Wali</h3>
+                    <p class="text-sm text-gray-500" id="detailStatus">Status Akun</p>
+                </div>
+            </div>
+            <button onclick="closeDetailModal()" class="text-gray-400 hover:text-gray-600 transition">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Informasi Akun -->
+            <div class="space-y-4">
+                <h4 class="font-semibold text-gray-700 flex items-center">
+                    <i class="fas fa-user-circle text-[#0b4f8c] mr-2"></i>
+                    Informasi Akun
+                </h4>
+                
+                <div class="bg-gray-50 rounded-xl p-4 space-y-3">
+                    <div>
+                        <label class="text-xs text-gray-400">Email</label>
+                        <p class="text-sm text-gray-800 font-medium" id="detailEmail">-</p>
+                    </div>
+                    <div>
+                        <label class="text-xs text-gray-400">Nomor HP</label>
+                        <p class="text-sm text-gray-800 font-medium" id="detailNoHp">-</p>
+                    </div>
+                    <div>
+                        <label class="text-xs text-gray-400">Status</label>
+                        <div id="detailActive"></div>
+                    </div>
+                    <div>
+                        <label class="text-xs text-gray-400">Terdaftar Pada</label>
+                        <p class="text-sm text-gray-800 font-medium" id="detailCreatedAt">-</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Statistik -->
+            <div class="space-y-4">
+                <h4 class="font-semibold text-gray-700 flex items-center">
+                    <i class="fas fa-chart-pie text-[#0b4f8c] mr-2"></i>
+                    Statistik
+                </h4>
+                
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="bg-blue-50 rounded-xl p-3 text-center">
+                        <p class="text-2xl font-bold text-blue-600" id="detailTotalSiswa">0</p>
+                        <p class="text-xs text-gray-500">Total Siswa</p>
+                    </div>
+                    <div class="bg-purple-50 rounded-xl p-3 text-center">
+                        <p class="text-2xl font-bold text-purple-600" id="detailTotalKelas">0</p>
+                        <p class="text-xs text-gray-500">Total Kelas</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Daftar Siswa -->
+        <div class="mt-6">
+            <h4 class="font-semibold text-gray-700 mb-3 flex items-center">
+                <i class="fas fa-user-graduate text-[#0b4f8c] mr-2"></i>
+                Daftar Siswa Bimbingan
+            </h4>
+            
+            <div class="border border-gray-200 rounded-xl overflow-hidden max-h-60 overflow-y-auto" id="siswaList">
+                <!-- Akan diisi dengan JavaScript -->
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex items-center justify-end space-x-3 mt-6 pt-4 border-t border-gray-200">
+            <button onclick="closeDetailModal()" class="btn-secondary">
+                <i class="fas fa-times mr-2"></i>
+                Tutup
+            </button>
+            <a href="#" id="editFromDetailBtn" class="btn-primary" style="background: linear-gradient(135deg, #0b4f8c, #0b4f8c);">
+                <i class="fas fa-edit mr-2"></i>
+                Edit Data
+            </a>
+        </div>
     </div>
 </div>
 
@@ -246,6 +342,104 @@
 
 @push('scripts')
 <script>
+    // Data wali murid untuk detail modal - dibuat dengan pendekatan berbeda
+    const waliData = [
+        @foreach($wali as $w)
+        {
+            id: {{ $w->id }},
+            name: '{{ $w->name }}',
+            email: '{{ $w->email }}',
+            no_hp: '{{ $w->no_hp ?? "-" }}',
+            active: {{ $w->active ? 'true' : 'false' }},
+            created_at: '{{ $w->created_at ? $w->created_at->format("d/m/Y H:i") : "-" }}',
+            total_siswa: {{ $w->siswa ? $w->siswa->count() : 0 }},
+            total_kelas: {{ $w->siswa ? $w->siswa->pluck('kelas.nama_kelas')->unique()->count() : 0 }},
+            siswa: [
+                @if($w->siswa && $w->siswa->count() > 0)
+                    @foreach($w->siswa as $siswa)
+                    {
+                        nama_lengkap: '{{ $siswa->nama_lengkap ?? "Nama tidak tersedia" }}',
+                        nis: '{{ $siswa->nis ?? "-" }}',
+                        kelas: '{{ $siswa->kelas->nama_kelas ?? "Tanpa Kelas" }}'
+                    },
+                    @endforeach
+                @endif
+            ]
+        },
+        @endforeach
+    ];
+
+    // ==================== DETAIL MODAL ====================
+    function showDetail(waliId) {
+        const wali = waliData.find(w => w.id === waliId);
+        
+        if (!wali) return;
+        
+        // Set avatar
+        document.getElementById('avatarText').textContent = wali.name.substring(0, 2).toUpperCase();
+        
+        // Set basic info
+        document.getElementById('detailName').textContent = wali.name;
+        document.getElementById('detailEmail').textContent = wali.email;
+        document.getElementById('detailNoHp').textContent = wali.no_hp;
+        document.getElementById('detailCreatedAt').textContent = wali.created_at;
+        
+        // Set status
+        const statusElement = document.getElementById('detailActive');
+        if (wali.active) {
+            statusElement.innerHTML = '<span class="badge-success"><i class="fas fa-check-circle mr-1"></i>Aktif</span>';
+        } else {
+            statusElement.innerHTML = '<span class="badge-danger"><i class="fas fa-times-circle mr-1"></i>Nonaktif</span>';
+        }
+        
+        // Set status text
+        document.getElementById('detailStatus').textContent = wali.active ? 'Akun Aktif' : 'Akun Nonaktif';
+        
+        // Set statistik
+        document.getElementById('detailTotalSiswa').textContent = wali.total_siswa;
+        document.getElementById('detailTotalKelas').textContent = wali.total_kelas;
+        
+        // Set daftar siswa
+        const siswaList = document.getElementById('siswaList');
+        if (wali.siswa && wali.siswa.length > 0) {
+            let html = '';
+            wali.siswa.forEach(siswa => {
+                html += `
+                    <div class="flex items-center justify-between p-3 hover:bg-purple-50 border-b border-gray-100 last:border-b-0">
+                        <div class="flex items-center space-x-3">
+                            <i class="fas fa-user-graduate text-purple-600"></i>
+                            <div>
+                                <p class="text-sm font-medium text-gray-800">${siswa.nama_lengkap}</p>
+                                <p class="text-xs text-gray-400">NIS: ${siswa.nis}</p>
+                            </div>
+                        </div>
+                        <span class="text-xs px-2 py-1 bg-gray-100 text-gray-600 rounded-full">
+                            ${siswa.kelas}
+                        </span>
+                    </div>
+                `;
+            });
+            siswaList.innerHTML = html;
+        } else {
+            siswaList.innerHTML = `
+                <div class="p-8 text-center text-gray-500">
+                    <i class="fas fa-user-graduate text-4xl mb-2 opacity-50"></i>
+                    <p class="text-sm">Belum ada siswa yang terhubung</p>
+                </div>
+            `;
+        }
+        
+        // Set edit button link
+        document.getElementById('editFromDetailBtn').href = `/admin/wali/${wali.id}/edit`;
+        
+        // Show modal
+        document.getElementById('detailModal').style.display = 'flex';
+    }
+    
+    function closeDetailModal() {
+        document.getElementById('detailModal').style.display = 'none';
+    }
+
     // ==================== SEARCH & FILTER ====================
     document.getElementById('searchInput')?.addEventListener('keyup', function() {
         filterTable();
@@ -295,9 +489,13 @@
     // ==================== CLOSE MODALS WHEN CLICKING OUTSIDE ====================
     window.addEventListener('click', function(e) {
         const deleteModal = document.getElementById('deleteModal');
+        const detailModal = document.getElementById('detailModal');
         
         if (e.target === deleteModal) {
             closeDeleteModal();
+        }
+        if (e.target === detailModal) {
+            closeDetailModal();
         }
     });
     

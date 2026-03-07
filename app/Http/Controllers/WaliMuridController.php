@@ -36,6 +36,7 @@ class WaliMuridController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|min:6',
+            'no_hp' => 'nullable|string|max:20',
             'siswa_id' => 'nullable|array',
             'siswa_id.*' => 'exists:siswas,id' // Sesuaikan dengan nama tabel 'siswas'
         ]);
@@ -45,6 +46,7 @@ class WaliMuridController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'no_hp' => $request->no_hp,
             'role_id' => 3,
             'active' => $request->has('active') ? true : false
         ]);
@@ -80,6 +82,7 @@ class WaliMuridController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $id,
             'password' => 'nullable|min:6',
+            'no_hp' => 'nullable|string|max:20',
             'siswa_id' => 'nullable|array',
             'siswa_id.*' => 'exists:siswas,id' // Sesuaikan dengan nama tabel 'siswas'
         ]);
@@ -88,6 +91,7 @@ class WaliMuridController extends Controller
         $data = [
             'name' => $request->name,
             'email' => $request->email,
+            'no_hp' => $request->no_hp,
             'active' => $request->has('active') ? true : false
         ];
 
