@@ -269,7 +269,7 @@
                 <p class="text-xs text-gray-400 mt-1 hidden sm:block">Lihat detail</p>
             </a>
 
-            <a href="" class="bg-white rounded-xl lg:rounded-2xl p-3 sm:p-4 shadow-lg text-center hover:shadow-xl transition-all transform hover:scale-105">
+            <a href="{{ route('wali.riwayat.index') }}" class="bg-white rounded-xl lg:rounded-2xl p-3 sm:p-4 shadow-lg text-center hover:shadow-xl transition-all transform hover:scale-105">
                 <div class="w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 bg-gradient-to-br from-[#0B2A4A] to-[#1E3A5F] rounded-lg lg:rounded-xl flex items-center justify-center mx-auto mb-2">
                     <i class="fas fa-history text-white text-sm sm:text-base lg:text-lg"></i>
                 </div>
@@ -277,13 +277,20 @@
                 <p class="text-xs text-gray-400 mt-1 hidden sm:block">Histori bayar</p>
             </a>
 
-            <a href="#" class="bg-white rounded-xl lg:rounded-2xl p-3 sm:p-4 shadow-lg text-center hover:shadow-xl transition-all transform hover:scale-105">
+
+           <a href="{{ route('wali.bukti.pembayaran') }}" 
+            target="_blank"
+            class="bg-white rounded-xl lg:rounded-2xl p-3 sm:p-4 shadow-lg text-center hover:shadow-xl transition-all transform hover:scale-105">
+
                 <div class="w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 bg-gradient-to-br from-[#0B2A4A] to-[#1E3A5F] rounded-lg lg:rounded-xl flex items-center justify-center mx-auto mb-2">
                     <i class="fas fa-download text-white text-sm sm:text-base lg:text-lg"></i>
                 </div>
+
                 <p class="font-medium text-gray-800 text-xs sm:text-sm">Unduh</p>
                 <p class="text-xs text-gray-400 mt-1 hidden sm:block">Bukti bayar</p>
+
             </a>
+
 
             <a href="#" class="bg-white rounded-xl lg:rounded-2xl p-3 sm:p-4 shadow-lg text-center hover:shadow-xl transition-all transform hover:scale-105">
                 <div class="w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 bg-gradient-to-br from-[#0B2A4A] to-[#1E3A5F] rounded-lg lg:rounded-xl flex items-center justify-center mx-auto mb-2">

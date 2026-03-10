@@ -222,8 +222,8 @@
             <div class="school-logo float-animation">
                 <i class="fas fa-school"></i>
             </div>
-            <h1 class="text-3xl font-bold text-white mb-1 drop-shadow-lg">SMA PGRI Pelaihari</h1>
-            <p class="text-white/90 text-sm font-light tracking-wider">Sistem Pembayaran SPP Digital</p>
+            <h1 class="text-3xl font-bold text-white mb-1 drop-shadow-lg">SIPEMA</h1>
+            <p class="text-white/90 text-sm font-light tracking-wider">Sistem Pembayaran SPP dan Manajemen Siswa</p>
         </div>
 
         <!-- Login Card -->

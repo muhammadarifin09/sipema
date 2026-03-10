@@ -143,5 +143,23 @@ Route::post('/wali/tagihan/{id}/bayar', [PembayaranController::class, 'bayar'])
 Route::post('/midtrans/callback', [App\Http\Controllers\MidtransCallbackController::class, 'handle'])
     ->name('midtrans.callback');
 
+use App\Http\Controllers\Wali\BuktiPembayaranController;
+
+Route::get('/wali/bukti-pembayaran', [BuktiPembayaranController::class,'download'])
+    ->name('wali.bukti.pembayaran');
+
 // Route::get('/riwayat', [App\Http\Controllers\Wali\RiwayatPembayaranController::class, 'index'])
 //     ->name('riwayat.index');
+
+Route::get('/bukti-pembayaran/{filename}', function ($filename) {
+    $path = storage_path('app/public/bukti-pembayaran/' . $filename);
+    
+    if (!file_exists($path)) {
+        abort(404);
+    }
+    
+    return response()->file($path, [
+        'Content-Type' => 'application/pdf',
+        'Content-Disposition' => 'inline; filename="' . $filename . '"'
+    ]);
+})->name('bukti.pembayaran')->middleware(['auth']); // Tambah middleware auth
