@@ -91,20 +91,33 @@ Route::middleware(['auth', 'role:admin'])
 |--------------------------------------------------------------------------
 */
 
+use App\Http\Controllers\Bendahara\DashboardController;
+use App\Http\Controllers\Bendahara\SiswaController;
+use App\Http\Controllers\Bendahara\TagihanController;
+
 Route::middleware(['auth', 'role:bendahara'])
     ->prefix('bendahara')
     ->name('bendahara.')
     ->group(function () {
 
         // Dashboard
-        Route::get('/dashboard', [App\Http\Controllers\Bendahara\DashboardController::class, 'index'])
+        Route::get('/dashboard', [DashboardController::class, 'index'])
             ->name('dashboard');
 
-        // Data Siswa
-        // Route::resource('siswa', App\Http\Controllers\Bendahara\SiswaController::class);
-   
+        // CRUD siswa
+        Route::resource('siswa', SiswaController::class);
 
-    });
+        // Tagihan
+        Route::get('/tagihan', [TagihanController::class,'index'])
+            ->name('tagihan.index');
+
+        Route::post('/tagihan/generate', [TagihanController::class,'generate'])
+            ->name('tagihan.generate');
+
+        Route::delete('/tagihan/{id}', [TagihanController::class,'destroy'])
+            ->name('tagihan.destroy');
+
+});
 
 /*
 |--------------------------------------------------------------------------
@@ -112,9 +125,8 @@ Route::middleware(['auth', 'role:bendahara'])
 |--------------------------------------------------------------------------
 */
 
-use App\Http\Controllers\Wali\TagihanController;
-
-use App\Http\Controllers\Wali\DashboardController;
+use App\Http\Controllers\Wali\TagihanController as WaliTagihanController;
+use App\Http\Controllers\Wali\DashboardController as WaliDashboardController;
 
 use App\Http\Controllers\Wali\RiwayatPembayaranController;
 
@@ -123,10 +135,10 @@ Route::middleware(['auth', 'role:wali'])
     ->name('wali.')
     ->group(function () {
 
-        Route::get('/dashboard', [DashboardController::class, 'index'])
+        Route::get('/dashboard', [WaliDashboardController::class, 'index'])
             ->name('dashboard');
 
-        Route::get('/tagihan', [TagihanController::class, 'index'])
+        Route::get('/tagihan', [WaliTagihanController::class, 'index'])
             ->name('tagihan.index');
 
         Route::get('/riwayat', [RiwayatPembayaranController::class, 'index'])

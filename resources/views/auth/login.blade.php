@@ -330,7 +330,7 @@
             <p class="flex items-center justify-center space-x-4">
                 <span><i class="fas fa-phone-alt mr-1"></i> (0512) 12345</span>
                 <span>•</span>
-                <span><i class="fas fa-map-marker-alt mr-1"></i> Jl. A. Yani Km. 3, Pelaihari</span>
+                <span><i class="fas fa-map-marker-alt mr-1"></i> By : Arifin</span>
             </p>
         </div>
     </div>

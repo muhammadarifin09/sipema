@@ -480,9 +480,9 @@
                     <span class="ml-3 font-medium">Dashboard</span>
                 </a>
                 
-                <a href="" class="nav-item {{ request()->routeIs('bendahara.pembayaran.*') ? 'active' : '' }}">
+                <a href="{{ route('bendahara.tagihan.index') }}" class="nav-item {{ request()->routeIs('bendahara.tagihan.*') ? 'active' : '' }}">
                     <i class="fas fa-credit-card w-6"></i>
-                    <span class="ml-3 font-medium">Pembayaran SPP</span>
+                    <span class="ml-3 font-medium">Tagihan Pembayaran</span>
                 </a>
                 
                 <a href="" class="nav-item">
@@ -495,7 +495,7 @@
                     <span class="ml-3 font-medium">Laporan</span>
                 </a>
                 
-                <a href="" class="nav-item {{ request()->routeIs('bendahara.siswa.*') ? 'active' : '' }}">
+                 <a href="{{ route('bendahara.siswa.index') }}" class="nav-item {{ request()->routeIs('bendahara.siswa.*') ? 'active' : '' }}">
                     <i class="fas fa-users w-6"></i>
                     <span class="ml-3 font-medium">Data Siswa</span>
                 </a>

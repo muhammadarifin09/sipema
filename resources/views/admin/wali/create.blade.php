@@ -178,16 +178,7 @@
                     @enderror
                 </div>
 
-                <!-- Status Akun -->
-                <div class="bg-gray-50 rounded-xl p-4">
-                    <label class="flex items-center space-x-3">
-                        <input type="checkbox" name="active" value="1" {{ old('active', true) ? 'checked' : '' }} class="w-5 h-5 text-[#6b21a5] rounded focus:ring-[#6b21a5]">
-                        <span class="text-gray-700 text-sm">Akun Aktif</span>
-                    </label>
-                    <p class="text-xs text-gray-500 mt-2 ml-8">
-                        Nonaktifkan untuk mencegah wali murid login ke sistem.
-                    </p>
-                </div>
+               
             </div>
         </div>
 

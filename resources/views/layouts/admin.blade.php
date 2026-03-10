@@ -533,7 +533,7 @@
                     <span class="ml-3 font-medium">Data Wali Murid</span>
                 </a>
 
-                <a href="{{ route('admin.tagihan.index') }}" class="nav-item {{ request()->routeIs('admin.pembayaran.*') ? 'active' : '' }}">
+                <a href="{{ route('admin.tagihan.index') }}" class="nav-item {{ request()->routeIs('admin.tagihan.*') ? 'active' : '' }}">
                     <i class="fas fa-credit-card w-6"></i>
                     <span class="ml-3 font-medium">Tagihan Pembayaran</span>
                 </a>

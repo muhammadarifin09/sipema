@@ -17,7 +17,7 @@ class TagihanController extends Controller
         $siswaList = $user->siswa;
         
         if ($siswaList->isEmpty()) {
-            return view('wali.tagihan', [
+            return view('wali.tagihan.index', [
                 'tagihans' => collect([]),
                 'siswaList' => collect([]),
                 'selectedSiswaId' => null,
