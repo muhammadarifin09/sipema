@@ -61,7 +61,7 @@ Route::middleware(['auth', 'role:admin'])
         // Tagihan
         Route::get('tagihan', [App\Http\Controllers\Admin\TagihanController::class, 'index'])->name('tagihan.index');
         Route::post('tagihan/generate', [App\Http\Controllers\Admin\TagihanController::class, 'generate'])->name('tagihan.generate');
-
+        Route::delete('tagihan/{id}', [App\Http\Controllers\Admin\TagihanController::class, 'destroy'])->name('tagihan.destroy'); 
         
     });
 
