@@ -538,9 +538,9 @@
                     <span class="ml-3 font-medium">Tagihan Pembayaran</span>
                 </a>
                 
-                <a href="#" class="nav-item">
+                <a href="{{ route('admin.riwayat.index') }}" class="nav-item {{ request()->routeIs('admin.riwayat.*') ? 'active' : '' }}">
                     <i class="fas fa-history w-6"></i>
-                    <span class="ml-3 font-medium">Riwayat Transaksi</span>
+                    <span class="ml-3 font-medium">Riwayat Pembayaran</span>
                 </a>
                 
                 <a href="#" class="nav-item">

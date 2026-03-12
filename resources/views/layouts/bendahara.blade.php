@@ -489,6 +489,12 @@
                     <i class="fas fa-plus-circle w-6"></i>
                     <span class="ml-3 font-medium">Input Pembayaran</span>
                 </a>
+
+                <a href="{{ route('bendahara.riwayat.index') }}" class="nav-item {{ request()->routeIs('bendahara.riwayat.*') ? 'active' : '' }}">
+                    <i class="fas fa-history w-6"></i>
+                    <span class="ml-3 font-medium">Riwayat Pembayaran</span>
+                </a>
+                
                 
                 <a href="" class="nav-item {{ request()->routeIs('bendahara.laporan.*') ? 'active' : '' }}">
                     <i class="fas fa-chart-bar w-6"></i>

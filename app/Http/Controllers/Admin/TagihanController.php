@@ -9,6 +9,7 @@ use App\Models\TahunAjaran;
 use App\Models\SppSetting;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use App\Models\Notifikasi;
 
 class TagihanController extends Controller
 {
@@ -69,9 +70,20 @@ class TagihanController extends Controller
                 ]
             );
 
-            if ($tagihan->wasRecentlyCreated) {
-                $jumlahGenerate++;
+                    if ($tagihan->wasRecentlyCreated) {
+            $jumlahGenerate++;
+
+            // Buat notifikasi untuk wali murid
+            if ($siswa->wali_id) {
+                Notifikasi::create([
+                    'user_id' => $siswa->wali_id,
+                    'judul' => 'Tagihan SPP Baru',
+                    'pesan' => 'Tagihan SPP bulan '.$bulan.' telah dibuat.',
+                    'status' => 'unread'
+                ]);
             }
+        }
+
         }
 
         return back()->with('success', "Berhasil generate {$jumlahGenerate} tagihan untuk bulan ini.");

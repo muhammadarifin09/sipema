@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Pembayaran;
 use App\Models\Tagihan;
 use App\Services\FonnteService;
+use App\Models\RiwayatPembayaran;
 
 class MidtransCallbackController extends Controller
 {
@@ -32,6 +33,22 @@ class MidtransCallbackController extends Controller
             $tagihan->tanggal_bayar = now();
             $tagihan->metode_pembayaran = 'midtrans';
             $tagihan->save();
+
+                        // simpan riwayat pembayaran
+            if(!RiwayatPembayaran::where('pembayaran_id',$pembayaran->id)->exists()){
+
+                RiwayatPembayaran::create([
+                    'siswa_id' => $tagihan->siswa_id,
+                    'tagihan_id' => $tagihan->id,
+                    'pembayaran_id' => $pembayaran->id,
+                    'bulan' => $tagihan->bulan,
+                    'tahun' => $tagihan->tahun,
+                    'nominal' => $pembayaran->jumlah_bayar,
+                    'metode_pembayaran' => 'midtrans',
+                    'tanggal_bayar' => now()
+                ]);
+
+            }
 
             // kirim whatsapp
             $nomor = optional($tagihan->siswa->wali)->no_hp;

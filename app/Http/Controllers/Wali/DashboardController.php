@@ -8,6 +8,9 @@ use App\Models\Tagihan;
 use App\Models\Siswa;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use App\Models\Notifikasi;
+use Illuminate\Http\RedirectResponse;
+use App\Models\User; // Tambahkan di atas
 
 class DashboardController extends Controller
 {
@@ -72,19 +75,24 @@ class DashboardController extends Controller
             ? round(($totalBulanDibayar / $totalSemuaBulan) * 100) 
             : 0;
 
+        $jumlahNotif = Notifikasi::where('user_id', Auth::id())
+        ->where('status', 'unread')
+        ->count();
+
         return view('wali.dashboard', [
-            'siswaList' => $siswaList,
-            'siswaTerhubung' => $siswaTerhubung,
-            'tagihan_bulan_ini' => $totalTagihanBulanIni,
-            'total_tunggakan' => $totalTunggakan,
-            'jumlah_siswa' => $siswaList->count(),
-            'bulan_dibayar' => $totalBulanDibayar,
-            'bulan_belum_dibayar' => $totalBulanBelumDibayar,
-            'total_bulan_tagihan' => $totalBulanTagihan,
-            'progress_keseluruhan' => $progressKeseluruhan,
-            'tahun_ajaran' => $this->getTahunAjaranAktif(),
-            'jatuh_tempo' => '10' // Bisa diambil dari setting
-        ]);
+        'siswaList' => $siswaList,
+        'siswaTerhubung' => $siswaTerhubung,
+        'tagihan_bulan_ini' => $totalTagihanBulanIni,
+        'total_tunggakan' => $totalTunggakan,
+        'jumlah_siswa' => $siswaList->count(),
+        'bulan_dibayar' => $totalBulanDibayar,
+        'bulan_belum_dibayar' => $totalBulanBelumDibayar,
+        'total_bulan_tagihan' => $totalBulanTagihan,
+        'progress_keseluruhan' => $progressKeseluruhan,
+        'tahun_ajaran' => $this->getTahunAjaranAktif(),
+        'jatuh_tempo' => '10',
+        'jumlahNotif' => $jumlahNotif
+    ]);
     }
 
     // Helper function untuk mendapatkan tagihan bulan ini per siswa
@@ -151,4 +159,17 @@ class DashboardController extends Controller
             return ($tahun - 1) . "/$tahun";
         }
     }
+
+   public function readAll(): RedirectResponse
+{
+    $user = Auth::user();
+    
+    if ($user instanceof User) { // Type checking
+        $user->notifikasis()->where('status', 'unread')->update(['status' => 'read']);
+    }
+    
+    return back()->with('success', 'Semua notifikasi telah ditandai dibaca');
+}
+
+
 }

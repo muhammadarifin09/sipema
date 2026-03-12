@@ -72,7 +72,7 @@
                 </div>
                 <div class="flex-1 flex flex-wrap gap-2">
                     @foreach($siswaList as $siswa)
-                    <a href="{{ route('wali.pembayaran.riwayat', ['siswa_id' => $siswa->id]) }}" 
+                    <a href="{{ route('wali.riwayat.index', ['siswa_id' => $siswa->id]) }}" 
                        class="px-4 py-2 rounded-lg text-sm transition-all {{ ($selectedSiswaId ?? request('siswa_id')) == $siswa->id ? 'bg-white text-[#0B2A4A] font-semibold shadow-lg' : 'bg-white/20 text-white hover:bg-white/30' }}">
                         {{ $siswa->nama_lengkap }}
                         <span class="text-xs ml-1 opacity-70">({{ $siswa->kelas->nama_kelas ?? '-' }})</span>

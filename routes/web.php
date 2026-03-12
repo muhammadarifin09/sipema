@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PembayaranController;
+use App\Http\Controllers\RiwayatPembayaranController;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,6 +35,8 @@ Route::middleware(['auth'])->group(function () {
 |--------------------------------------------------------------------------
 */
 
+
+
 Route::middleware(['auth', 'role:admin'])
     ->prefix('admin')
     ->name('admin.')
@@ -62,6 +65,9 @@ Route::middleware(['auth', 'role:admin'])
         Route::get('tagihan', [App\Http\Controllers\Admin\TagihanController::class, 'index'])->name('tagihan.index');
         Route::post('tagihan/generate', [App\Http\Controllers\Admin\TagihanController::class, 'generate'])->name('tagihan.generate');
         Route::delete('tagihan/{id}', [App\Http\Controllers\Admin\TagihanController::class, 'destroy'])->name('tagihan.destroy'); 
+
+        Route::get('/riwayat-pembayaran', [RiwayatPembayaranController::class,'index'])
+            ->name('riwayat.index');
         
     });
 
@@ -117,6 +123,9 @@ Route::middleware(['auth', 'role:bendahara'])
         Route::delete('/tagihan/{id}', [TagihanController::class,'destroy'])
             ->name('tagihan.destroy');
 
+
+        Route::get('/riwayat-pembayaran', [RiwayatPembayaranController::class,'index'])
+            ->name('riwayat.index');
 });
 
 /*
@@ -127,8 +136,8 @@ Route::middleware(['auth', 'role:bendahara'])
 
 use App\Http\Controllers\Wali\TagihanController as WaliTagihanController;
 use App\Http\Controllers\Wali\DashboardController as WaliDashboardController;
-
-use App\Http\Controllers\Wali\RiwayatPembayaranController;
+use App\Http\Controllers\Wali\RiwayatPembayaranController as WaliRiwayatController;
+use App\Http\Controllers\Wali\NotifikasiController;
 
 Route::middleware(['auth', 'role:wali'])
     ->prefix('wali')
@@ -141,9 +150,15 @@ Route::middleware(['auth', 'role:wali'])
         Route::get('/tagihan', [WaliTagihanController::class, 'index'])
             ->name('tagihan.index');
 
-        Route::get('/riwayat', [RiwayatPembayaranController::class, 'index'])
+        Route::get('/riwayat', [WaliRiwayatController::class, 'index'])
             ->name('riwayat.index');
-        
+
+        // NOTIFIKASI
+        Route::get('/notifikasi', [NotifikasiController::class, 'index'])
+            ->name('notifikasi.index');
+
+        Route::get('/notifikasi/{id}/read', [NotifikasiController::class, 'read'])
+            ->name('notifikasi.read');
     });
 
 require __DIR__.'/auth.php';

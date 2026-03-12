@@ -17,12 +17,21 @@
                 </div>
             </div>
             <div class="flex items-center space-x-2 lg:space-x-4">
-                <button class="w-10 h-10 lg:w-12 lg:h-12 bg-[#1E3A5F] rounded-2xl flex items-center justify-center hover:bg-[#2B4C7C] transition">
+                <a href="{{ route('wali.notifikasi.index') }}"
+                class="relative w-10 h-10 lg:w-12 lg:h-12 bg-[#1E3A5F] rounded-2xl flex items-center justify-center hover:bg-[#2B4C7C] transition">
+
                     <i class="fas fa-bell text-white/90 text-lg"></i>
-                </button>
-                <button class="w-10 h-10 lg:w-12 lg:h-12 bg-[#1E3A5F] rounded-2xl flex items-center justify-center hover:bg-[#2B4C7C] transition lg:hidden">
+
+                    @if($jumlahNotif > 0)
+                        <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs px-1.5 rounded-full">
+                            {{ $jumlahNotif }}
+                        </span>
+                    @endif
+
+                </a>
+                <!-- <button class="w-10 h-10 lg:w-12 lg:h-12 bg-[#1E3A5F] rounded-2xl flex items-center justify-center hover:bg-[#2B4C7C] transition lg:hidden">
                     <i class="fas fa-ellipsis-v text-white/90"></i>
-                </button>
+                </button> -->
                 <!-- Desktop Menu -->
                 <div class="hidden lg:flex items-center space-x-3">
                     <span class="text-white/90 text-sm font-medium">{{ auth()->user()->name }}</span>
