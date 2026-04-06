@@ -126,6 +126,9 @@ Route::middleware(['auth', 'role:bendahara'])
 
         Route::get('/riwayat-pembayaran', [RiwayatPembayaranController::class,'index'])
             ->name('riwayat.index');
+
+        Route::post('/pembayaran/manual', [App\Http\Controllers\PembayaranController::class, 'storeManual'])
+        ->name('pembayaran.manual.store');
 });
 
 /*

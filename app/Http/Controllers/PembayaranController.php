@@ -8,6 +8,10 @@ use App\Models\Tagihan;
 use App\Models\Pembayaran;
 use Midtrans\Config;
 use Midtrans\Snap;
+use App\Models\RiwayatPembayaran;
+use Carbon\Carbon;
+
+
 
 class PembayaranController extends Controller
 {
@@ -48,4 +52,44 @@ class PembayaranController extends Controller
             'snap_token' => $snapToken
         ]);
     }
+
+    public function storeManual(Request $request)
+{
+    $request->validate([
+        'tagihan_id' => 'required',
+        'jumlah_bayar' => 'required|numeric',
+        'tanggal_bayar' => 'required|date',
+    ]);
+
+    $tagihan = Tagihan::findOrFail($request->tagihan_id);
+
+    // ❌ Cegah bayar 2x
+    if ($tagihan->status == 'lunas') {
+        return back()->with('error', 'Tagihan sudah lunas!');
+    }
+
+    // ❌ Validasi jumlah harus sama
+    if ($request->jumlah_bayar != $tagihan->nominal) {
+        return back()->with('error', 'Jumlah bayar harus sesuai nominal!');
+    }
+
+    // ✅ Simpan ke riwayat pembayaran
+    RiwayatPembayaran::create([
+        'tagihan_id' => $tagihan->id,
+        'siswa_id' => $tagihan->siswa_id,
+        'pembayaran_id' => null, // karena ini manual
+        'bulan' => $tagihan->bulan,
+        'tahun' => $tagihan->tahun,
+        'nominal' => $request->jumlah_bayar,
+        'metode_pembayaran' => 'manual',
+        'tanggal_bayar' => $request->tanggal_bayar,
+    ]);
+
+    // ✅ Update status tagihan
+    $tagihan->update([
+        'status' => 'lunas'
+    ]);
+
+    return back()->with('success', 'Pembayaran manual berhasil dicatat!');
+}
 }

@@ -100,6 +100,19 @@
                     </td>
                     <td class="px-6 py-4">
                         <div class="flex items-center space-x-2">
+                            @if($item->status == 'belum_bayar')
+                                <button 
+                                    onclick="openBayarModal({
+                                        id: {{ $item->id }},
+                                        nama: '{{ $item->siswa->nama_lengkap }}',
+                                        kelas: '{{ $item->siswa->kelas->nama_kelas ?? '-' }}',
+                                        nominal: {{ $item->nominal }}
+                                    })"
+                                    class="px-3 py-1.5 bg-green-500 hover:bg-green-600 text-white rounded-lg text-xs flex items-center space-x-1">
+                                    <i class="fas fa-money-bill"></i>
+                                    <span>Bayar Manual</span>
+                                </button>
+                            @endif
                             @if($item->status != 'lunas')
                                 <!-- Tombol Hapus hanya untuk status belum bayar -->
                                 <button 
@@ -118,6 +131,7 @@
                                 </button>
                                 <span class="text-xs text-gray-400 italic">(Tidak bisa dihapus)</span>
                             @endif
+                            
                         </div>
                     </td>
                 </tr>
@@ -167,6 +181,55 @@
                 </button>
             </form>
         </div>
+    </div>
+</div>
+
+<!-- Modal Bayar -->
+<div id="bayarModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6">
+
+        <h3 class="text-lg font-semibold mb-4">Pembayaran Manual</h3>
+
+        <form action="{{ route('bendahara.pembayaran.manual.store') }}" method="POST">
+            @csrf
+
+            <input type="hidden" name="tagihan_id" id="bayar_tagihan_id">
+
+            <div class="mb-3">
+                <label>Nama Siswa</label>
+                <input type="text" id="bayar_nama" class="form-input w-full" readonly>
+            </div>
+
+            <div class="mb-3">
+                <label>Kelas</label>
+                <input type="text" id="bayar_kelas" class="form-input w-full" readonly>
+            </div>
+
+            <div class="mb-3">
+                <label>Nominal</label>
+                <input type="text" id="bayar_nominal" class="form-input w-full" readonly>
+            </div>
+
+            <div class="mb-3">
+                <label>Jumlah Bayar</label>
+                <input type="number" name="jumlah_bayar" id="bayar_jumlah" class="form-input w-full" required>
+            </div>
+
+            <div class="mb-3">
+                <label>Tanggal Bayar</label>
+                <input type="date" name="tanggal_bayar" class="form-input w-full" value="{{ date('Y-m-d') }}">
+            </div>
+
+            <div class="flex justify-end gap-2 mt-4">
+                <button type="button" onclick="closeBayarModal()" class="btn-secondary">
+                    Batal
+                </button>
+                <button type="submit" class="btn-primary">
+                    Simpan
+                </button>
+            </div>
+
+        </form>
     </div>
 </div>
 
@@ -241,6 +304,27 @@ window.onclick = function(event) {
 @if(session('error'))
     showToast("{{ session('error') }}", 'error');
 @endif
+
+
+function openBayarModal(data) {
+    const modal = document.getElementById('bayarModal');
+
+    modal.classList.remove('hidden');
+    modal.classList.add('flex'); // 🔥 ini penting
+
+    document.getElementById('bayar_tagihan_id').value = data.id;
+    document.getElementById('bayar_nama').value = data.nama;
+    document.getElementById('bayar_kelas').value = data.kelas;
+    document.getElementById('bayar_nominal').value = 'Rp ' + data.nominal.toLocaleString();
+    document.getElementById('bayar_jumlah').value = data.nominal;
+}
+
+function closeBayarModal() {
+    const modal = document.getElementById('bayarModal');
+
+    modal.classList.add('hidden');
+    modal.classList.remove('flex'); // 🔥 biar balik normal
+}
 </script>
 
 <!-- Style tambahan -->
