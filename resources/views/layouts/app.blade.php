@@ -225,7 +225,7 @@
 </head>
 <body class="antialiased">
     <!-- Loading Screen (optional) -->
-    <div id="loading-screen" class="fixed inset-0 bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900 z-50 flex items-center justify-center transition-opacity duration-500" style="display: none;">
+    <div id="loading-screen" class="fixed inset-0 bg-gradient-to-br from-white-900 via-white-800 to-indigo-900 z-50 flex items-center justify-center transition-opacity duration-500" style="display: none;">
         <div class="text-center">
             <div class="loading-spinner mx-auto mb-4"></div>
             <p class="text-white font-medium">Memuat...</p>
