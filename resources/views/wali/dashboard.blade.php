@@ -3,13 +3,12 @@
 @section('title', 'Dashboard Wali Murid - SMA PGRI Pelaihari')
 
 @section('content')
-<div x-data="{ sidebarOpen: true }" class="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-100">
+<div x-data="{ sidebarOpen: true }" class="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-100 overflow-x-hidden">
     
     <!-- Header -->
     <div class="bg-white/80 backdrop-blur-sm px-5 pt-8 pb-3 md:pt-4 md:pb-4 shadow-sm sticky top-0 z-20">
-        <div class="flex justify-between items-center">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
             <div class="flex items-center space-x-3">
-                {{-- Tombol Hamburger hanya desktop --}}
                 <button @click="sidebarOpen = !sidebarOpen" class="hidden md:block text-gray-600 hover:text-[#0B2A4A] focus:outline-none">
                     <i class="fas fa-bars text-xl"></i>
                 </button>
@@ -18,23 +17,34 @@
                     <h2 class="text-gray-800 text-xl font-bold">{{ auth()->user()->name }}</h2>
                 </div>
             </div>
-            <div class="flex space-x-4">
-                <a href="{{ route('wali.notifikasi.index') }}" class="relative">
-                    <i class="fas fa-bell text-gray-500 text-xl"></i>
-                    @if($jumlahNotif > 0)
-                        <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs px-1.5 rounded-full">{{ $jumlahNotif }}</span>
-                    @endif
-                </a>
-                <form method="POST" action="{{ route('logout') }}" class="inline">
-                    @csrf
-                    <button type="submit"><i class="fas fa-sign-out-alt text-gray-500 text-xl"></i></button>
-                </form>
+
+            <div class="flex items-center justify-between md:justify-end md:space-x-4">
+                {{-- Tanggal & Waktu --}}
+                <div class="flex items-center space-x-2 text-gray-700 bg-gray-100 px-3 py-1.5 rounded-xl">
+                    <i class="fas fa-calendar-alt text-[#0B2A4A]"></i>
+                    <span id="realTimeDate" class="text-sm font-medium"></span>
+                    <span class="text-gray-400">|</span>
+                    <span id="realTimeClock" class="text-sm font-mono font-semibold"></span>
+                </div>
+
+                <div class="flex space-x-4">
+                    <a href="{{ route('wali.notifikasi.index') }}" class="relative">
+                        <i class="fas fa-bell text-gray-500 text-xl"></i>
+                        @if($jumlahNotif > 0)
+                            <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs px-1.5 rounded-full">{{ $jumlahNotif }}</span>
+                        @endif
+                    </a>
+                    <form method="POST" action="{{ route('logout') }}" class="inline">
+                        @csrf
+                        <button type="submit"><i class="fas fa-sign-out-alt text-gray-500 text-xl"></i></button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
 
     {{-- Wrapper Flex Sidebar + Konten --}}
-    <div class="flex">
+    <div class="flex overflow-x-hidden">
         {{-- SIDEBAR DESKTOP --}}
         <aside 
             class="hidden md:block bg-white/90 backdrop-blur-sm border-r border-gray-200 h-[calc(100vh-73px)] sticky top-[73px] transition-all duration-300 overflow-hidden"
@@ -61,13 +71,14 @@
         </aside>
 
         {{-- KONTEN UTAMA --}}
-        <main class="flex-1 px-4 py-5 md:px-6 lg:px-8">
+        <main class="flex-1 px-4 py-5 md:px-6 lg:px-8 overflow-x-hidden">
             <div class="max-w-7xl mx-auto">
                 
                 {{-- Kartu Saldo --}}
                 <div class="bg-gradient-to-br from-blue-700 via-blue-600 to-blue-300 rounded-2xl p-5 shadow-xl mb-6 border border-white/30 relative overflow-hidden">
-                    <div class="absolute -right-10 -top-10 w-32 h-32 bg-white/10 rounded-full"></div>
-                    <div class="absolute -right-5 -bottom-5 w-24 h-24 bg-white/5 rounded-full"></div>
+                    {{-- Decorative circles - perkecil di mobile agar tidak overflow --}}
+                    <div class="absolute -right-10 -top-10 w-32 h-32 md:w-40 md:h-40 bg-white/10 rounded-full"></div>
+                    <div class="absolute -right-5 -bottom-5 w-24 h-24 md:w-32 md:h-32 bg-white/5 rounded-full"></div>
                     <div class="relative z-10 md:flex md:items-center md:justify-between">
                         <div>
                             <p class="text-white/80 text-xs uppercase tracking-wider">Total Tagihan Bulan Ini</p>
@@ -109,9 +120,8 @@
                 </div>
                 @endif
 
-                {{-- Dua Card (Pembayaran & Tunggakan) - TETAP GRID-COLS-2 UNTUK SEMUA UKURAN --}}
+                {{-- Dua Card --}}
                 <div class="grid grid-cols-2 gap-4 mb-6">
-                    <!-- Card Total Pembayaran Bulan Ini -->
                     <div class="bg-gradient-to-br from-blue-700 via-blue-600 to-blue-300 rounded-xl p-4 md:p-6 shadow-md border border-white/30 relative overflow-hidden">
                         <div class="absolute -right-6 -top-6 w-20 h-20 bg-white/10 rounded-full"></div>
                         <div class="absolute -right-3 -bottom-3 w-16 h-16 bg-white/5 rounded-full"></div>
@@ -128,7 +138,6 @@
                             <p class="text-white/60 text-xs mt-1">Periode {{ date('F Y') }}</p>
                         </div>
                     </div>
-                    <!-- Card Total Tunggakan -->
                     <div class="bg-gradient-to-br from-blue-700 via-blue-600 to-blue-300 rounded-xl p-4 md:p-6 shadow-md border border-white/30 relative overflow-hidden">
                         <div class="absolute -right-6 -top-6 w-20 h-20 bg-white/10 rounded-full"></div>
                         <div class="absolute -right-3 -bottom-3 w-16 h-16 bg-white/5 rounded-full"></div>
@@ -158,12 +167,12 @@
                             $chartData = $pembayaranPerBulan;
                         } else {
                             $chartData = [
-                                'Jan' => 850000,
-                                'Feb' => 900000,
-                                'Mar' => 800000,
-                                'Apr' => 750000,
-                                'Mei' => 950000,
-                                'Jun' => 700000,
+                                'Nov' => 0,
+                                'Des' => 0,
+                                'Jan' => 100000,
+                                'Feb' => 120000,
+                                'Mar' => 920000,
+                                'Apr' => 200000,
                             ];
                         }
                         $maxValue = max($chartData);
@@ -173,18 +182,21 @@
                         $persentase = $totalTarget > 0 ? round(($totalBayar / $totalTarget) * 100) : 0;
                     @endphp
 
-                    <div class="bg-white rounded-2xl p-5 shadow-md border border-gray-200">
-                        <div class="flex items-end space-x-3 md:space-x-6 h-48 md:h-64 mb-4">
+                    <div class="bg-white rounded-2xl p-5 shadow-md border border-gray-200 overflow-x-auto">
+                        {{-- Container batang --}}
+                        <div class="flex items-end justify-center space-x-2 md:space-x-4 h-48 md:h-64 mb-4 min-w-max md:min-w-0">
                             @foreach($chartData as $bulan => $nominal)
                                 @php
-                                    $height = $maxValue > 0 ? ($nominal / $maxValue) * 140 : 0;
-                                    $height = max($height, 4);
+                                    // Tinggi maksimal 100px di mobile, 120px di desktop (sesuaikan)
+                                    $maxHeight = $maxValue > 0 ? ($nominal / $maxValue) * 130 : 0;
+                                    $maxHeight = max($maxHeight, 4); // minimal 4px
                                 @endphp
-                                <div class="flex-1 flex flex-col items-center">
-                                    <div class="w-full bg-blue-200 rounded-t-lg transition-all duration-300" style="height: {{ $height }}px;"></div>
+                                <div class="flex flex-col items-center w-11 md:w-14">
+                                    {{-- Batang --}}
+                                    <div class="w-full bg-blue-200 rounded-t-lg transition-all duration-300" style="height: {{ $maxHeight }}px;"></div>
                                     <div class="text-center mt-2">
-                                        <span class="text-xs font-semibold text-gray-700">Rp {{ number_format($nominal,0,',','.') }}</span>
-                                        <p class="text-xs text-gray-400 mt-1">{{ $bulan }}</p>
+                                        <span class="text-[10px] md:text-xs font-semibold text-gray-700">Rp {{ number_format($nominal,0,',','.') }}</span>
+                                        <p class="text-[10px] md:text-xs text-gray-400 mt-1">{{ $bulan }}</p>
                                     </div>
                                 </div>
                             @endforeach
@@ -200,7 +212,7 @@
         </main>
     </div>
 
-    {{-- Bottom Navigation (Mobile Only) --}}
+    {{-- Bottom Navigation Mobile --}}
     <div class="fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-sm border-t border-gray-100 px-5 py-2 shadow-lg md:hidden z-20">
         <div class="flex justify-around items-center">
             <a href="{{ route('wali.dashboard') }}" class="flex flex-col items-center">
@@ -221,13 +233,29 @@
             </a>
         </div>
     </div>
-
     <div class="h-16 md:hidden"></div>
 </div>
 
-@push('scripts')
+<script>
+    (function() {
+        function updateDateTime() {
+            const now = new Date();
+            const dateOptions = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+            const dateString = now.toLocaleDateString('id-ID', dateOptions);
+            
+            const timeOptions = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
+            const timeString = now.toLocaleTimeString('id-ID', timeOptions);
+            
+            const dateEl = document.getElementById('realTimeDate');
+            const clockEl = document.getElementById('realTimeClock');
+            if (dateEl) dateEl.textContent = dateString;
+            if (clockEl) clockEl.textContent = timeString;
+        }
+        updateDateTime();
+        setInterval(updateDateTime, 1000);
+    })();
+</script>
 <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-@endpush
 
 <style>
     [x-cloak] { display: none !important; }

@@ -53,7 +53,7 @@
             </div>
             
             <div class="relative z-10 mt-8 text-sm text-white/60">
-                <i class="far fa-copyright mr-1"></i> {{ date('Y') }} SMA PGRI Pelaihari
+                <i class="far fa-copyright mr-1"></i> {{ date('Y') }} Arifin. All rights reserved.
             </div>
         </div>
         
