@@ -16,7 +16,7 @@
                     <h2 class="text-gray-800 text-lg font-bold">SMA PGRI Pelaihari</h2>
                 </div>
             </div>
-            <div class="flex items-center space-x-3">
+            <!-- <div class="flex items-center space-x-3">
                 <a href="{{ route('wali.notifikasi.index') }}" class="relative">
                     <i class="fas fa-bell text-gray-500 text-xl"></i>
                     @if(isset($jumlahNotif) && $jumlahNotif > 0)
@@ -29,7 +29,7 @@
                         <i class="fas fa-sign-out-alt text-gray-500 text-xl"></i>
                     </button>
                 </form>
-            </div>
+            </div> -->
         </div>
     </div>
 
@@ -217,7 +217,7 @@
                 <i class="fas fa-history text-[#0B2A4A] text-xl"></i>
                 <span class="text-[10px] text-[#0B2A4A] mt-1">Riwayat</span>
             </a>
-            <a href="#" class="flex flex-col items-center">
+            <a href="{{ route('wali.profile') }}" class="flex flex-col items-center">
                 <i class="fas fa-user text-gray-400 text-xl"></i>
                 <span class="text-[10px] text-gray-400 mt-1">Profil</span>
             </a>

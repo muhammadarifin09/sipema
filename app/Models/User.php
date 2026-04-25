@@ -67,4 +67,10 @@ class User extends Authenticatable
     {
         return $this->role && $this->role->nama_role === 'siswa';
     }
+
+    public function waliProfile()
+{
+    return $this->hasOne(WaliProfile::class);
+}
+
 }

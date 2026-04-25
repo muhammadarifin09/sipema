@@ -193,3 +193,12 @@ Route::get('/bukti-pembayaran/{filename}', function ($filename) {
         'Content-Disposition' => 'inline; filename="' . $filename . '"'
     ]);
 })->name('bukti.pembayaran')->middleware(['auth']); // Tambah middleware auth
+
+use App\Http\Controllers\WaliProfileController;
+
+Route::middleware(['auth'])->group(function () {
+   
+Route::get('/wali/profile', [WaliProfileController::class, 'index'])->name('wali.profile');
+Route::get('/wali/profile/edit', [WaliProfileController::class, 'edit'])->name('wali.profile.edit');
+Route::post('/wali/profile/update', [WaliProfileController::class, 'update'])->name('wali.profile.update');
+});

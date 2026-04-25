@@ -16,7 +16,7 @@
                     <h2 class="text-gray-800 text-lg font-bold">Pemberitahuan</h2>
                 </div>
             </div>
-            <div class="flex items-center space-x-3">
+            <!-- <div class="flex items-center space-x-3">
                 <a href="{{ route('wali.notifikasi.index') }}" class="relative">
                     <i class="fas fa-bell text-gray-500 text-xl"></i>
                     @if(isset($jumlahNotif) && $jumlahNotif > 0)
@@ -29,7 +29,7 @@
                         <i class="fas fa-sign-out-alt text-gray-500 text-xl"></i>
                     </button>
                 </form>
-            </div>
+            </div> -->
         </div>
     </div>
 

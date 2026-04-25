@@ -46,7 +46,7 @@
                     <span class="text-2xl font-bold tracking-tight">SIPEMA</span>
                 </div>
                 
-                <h2 class="text-3xl md:text-4xl font-bold mb-4 leading-tight">Selamat Datang di</h2>
+                <h2 class="text-3xl md:text-4xl font-bold mb-4 leading-tight">Selamat Datang</h2>
                 <p class="text-white/80 text-lg mb-8">Sistem Pembayaran SPP dan Manajemen Siswa.</p>
                 
           

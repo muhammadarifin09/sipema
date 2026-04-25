@@ -34,10 +34,10 @@
                             <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs px-1.5 rounded-full">{{ $jumlahNotif }}</span>
                         @endif
                     </a>
-                    <form method="POST" action="{{ route('logout') }}" class="inline">
+                    <!-- <form method="POST" action="{{ route('logout') }}" class="inline">
                         @csrf
                         <button type="submit"><i class="fas fa-sign-out-alt text-gray-500 text-xl"></i></button>
-                    </form>
+                    </form> -->
                 </div>
             </div>
         </div>
@@ -63,7 +63,7 @@
                     <i class="fas fa-history w-5"></i>
                     <span x-show="sidebarOpen">Riwayat</span>
                 </a>
-                <a href="#" class="flex items-center space-x-3 p-2 rounded-lg text-gray-600 hover:bg-gray-100">
+                <a href="{{ route('wali.profile') }}" class="flex items-center space-x-3 p-2 rounded-lg text-gray-600 hover:bg-gray-100">
                     <i class="fas fa-user w-5"></i>
                     <span x-show="sidebarOpen">Profil</span>
                 </a>
@@ -227,7 +227,7 @@
                 <i class="fas fa-history text-gray-400 text-xl"></i>
                 <span class="text-[10px] text-gray-400 mt-1">Riwayat</span>
             </a>
-            <a href="#" class="flex flex-col items-center">
+            <a href="{{ route('wali.profile') }}" class="flex flex-col items-center">
                 <i class="fas fa-user text-gray-400 text-xl"></i>
                 <span class="text-[10px] text-gray-400 mt-1">Profil</span>
             </a>
