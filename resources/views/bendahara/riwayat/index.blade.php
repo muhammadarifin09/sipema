@@ -79,7 +79,7 @@
 
 <!-- Search & Filter -->
 <div class="glass-card rounded-2xl p-4 mb-6 animate-slide-in delay-1">
-    <form method="GET" action="{{ route('admin.riwayat.index') }}" class="flex flex-wrap items-center gap-4">
+    <form method="GET" action="{{ route('bendahara.riwayat.index') }}" class="flex flex-wrap items-center gap-4">
         <div class="flex-1 min-w-[200px]">
             <div class="relative">
                 <i class="fas fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
@@ -107,7 +107,7 @@
                 Filter
             </button>
             
-            <a href="{{ route('admin.riwayat.index') }}" class="btn-secondary text-sm py-3">
+            <a href="{{ route('bendahara.riwayat.index') }}" class="btn-secondary text-sm py-3">
                 <i class="fas fa-redo-alt mr-2"></i>
                 Reset
             </a>

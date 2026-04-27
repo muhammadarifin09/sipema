@@ -485,10 +485,6 @@
                     <span class="ml-3 font-medium">Tagihan Pembayaran</span>
                 </a>
                 
-                <a href="" class="nav-item">
-                    <i class="fas fa-plus-circle w-6"></i>
-                    <span class="ml-3 font-medium">Input Pembayaran</span>
-                </a>
 
                 <a href="{{ route('bendahara.riwayat.index') }}" class="nav-item {{ request()->routeIs('bendahara.riwayat.*') ? 'active' : '' }}">
                     <i class="fas fa-history w-6"></i>
@@ -513,6 +509,21 @@
                 <a href="#" class="nav-item">
                     <i class="fas fa-history w-6"></i>
                     <span class="ml-3 font-medium">Riwayat Transaksi</span>
+                </a>
+
+                <a href="{{ route('bendahara.kelas.index') }}" class="nav-item {{ request()->routeIs('bendahara.kelas.*') ? 'active' : '' }}">
+                    <i class="fas fa-building w-6"></i>
+                    <span class="ml-3 font-medium">Data Kelas</span>
+                </a>
+
+                <a href="{{ route('bendahara.tahun-ajaran.index') }}" class="nav-item {{ request()->routeIs('bendahara.tahun-ajaran.*') ? 'active' : '' }}">
+                    <i class="fas fa-calendar-alt w-6"></i>
+                    <span class="ml-3 font-medium">Tahun Ajaran</span>
+                </a>
+
+                <a href="{{ route('bendahara.spp-setting.index') }}" class="nav-item {{ request()->routeIs('bendahara.spp-setting.*') ? 'active' : '' }}">
+                    <i class="fas fa-cog w-6"></i>
+                    <span class="ml-3 font-medium">Pengaturan SPP</span>
                 </a>
 
                 <!-- Logout Button -->

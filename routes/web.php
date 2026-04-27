@@ -100,6 +100,14 @@ Route::middleware(['auth', 'role:admin'])
 use App\Http\Controllers\Bendahara\DashboardController;
 use App\Http\Controllers\Bendahara\SiswaController;
 use App\Http\Controllers\Bendahara\TagihanController;
+use App\Http\Controllers\Bendahara\SppSettingController;
+use App\Http\Controllers\Bendahara\TahunAjaranController;
+use App\Http\Controllers\Bendahara\KelasController;
+// use App\Http\Controllers\RiwayatPembayaranController;
+
+
+
+
 
 Route::middleware(['auth', 'role:bendahara'])
     ->prefix('bendahara')
@@ -129,6 +137,17 @@ Route::middleware(['auth', 'role:bendahara'])
 
         Route::post('/pembayaran/manual', [App\Http\Controllers\PembayaranController::class, 'storeManual'])
         ->name('pembayaran.manual.store');
+
+        // Setting SPP
+        Route::resource('spp-setting', SppSettingController::class);
+
+        // Tahun Ajaran
+        Route::resource('tahun-ajaran', TahunAjaranController::class);
+
+        // Kelas
+        Route::resource('kelas', KelasController::class);
+
+    
 });
 
 /*
