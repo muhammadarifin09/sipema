@@ -548,16 +548,9 @@
                     <span class="ml-3 font-medium">Laporan</span>
                 </a>
 
-                <div class="px-4 my-4">
-                    <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Master Data</p>
-                </div>
+            
 
        
-
-                <a href="#" class="nav-item">
-                    <i class="fas fa-chalkboard-teacher w-6"></i>
-                    <span class="ml-3 font-medium">Data Guru</span>
-                </a>
 
                <a href="{{ route('admin.kelas.index') }}" class="nav-item {{ request()->routeIs('admin.kelas.*') ? 'active' : '' }}">
                     <i class="fas fa-school w-6"></i>
@@ -568,6 +561,13 @@
                     <i class="fas fa-calendar-alt w-6"></i>
                     <span class="ml-3 font-medium">Tahun Ajaran</span>
                 </a>
+
+
+                <a href="{{ route('admin.logs.index') }}" class="nav-item {{ request()->routeIs('admin.logs.*') ? 'active' : '' }}">
+                    <i class="fas fa-history w-6"></i>
+                    <span class="ml-3 font-medium">Log Aktivitas</span>
+                </a>
+
 
                 <!-- Settings -->
                 <div class="px-4 my-4">

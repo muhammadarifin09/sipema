@@ -9,7 +9,8 @@ use App\Models\TahunAjaran;
 use App\Models\SppSetting;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
-use App\Models\Notifikasi; // ✅ TAMBAHAN
+use App\Models\Notifikasi;
+use App\Helpers\LogHelper; // Import LogHelper
 
 class TagihanController extends Controller
 {
@@ -53,9 +54,9 @@ class TagihanController extends Controller
         $siswas = Siswa::all();
 
         $jumlahGenerate = 0;
+        $detailTagihan = []; // untuk mencatat detail log
 
         foreach ($siswas as $siswa) {
-
             $tagihan = Tagihan::firstOrCreate(
                 [
                     'siswa_id' => $siswa->id,
@@ -72,8 +73,13 @@ class TagihanController extends Controller
 
             if ($tagihan->wasRecentlyCreated) {
                 $jumlahGenerate++;
+                $detailTagihan[] = [
+                    'siswa_id' => $siswa->id,
+                    'nama_siswa' => $siswa->nama_lengkap,
+                    'nominal' => $spp->nominal,
+                ];
 
-                // ✅ TAMBAHAN NOTIFIKASI
+                // Notifikasi ke wali
                 if ($siswa->wali_id) {
                     Notifikasi::create([
                         'user_id' => $siswa->wali_id,
@@ -83,6 +89,33 @@ class TagihanController extends Controller
                     ]);
                 }
             }
+        }
+
+        // Catat log aktivitas: generate tagihan
+        if ($jumlahGenerate > 0) {
+            LogHelper::add(
+                'create',
+                'tagihan',
+                'Generate tagihan SPP untuk bulan ' . $bulan . ' tahun ' . $tahun . '. Jumlah tagihan: ' . $jumlahGenerate,
+                [
+                    'bulan' => $bulan,
+                    'tahun' => $tahun,
+                    'tahun_ajaran' => $tahunAjaran->nama,
+                    'nominal_per_siswa' => $spp->nominal,
+                    'detail' => $detailTagihan
+                ]
+            );
+        } else {
+            LogHelper::add(
+                'create',
+                'tagihan',
+                'Generate tagihan SPP untuk bulan ' . $bulan . ' tahun ' . $tahun . ', tetapi tidak ada tagihan baru (sudah ada sebelumnya).',
+                [
+                    'bulan' => $bulan,
+                    'tahun' => $tahun,
+                    'tahun_ajaran' => $tahunAjaran->nama,
+                ]
+            );
         }
 
         return back()->with('success', "Berhasil generate {$jumlahGenerate} tagihan untuk bulan ini.");
@@ -99,7 +132,26 @@ class TagihanController extends Controller
             return back()->with('error', 'Tagihan yang sudah lunas tidak bisa dihapus.');
         }
 
+        // Simpan data tagihan sebelum dihapus untuk keperluan log
+        $dataTagihan = [
+            'id' => $tagihan->id,
+            'siswa_id' => $tagihan->siswa_id,
+            'nama_siswa' => $tagihan->siswa->nama_lengkap ?? 'Tidak diketahui',
+            'bulan' => $tagihan->bulan,
+            'tahun' => $tagihan->tahun,
+            'nominal' => $tagihan->nominal,
+            'status' => $tagihan->status,
+        ];
+
         $tagihan->delete();
+
+        // Catat log aktivitas: hapus tagihan
+        LogHelper::add(
+            'delete',
+            'tagihan',
+            'Menghapus tagihan SPP untuk siswa ' . $dataTagihan['nama_siswa'] . ' bulan ' . $dataTagihan['bulan'] . ' tahun ' . $dataTagihan['tahun'],
+            ['tagihan' => $dataTagihan]
+        );
 
         return back()->with('success', 'Tagihan berhasil dihapus.');
     }

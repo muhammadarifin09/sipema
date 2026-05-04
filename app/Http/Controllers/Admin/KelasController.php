@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Kelas;
 use Illuminate\Http\Request;
+use App\Helpers\LogHelper; // Import LogHelper
 
 class KelasController extends Controller
 {
@@ -31,10 +32,18 @@ class KelasController extends Controller
             'tingkat.in' => 'Tingkat tidak valid',
         ]);
 
-        Kelas::create([
+        $kelas = Kelas::create([
             'nama_kelas' => $request->nama_kelas,
             'tingkat' => $request->tingkat,
         ]);
+
+        // Catat log aktivitas: tambah kelas
+        LogHelper::add(
+            'create',
+            'kelas',
+            'Menambah kelas baru: ' . $kelas->nama_kelas . ' (Tingkat ' . $kelas->tingkat . ')',
+            ['id' => $kelas->id, 'nama_kelas' => $kelas->nama_kelas, 'tingkat' => $kelas->tingkat]
+        );
 
         return redirect()->route('admin.kelas.index')
             ->with('success', 'Data kelas berhasil ditambahkan');
@@ -59,10 +68,23 @@ class KelasController extends Controller
         ]);
 
         $kelas = Kelas::findOrFail($id);
+        $oldData = $kelas->toArray(); // data sebelum update
+
         $kelas->update([
             'nama_kelas' => $request->nama_kelas,
             'tingkat' => $request->tingkat,
         ]);
+
+        // Catat log aktivitas: update kelas
+        LogHelper::add(
+            'update',
+            'kelas',
+            'Mengupdate kelas: ' . $kelas->nama_kelas . ' (Tingkat ' . $kelas->tingkat . ')',
+            [
+                'old' => $oldData,
+                'new' => $kelas->fresh()->toArray()
+            ]
+        );
 
         return redirect()->route('admin.kelas.index')
             ->with('success', 'Data kelas berhasil diperbarui');
@@ -78,7 +100,16 @@ class KelasController extends Controller
                 ->with('error', 'Kelas tidak dapat dihapus karena masih memiliki siswa!');
         }
 
+        $kelasData = $kelas->toArray(); // data sebelum hapus
         $kelas->delete();
+
+        // Catat log aktivitas: hapus kelas
+        LogHelper::add(
+            'delete',
+            'kelas',
+            'Menghapus kelas: ' . $kelasData['nama_kelas'] . ' (Tingkat ' . $kelasData['tingkat'] . ')',
+            ['kelas' => $kelasData]
+        );
 
         return redirect()->route('admin.kelas.index')
             ->with('success', 'Data kelas berhasil dihapus');

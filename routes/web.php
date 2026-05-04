@@ -69,6 +69,8 @@ Route::middleware(['auth', 'role:admin'])
         Route::get('/riwayat-pembayaran', [RiwayatPembayaranController::class,'index'])
             ->name('riwayat.index');
         
+        //logs  aktivitas
+        Route::get('/logs-aktivitas', [App\Http\Controllers\LogsAktivitasController::class, 'index'])->name('logs.index');
     });
 
 
