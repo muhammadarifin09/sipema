@@ -11,10 +11,10 @@
             <p class="text-white/80 mt-1">Informasi lengkap data siswa</p>
         </div>
         <div class="flex items-center space-x-2">
-            <a href="{{ route('bendahara.siswa.edit', $siswa->id) }}" class="btn-primary">
+            <!-- <a href="{{ route('bendahara.siswa.edit', $siswa->id) }}" class="btn-primary">
                 <i class="fas fa-edit mr-2"></i>
                 Edit
-            </a>
+            </a> -->
             <a href="{{ route('bendahara.siswa.index') }}" class="btn-secondary">
                 <i class="fas fa-arrow-left mr-2"></i>
                 Kembali
@@ -195,17 +195,7 @@
         @endif
     </div>
     
-    <!-- Tombol Aksi -->
-    <div class="flex items-center justify-end space-x-2 mt-8 pt-4 border-t border-gray-200">
-        <a href="{{ route('bendahara.siswa.edit', $siswa->id) }}" class="btn-primary">
-            <i class="fas fa-edit mr-2"></i>
-            Edit Data
-        </a>
-        <button onclick="confirmDelete({{ $siswa->id }}, '{{ $siswa->nama_lengkap }}')" class="btn-danger">
-            <i class="fas fa-trash mr-2"></i>
-            Hapus Data
-        </button>
-    </div>
+
 </div>
 
 <!-- DELETE CONFIRMATION MODAL -->

@@ -395,7 +395,7 @@
             box-shadow: 0 0 0 4px rgba(11, 79, 140, 0.1);
         }
 
-        /* Profile dropdown */
+        /* Profile button (tanpa dropdown) */
         .profile-button {
             display: flex;
             align-items: center;
@@ -405,12 +405,7 @@
             border-radius: 2rem;
             border: 2px solid #e2e8f0;
             transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .profile-button:hover {
-            border-color: #0b4f8c;
-            box-shadow: 0 4px 15px rgba(11, 79, 140, 0.1);
+            cursor: default;
         }
 
         .profile-avatar {
@@ -469,71 +464,86 @@
                 </div>
             </div>
 
-            <!-- Navigation Menu -->
+            <!-- Navigation Menu - Dikelompokkan seperti admin -->
             <div class="flex-1 overflow-y-auto py-6">
-                <div class="px-4 mb-4">
-                    <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Menu Utama</p>
-                </div>
-                
-                <a href="{{ route('bendahara.dashboard') }}" class="nav-item {{ request()->routeIs('bendahara.dashboard') ? 'active' : '' }}">
-                    <i class="fas fa-tachometer-alt w-6"></i>
-                    <span class="ml-3 font-medium">Dashboard</span>
-                </a>
-                
-                <a href="{{ route('bendahara.tagihan.index') }}" class="nav-item {{ request()->routeIs('bendahara.tagihan.*') ? 'active' : '' }}">
-                    <i class="fas fa-credit-card w-6"></i>
-                    <span class="ml-3 font-medium">Tagihan Pembayaran</span>
-                </a>
-                
-
-                <a href="{{ route('bendahara.riwayat.index') }}" class="nav-item {{ request()->routeIs('bendahara.riwayat.*') ? 'active' : '' }}">
-                    <i class="fas fa-history w-6"></i>
-                    <span class="ml-3 font-medium">Riwayat Pembayaran</span>
-                </a>
-                
-                
-                <a href="" class="nav-item {{ request()->routeIs('bendahara.laporan.*') ? 'active' : '' }}">
-                    <i class="fas fa-chart-bar w-6"></i>
-                    <span class="ml-3 font-medium">Laporan</span>
-                </a>
-                
-                 <a href="{{ route('bendahara.siswa.index') }}" class="nav-item {{ request()->routeIs('bendahara.siswa.*') ? 'active' : '' }}">
-                    <i class="fas fa-users w-6"></i>
-                    <span class="ml-3 font-medium">Data Siswa</span>
-                </a>
-
-                <div class="px-4 my-4">
-                    <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Lainnya</p>
+                <!-- Kelompok: Utama (Dashboard) -->
+                <div class="mb-4">
+                    <div class="px-4 mb-2">
+                        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Utama</p>
+                    </div>
+                    <a href="{{ route('bendahara.dashboard') }}" class="nav-item {{ request()->routeIs('bendahara.dashboard') ? 'active' : '' }}">
+                        <i class="fas fa-tachometer-alt w-6"></i>
+                        <span class="ml-3 font-medium">Dashboard</span>
+                    </a>
                 </div>
 
-                <a href="#" class="nav-item">
-                    <i class="fas fa-history w-6"></i>
-                    <span class="ml-3 font-medium">Riwayat Transaksi</span>
-                </a>
+                <!-- Kelompok: Master Data -->
+                <div class="mb-4">
+                    <div class="px-4 mb-2">
+                        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Master Data</p>
+                    </div>
+                    <a href="{{ route('bendahara.siswa.index') }}" class="nav-item {{ request()->routeIs('bendahara.siswa.*') ? 'active' : '' }}">
+                        <i class="fas fa-users w-6"></i>
+                        <span class="ml-3 font-medium">Data Siswa</span>
+                    </a>
+                      <a href="" class="nav-item {{ request()->routeIs('admin.wali.*') ? 'active' : '' }}">
+                        <i class="fas fa-user-friends w-6"></i>
+                        <span class="ml-3 font-medium">Data Wali Murid</span>
+                    </a>
+                    <a href="{{ route('bendahara.kelas.index') }}" class="nav-item {{ request()->routeIs('bendahara.kelas.*') ? 'active' : '' }}">
+                        <i class="fas fa-building w-6"></i>
+                        <span class="ml-3 font-medium">Data Kelas</span>
+                    </a>
+                    <a href="{{ route('bendahara.tahun-ajaran.index') }}" class="nav-item {{ request()->routeIs('bendahara.tahun-ajaran.*') ? 'active' : '' }}">
+                        <i class="fas fa-calendar-alt w-6"></i>
+                        <span class="ml-3 font-medium">Tahun Ajaran</span>
+                    </a>
+                </div>
 
-                <a href="{{ route('bendahara.kelas.index') }}" class="nav-item {{ request()->routeIs('bendahara.kelas.*') ? 'active' : '' }}">
-                    <i class="fas fa-building w-6"></i>
-                    <span class="ml-3 font-medium">Data Kelas</span>
-                </a>
+                <!-- Kelompok: Transaksi -->
+                <div class="mb-4">
+                    <div class="px-4 mb-2">
+                        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Transaksi</p>
+                    </div>
+                    <a href="{{ route('bendahara.tagihan.index') }}" class="nav-item {{ request()->routeIs('bendahara.tagihan.*') ? 'active' : '' }}">
+                        <i class="fas fa-credit-card w-6"></i>
+                        <span class="ml-3 font-medium">Tagihan Pembayaran</span>
+                    </a>
+                    <a href="{{ route('bendahara.riwayat.index') }}" class="nav-item {{ request()->routeIs('bendahara.riwayat.*') ? 'active' : '' }}">
+                        <i class="fas fa-history w-6"></i>
+                        <span class="ml-3 font-medium">Riwayat Pembayaran</span>
+                    </a>
+                </div>
 
-                <a href="{{ route('bendahara.tahun-ajaran.index') }}" class="nav-item {{ request()->routeIs('bendahara.tahun-ajaran.*') ? 'active' : '' }}">
-                    <i class="fas fa-calendar-alt w-6"></i>
-                    <span class="ml-3 font-medium">Tahun Ajaran</span>
-                </a>
+                <!-- Kelompok: Laporan & Aktivitas -->
+                <div class="mb-4">
+                    <div class="px-4 mb-2">
+                        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Laporan & Aktivitas</p>
+                    </div>
+                    <a href="#" class="nav-item {{ request()->routeIs('bendahara.laporan.*') ? 'active' : '' }}">
+                        <i class="fas fa-chart-bar w-6"></i>
+                        <span class="ml-3 font-medium">Laporan</span>
+                    </a>
+                </div>
 
-                <a href="{{ route('bendahara.spp-setting.index') }}" class="nav-item {{ request()->routeIs('bendahara.spp-setting.*') ? 'active' : '' }}">
-                    <i class="fas fa-cog w-6"></i>
-                    <span class="ml-3 font-medium">Pengaturan SPP</span>
-                </a>
-
-                <!-- Logout Button -->
-                <form method="POST" action="{{ route('logout') }}" class="w-full">
-                    @csrf
-                    <button type="submit" class="nav-item w-full text-left">
-                        <i class="fas fa-sign-out-alt w-6"></i>
-                        <span class="ml-3 font-medium">Keluar</span>
-                    </button>
-                </form>
+                <!-- Kelompok: Pengaturan -->
+                <div class="mb-4">
+                    <div class="px-4 mb-2">
+                        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Pengaturan</p>
+                    </div>
+                    <a href="{{ route('bendahara.spp-setting.index') }}" class="nav-item {{ request()->routeIs('bendahara.spp-setting.*') ? 'active' : '' }}">
+                        <i class="fas fa-cog w-6"></i>
+                        <span class="ml-3 font-medium">Pengaturan SPP</span>
+                    </a>
+                    <!-- Logout Button -->
+                    <form method="POST" action="{{ route('logout') }}" class="w-full">
+                        @csrf
+                        <button type="submit" class="nav-item w-full text-left">
+                            <i class="fas fa-sign-out-alt w-6"></i>
+                            <span class="ml-3 font-medium">Keluar</span>
+                        </button>
+                    </form>
+                </div>
             </div>
 
             <!-- School Info -->
@@ -556,71 +566,19 @@
                         <input type="text" placeholder="Cari siswa, pembayaran..." class="search-input" id="globalSearch">
                     </div>
 
-                    <!-- Profile & Notifications -->
+                    <!-- Profile & Notifications (tanpa dropdown profile) -->
                     <div class="flex items-center space-x-4">
-                        <!-- Notification -->
-                        <div class="relative">
-                            <button class="w-12 h-12 rounded-2xl bg-white flex items-center justify-center hover:border-[#0b4f8c] border-2 border-gray-200 transition-all" id="notificationBtn">
-                                <i class="fas fa-bell text-gray-600 text-xl"></i>
-                                <span class="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center text-white text-xs font-bold">3</span>
-                            </button>
-                            
-                            <!-- Notification Dropdown -->
-                            <div class="absolute right-0 mt-2 w-80 bg-white rounded-2xl shadow-xl border border-gray-100 hidden" id="notificationDropdown">
-                                <div class="p-4 border-b border-gray-100">
-                                    <h3 class="font-semibold text-gray-800">Notifikasi</h3>
-                                </div>
-                                <div class="max-h-96 overflow-y-auto">
-                                    <div class="p-4 hover:bg-gray-50 border-b border-gray-100">
-                                        <p class="text-sm text-gray-800"><span class="font-semibold">15 siswa</span> belum bayar SPP</p>
-                                        <p class="text-xs text-gray-500 mt-1">5 menit yang lalu</p>
-                                    </div>
-                                    <div class="p-4 hover:bg-gray-50 border-b border-gray-100">
-                                        <p class="text-sm text-gray-800">Pembayaran dari <span class="font-semibold">Budi Santoso</span></p>
-                                        <p class="text-xs text-gray-500 mt-1">1 jam yang lalu</p>
-                                    </div>
-                                    <div class="p-4 hover:bg-gray-50">
-                                        <p class="text-sm text-gray-800">Target penerimaan bulan ini <span class="font-semibold text-green-600">75%</span></p>
-                                        <p class="text-xs text-gray-500 mt-1">3 jam yang lalu</p>
-                                    </div>
-                                </div>
-                                <div class="p-4 border-t border-gray-100 text-center">
-                                    <a href="#" class="text-sm text-[#0b4f8c] hover:underline">Lihat semua</a>
-                                </div>
+               
+                        <!-- Profile Info (Tanpa Dropdown) -->
+                        <div class="profile-button" style="cursor: default;">
+                            <div class="profile-avatar">
+                                <span>{{ substr(auth()->user()->name ?? 'BD', 0, 2) }}</span>
                             </div>
-                        </div>
-
-                        <!-- Profile Dropdown -->
-                        <div class="relative">
-                            <div class="profile-button" id="profileBtn">
-                                <div class="profile-avatar">
-                                    <span>{{ substr(auth()->user()->name ?? 'BD', 0, 2) }}</span>
-                                </div>
-                                <div class="text-left">
-                                    <p class="font-semibold text-gray-800 text-sm">{{ auth()->user()->name ?? 'Bendahara' }}</p>
-                                    <p class="text-xs text-gray-500">{{ auth()->user()->email ?? 'bendahara@smapgri.sch.id' }}</p>
-                                </div>
-                                <i class="fas fa-chevron-down text-gray-400 text-sm ml-4"></i>
+                            <div class="text-left">
+                                <p class="font-semibold text-gray-800 text-sm">{{ auth()->user()->name ?? 'Bendahara' }}</p>
+                                <p class="text-xs text-gray-500">{{ auth()->user()->email ?? 'bendahara@smapgri.sch.id' }}</p>
                             </div>
-                            
-                            <!-- Profile Dropdown Menu -->
-                            <div class="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-xl border border-gray-100 hidden" id="profileDropdown">
-                                <a href="#" class="flex items-center space-x-3 p-4 hover:bg-gray-50 border-b border-gray-100">
-                                    <i class="fas fa-user text-gray-500"></i>
-                                    <span class="text-sm text-gray-700">Profil Saya</span>
-                                </a>
-                                <a href="#" class="flex items-center space-x-3 p-4 hover:bg-gray-50 border-b border-gray-100">
-                                    <i class="fas fa-cog text-gray-500"></i>
-                                    <span class="text-sm text-gray-700">Pengaturan</span>
-                                </a>
-                                <form method="POST" action="{{ route('logout') }}">
-                                    @csrf
-                                    <button type="submit" class="w-full text-left flex items-center space-x-3 p-4 hover:bg-gray-50">
-                                        <i class="fas fa-sign-out-alt text-gray-500"></i>
-                                        <span class="text-sm text-gray-700">Keluar</span>
-                                    </button>
-                                </form>
-                            </div>
+                            <!-- Icon chevron dihilangkan -->
                         </div>
                     </div>
                 </div>
@@ -648,33 +606,17 @@
 
     <!-- Scripts -->
     <script>
-        // Toggle Notification Dropdown
+        // Toggle Notification Dropdown (tanpa profile dropdown)
         document.getElementById('notificationBtn')?.addEventListener('click', function(e) {
             e.stopPropagation();
             const dropdown = document.getElementById('notificationDropdown');
-            const profileDropdown = document.getElementById('profileDropdown');
-            
-            if (profileDropdown) profileDropdown.classList.add('hidden');
             dropdown.classList.toggle('hidden');
         });
 
-        // Toggle Profile Dropdown
-        document.getElementById('profileBtn')?.addEventListener('click', function(e) {
-            e.stopPropagation();
-            const dropdown = document.getElementById('profileDropdown');
-            const notificationDropdown = document.getElementById('notificationDropdown');
-            
-            if (notificationDropdown) notificationDropdown.classList.add('hidden');
-            dropdown.classList.toggle('hidden');
-        });
-
-        // Close dropdowns when clicking outside
+        // Close notification dropdown when clicking outside
         document.addEventListener('click', function() {
             const notificationDropdown = document.getElementById('notificationDropdown');
-            const profileDropdown = document.getElementById('profileDropdown');
-            
             if (notificationDropdown) notificationDropdown.classList.add('hidden');
-            if (profileDropdown) profileDropdown.classList.add('hidden');
         });
 
         // Global search functionality

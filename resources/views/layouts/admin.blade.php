@@ -507,86 +507,94 @@
             </div>
 
             <!-- Navigation Menu -->
+      
             <div class="flex-1 overflow-y-auto py-6">
-                <div class="px-4 mb-4">
-                    <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Menu Utama</p>
-                </div>
-                
-                <a href="{{ route('admin.dashboard') }}" class="nav-item {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
-                    <i class="fas fa-tachometer-alt w-6"></i>
-                    <span class="ml-3 font-medium">Dashboard</span>
-                </a>
-                   <!-- Users Management -->
-                <a href="{{ route('admin.users.index') }}" class="nav-item {{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
-                    <i class="fas fa-user-tie w-6"></i>
-                    <span class="ml-3 font-medium">Data Akun</span>
-                </a>
-
-                <a href="{{ route('admin.siswa.index') }}" class="nav-item {{ request()->routeIs('admin.siswa.*') ? 'active' : '' }}">
-                    <i class="fas fa-users w-6"></i>
-                    <span class="ml-3 font-medium">Data Siswa</span>
-                </a>
-
-
-                 <a href="{{ route('admin.wali.index') }}" class="nav-item {{ request()->routeIs('admin.wali.*') ? 'active' : '' }}">
-                    <i class="fas fa-user-friends w-6"></i>
-                    <span class="ml-3 font-medium">Data Wali Murid</span>
-                </a>
-
-                <a href="{{ route('admin.tagihan.index') }}" class="nav-item {{ request()->routeIs('admin.tagihan.*') ? 'active' : '' }}">
-                    <i class="fas fa-credit-card w-6"></i>
-                    <span class="ml-3 font-medium">Tagihan Pembayaran</span>
-                </a>
-                
-                <a href="{{ route('admin.riwayat.index') }}" class="nav-item {{ request()->routeIs('admin.riwayat.*') ? 'active' : '' }}">
-                    <i class="fas fa-history w-6"></i>
-                    <span class="ml-3 font-medium">Riwayat Pembayaran</span>
-                </a>
-                
-                <a href="#" class="nav-item">
-                    <i class="fas fa-chart-bar w-6"></i>
-                    <span class="ml-3 font-medium">Laporan</span>
-                </a>
-
-            
-
-       
-
-               <a href="{{ route('admin.kelas.index') }}" class="nav-item {{ request()->routeIs('admin.kelas.*') ? 'active' : '' }}">
-                    <i class="fas fa-school w-6"></i>
-                    <span class="ml-3 font-medium">Data Kelas</span>
-                </a>
-
-               <a href="{{ route('admin.tahun-ajaran.index') }}" class="nav-item {{ request()->routeIs('admin.tahun-ajaran.*') ? 'active' : '' }}">
-                    <i class="fas fa-calendar-alt w-6"></i>
-                    <span class="ml-3 font-medium">Tahun Ajaran</span>
-                </a>
-
-
-                <a href="{{ route('admin.logs.index') }}" class="nav-item {{ request()->routeIs('admin.logs.*') ? 'active' : '' }}">
-                    <i class="fas fa-history w-6"></i>
-                    <span class="ml-3 font-medium">Log Aktivitas</span>
-                </a>
-
-
-                <!-- Settings -->
-                <div class="px-4 my-4">
-                    <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Pengaturan</p>
+                <!-- Kelompok: Utama (Dashboard) -->
+                <div class="mb-4">
+                    <div class="px-4 mb-2">
+                        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Utama</p>
+                    </div>
+                    <a href="{{ route('admin.dashboard') }}" class="nav-item {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
+                        <i class="fas fa-tachometer-alt w-6"></i>
+                        <span class="ml-3 font-medium">Dashboard</span>
+                    </a>
                 </div>
 
-                <a href="{{ route('admin.spp-setting.index') }}" class="nav-item {{ request()->routeIs('admin.spp-setting.*') ? 'active' : '' }}">
-                    <i class="fas fa-cog w-6"></i>
-                    <span class="ml-3 font-medium">Pengaturan SPP</span>
-                </a>
+                <!-- Kelompok: Master Data -->
+                <div class="mb-4">
+                    <div class="px-4 mb-2">
+                        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Master Data</p>
+                    </div>
+                    <a href="{{ route('admin.users.index') }}" class="nav-item {{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
+                        <i class="fas fa-user-tie w-6"></i>
+                        <span class="ml-3 font-medium">Data Akun</span>
+                    </a>
+                    <a href="{{ route('admin.siswa.index') }}" class="nav-item {{ request()->routeIs('admin.siswa.*') ? 'active' : '' }}">
+                        <i class="fas fa-users w-6"></i>
+                        <span class="ml-3 font-medium">Data Siswa</span>
+                    </a>
+                    <a href="{{ route('admin.wali.index') }}" class="nav-item {{ request()->routeIs('admin.wali.*') ? 'active' : '' }}">
+                        <i class="fas fa-user-friends w-6"></i>
+                        <span class="ml-3 font-medium">Data Wali Murid</span>
+                    </a>
+                    <a href="{{ route('admin.kelas.index') }}" class="nav-item {{ request()->routeIs('admin.kelas.*') ? 'active' : '' }}">
+                        <i class="fas fa-school w-6"></i>
+                        <span class="ml-3 font-medium">Data Kelas</span>
+                    </a>
+                    <a href="{{ route('admin.tahun-ajaran.index') }}" class="nav-item {{ request()->routeIs('admin.tahun-ajaran.*') ? 'active' : '' }}">
+                        <i class="fas fa-calendar-alt w-6"></i>
+                        <span class="ml-3 font-medium">Tahun Ajaran</span>
+                    </a>
+                </div>
 
-                <!-- Logout Button -->
-                <form method="POST" action="{{ route('logout') }}" class="w-full">
-                    @csrf
-                    <button type="submit" class="nav-item w-full text-left">
-                        <i class="fas fa-sign-out-alt w-6"></i>
-                        <span class="ml-3 font-medium">Keluar</span>
-                    </button>
-                </form>
+                <!-- Kelompok: Transaksi -->
+                <div class="mb-4">
+                    <div class="px-4 mb-2">
+                        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Transaksi</p>
+                    </div>
+                    <a href="{{ route('admin.tagihan.index') }}" class="nav-item {{ request()->routeIs('admin.tagihan.*') ? 'active' : '' }}">
+                        <i class="fas fa-credit-card w-6"></i>
+                        <span class="ml-3 font-medium">Tagihan Pembayaran</span>
+                    </a>
+                    <a href="{{ route('admin.riwayat.index') }}" class="nav-item {{ request()->routeIs('admin.riwayat.*') ? 'active' : '' }}">
+                        <i class="fas fa-history w-6"></i>
+                        <span class="ml-3 font-medium">Riwayat Pembayaran</span>
+                    </a>
+                </div>
+
+                <!-- Kelompok: Laporan & Aktivitas -->
+                <div class="mb-4">
+                    <div class="px-4 mb-2">
+                        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Laporan & Aktivitas</p>
+                    </div>
+                    <a href="#" class="nav-item">
+                        <i class="fas fa-chart-bar w-6"></i>
+                        <span class="ml-3 font-medium">Laporan</span>
+                    </a>
+                    <a href="{{ route('admin.logs.index') }}" class="nav-item {{ request()->routeIs('admin.logs.*') ? 'active' : '' }}">
+                        <i class="fas fa-history w-6"></i>
+                        <span class="ml-3 font-medium">Log Aktivitas</span>
+                    </a>
+                </div>
+
+                <!-- Kelompok: Pengaturan -->
+                <div class="mb-4">
+                    <div class="px-4 mb-2">
+                        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Pengaturan</p>
+                    </div>
+                    <a href="{{ route('admin.spp-setting.index') }}" class="nav-item {{ request()->routeIs('admin.spp-setting.*') ? 'active' : '' }}">
+                        <i class="fas fa-cog w-6"></i>
+                        <span class="ml-3 font-medium">Pengaturan SPP</span>
+                    </a>
+                    <!-- Form Logout tetap dalam kelompok Pengaturan -->
+                    <form method="POST" action="{{ route('logout') }}" class="w-full">
+                        @csrf
+                        <button type="submit" class="nav-item w-full text-left">
+                            <i class="fas fa-sign-out-alt w-6"></i>
+                            <span class="ml-3 font-medium">Keluar</span>
+                        </button>
+                    </form>
+                </div>
             </div>
 
             <!-- School Info -->
@@ -611,69 +619,18 @@
 
                     <!-- Profile & Notifications -->
                     <div class="flex items-center space-x-4">
-                        <!-- Notification -->
-                        <div class="relative">
-                            <button class="w-12 h-12 rounded-2xl bg-white flex items-center justify-center hover:border-[#0b4f8c] border-2 border-gray-200 transition-all" id="notificationBtn">
-                                <i class="fas fa-bell text-gray-600 text-xl"></i>
-                                <span class="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center text-white text-xs font-bold">3</span>
-                            </button>
-                            
-                            <!-- Notification Dropdown -->
-                            <div class="absolute right-0 mt-2 w-80 bg-white rounded-2xl shadow-xl border border-gray-100 hidden" id="notificationDropdown">
-                                <div class="p-4 border-b border-gray-100">
-                                    <h3 class="font-semibold text-gray-800">Notifikasi</h3>
-                                </div>
-                                <div class="max-h-96 overflow-y-auto">
-                                    <div class="p-4 hover:bg-gray-50 border-b border-gray-100">
-                                        <p class="text-sm text-gray-800"><span class="font-semibold">5 siswa</span> baru mendaftar</p>
-                                        <p class="text-xs text-gray-500 mt-1">5 menit yang lalu</p>
-                                    </div>
-                                    <div class="p-4 hover:bg-gray-50 border-b border-gray-100">
-                                        <p class="text-sm text-gray-800"><span class="font-semibold">Pembayaran SPP</span> atas nama Budi Santoso</p>
-                                        <p class="text-xs text-gray-500 mt-1">1 jam yang lalu</p>
-                                    </div>
-                                    <div class="p-4 hover:bg-gray-50">
-                                        <p class="text-sm text-gray-800"><span class="font-semibold">12 siswa</span> belum membayar SPP</p>
-                                        <p class="text-xs text-gray-500 mt-1">3 jam yang lalu</p>
-                                    </div>
-                                </div>
-                                <div class="p-4 border-t border-gray-100 text-center">
-                                    <a href="#" class="text-sm text-[#0b4f8c] hover:underline">Lihat semua</a>
-                                </div>
-                            </div>
-                        </div>
 
-                        <!-- Profile Dropdown -->
-                        <div class="relative">
-                            <div class="profile-button" id="profileBtn">
-                                <div class="profile-avatar">
-                                    <span>{{ substr(auth()->user()->name ?? 'AD', 0, 2) }}</span>
-                                </div>
-                                <div class="text-left">
-                                    <p class="font-semibold text-gray-800 text-sm">{{ auth()->user()->name ?? 'Admin Utama' }}</p>
-                                    <p class="text-xs text-gray-500">{{ auth()->user()->email ?? 'admin@smapgri.sch.id' }}</p>
-                                </div>
-                                <i class="fas fa-chevron-down text-gray-400 text-sm ml-4"></i>
+
+                        <!-- Profile Info (Tanpa Dropdown) -->
+                        <div class="flex items-center space-x-3 profile-button" style="cursor: default;">
+                            <div class="profile-avatar">
+                                <span>{{ substr(auth()->user()->name ?? 'AD', 0, 2) }}</span>
                             </div>
-                            
-                            <!-- Profile Dropdown Menu -->
-                            <div class="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-xl border border-gray-100 hidden" id="profileDropdown">
-                                <a href="#" class="flex items-center space-x-3 p-4 hover:bg-gray-50 border-b border-gray-100">
-                                    <i class="fas fa-user text-gray-500"></i>
-                                    <span class="text-sm text-gray-700">Profil Saya</span>
-                                </a>
-                                <a href="#" class="flex items-center space-x-3 p-4 hover:bg-gray-50 border-b border-gray-100">
-                                    <i class="fas fa-cog text-gray-500"></i>
-                                    <span class="text-sm text-gray-700">Pengaturan</span>
-                                </a>
-                                <form method="POST" action="{{ route('logout') }}">
-                                    @csrf
-                                    <button type="submit" class="w-full text-left flex items-center space-x-3 p-4 hover:bg-gray-50">
-                                        <i class="fas fa-sign-out-alt text-gray-500"></i>
-                                        <span class="text-sm text-gray-700">Keluar</span>
-                                    </button>
-                                </form>
+                            <div class="text-left">
+                                <p class="font-semibold text-gray-800 text-sm">{{ auth()->user()->name ?? 'Admin Utama' }}</p>
+                                <p class="text-xs text-gray-500">{{ auth()->user()->email ?? 'admin@smapgri.sch.id' }}</p>
                             </div>
+                            <!-- Icon chevron dihilangkan -->
                         </div>
                     </div>
                 </div>

@@ -10,10 +10,7 @@
             <h1 class="text-3xl font-bold text-white drop-shadow-lg">Data Siswa</h1>
             <p class="text-white/80 mt-1">Kelola data siswa dan informasi terkait</p>
         </div>
-        <a href="{{ route('bendahara.siswa.create') }}" class="btn-primary">
-            <i class="fas fa-plus mr-2"></i>
-            Tambah Siswa
-        </a>
+
     </div>
 </div>
 
@@ -167,7 +164,7 @@
                                title="Detail">
                                 <i class="fas fa-eye"></i>
                             </a>
-                            <a href="{{ route('bendahara.siswa.edit', $siswa->id) }}" 
+                            <!-- <a href="{{ route('bendahara.siswa.edit', $siswa->id) }}" 
                                class="text-green-600 hover:text-green-700 p-2 hover:bg-green-50 rounded-xl transition-all" 
                                title="Edit">
                                 <i class="fas fa-edit"></i>
@@ -176,7 +173,7 @@
                                     class="text-red-600 hover:text-red-700 p-2 hover:bg-red-50 rounded-xl transition-all" 
                                     title="Hapus">
                                 <i class="fas fa-trash"></i>
-                            </button>
+                            </button> -->
                         </div>
                     </td>
                 </tr>

@@ -9,9 +9,10 @@ use App\Helpers\LogHelper; // Import LogHelper
 
 class KelasController extends Controller
 {
+    
     public function index()
     {
-        $data = Kelas::withCount('siswa')->latest()->get();
+        $data = Kelas::with('siswa')->withCount('siswa')->latest()->get();
         return view('bendahara.kelas.index', compact('data'));
     }
 
