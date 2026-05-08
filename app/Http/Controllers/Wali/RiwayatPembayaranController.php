@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Wali;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Pembayaran;
+use App\Models\RiwayatPembayaran; // gunakan model RiwayatPembayaran
 use App\Models\Siswa;
 use Illuminate\Support\Facades\Auth;
 
@@ -13,8 +13,8 @@ class RiwayatPembayaranController extends Controller
     public function index(Request $request)
     {
         $user = Auth::user();
-        $siswaList = $user->siswa; // Ambil semua siswa yang terhubung dengan wali
-        
+        $siswaList = $user->siswa;
+
         if ($siswaList->isEmpty()) {
             return view('wali.riwayat.index', [
                 'riwayat' => collect([]),
@@ -30,22 +30,20 @@ class RiwayatPembayaranController extends Controller
             ]);
         }
 
-        // Filter berdasarkan siswa jika ada parameter
         $selectedSiswaId = $request->get('siswa_id', $siswaList->first()->id);
-        
-        // Ambil riwayat pembayaran untuk siswa yang dipilih
-        $riwayat = Pembayaran::with('tagihan')
-            ->where('siswa_id', $selectedSiswaId)
-            ->orderBy('created_at', 'desc')
+
+        // Ambil riwayat dari tabel riwayat_pembayaran
+        $riwayat = RiwayatPembayaran::where('siswa_id', $selectedSiswaId)
+            ->orderBy('tanggal_bayar', 'desc')
             ->get();
 
-        // Statistik per siswa yang dipilih
+        // Statistik
         $statistik = [
             'total_transaksi' => $riwayat->count(),
-            'total_nominal' => $riwayat->sum('jumlah_bayar'),
-            'berhasil' => $riwayat->where('status', 'berhasil')->count(),
-            'pending' => $riwayat->where('status', 'pending')->count(),
-            'gagal' => $riwayat->where('status', 'gagal')->count()
+            'total_nominal' => $riwayat->sum('nominal'),
+            'berhasil' => $riwayat->count(), // karena semua riwayat adalah sukses
+            'pending' => 0,
+            'gagal' => 0
         ];
 
         return view('wali.riwayat.index', compact(

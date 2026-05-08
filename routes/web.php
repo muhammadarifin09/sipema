@@ -222,4 +222,7 @@ Route::middleware(['auth'])->group(function () {
 Route::get('/wali/profile', [WaliProfileController::class, 'index'])->name('wali.profile');
 Route::get('/wali/profile/edit', [WaliProfileController::class, 'edit'])->name('wali.profile.edit');
 Route::post('/wali/profile/update', [WaliProfileController::class, 'update'])->name('wali.profile.update');
+
+Route::post('/wali/tagihan/{id}/bayar', [App\Http\Controllers\Wali\TagihanController::class, 'bayar'])
+    ->name('wali.tagihan.bayar');
 });
