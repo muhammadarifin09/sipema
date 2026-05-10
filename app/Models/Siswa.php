@@ -94,10 +94,18 @@ class Siswa extends Model
         return $this->hasMany(Tagihan::class);
     }
 
+    public function tagihan()
+{
+    return $this->hasMany(Tagihan::class);
+}
+
     public function pembayaran()
 {
     return $this->hasOne(Pembayaran::class);
 }
+
+// Di dalam class Siswa
+
 
 
 }

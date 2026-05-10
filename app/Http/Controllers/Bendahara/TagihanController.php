@@ -155,4 +155,58 @@ class TagihanController extends Controller
 
         return back()->with('success', 'Tagihan berhasil dihapus.');
     }
+
+
+    public function unpaidTracking(Request $request)
+{
+    $siswas = Siswa::with(['tagihan' => function ($query) {
+        $query->orderBy('tahun')->orderBy('bulan');
+    }, 'kelas'])->get();
+
+    $data = [];
+    foreach ($siswas as $siswa) {
+        $monthsData = [];
+        $totalUnpaid = 0;
+        $allLunas = true; // asumsi awalnya lunas
+        foreach ($siswa->tagihan as $tagihan) {
+            $bulanNama = Carbon::create()->month((int)$tagihan->bulan)->translatedFormat('F');
+            $monthsData[] = [
+                'id'          => $tagihan->id,
+                'bulan_nama'  => $bulanNama,
+                'bulan'       => $tagihan->bulan,
+                'tahun'       => $tagihan->tahun,
+                'nominal'     => $tagihan->nominal,
+                'status'      => $tagihan->status,
+                'jatuh_tempo' => $tagihan->tanggal_jatuh_tempo,
+            ];
+            if ($tagihan->status == 'belum_bayar') {
+                $totalUnpaid += $tagihan->nominal;
+                $allLunas = false;
+            }
+        }
+        // Jika tidak ada tagihan sama sekali, anggap belum lunas? Bisa juga anggap status "Belum Ada Tagihan"
+        if ($siswa->tagihan->isEmpty()) {
+            $allLunas = false; // atau status "Tidak Ada Tagihan"
+        }
+
+        $data[] = [
+            'siswa'        => $siswa,
+            'nis'          => $siswa->nis, // asumsi ada field nis
+            'status_agregat' => $allLunas ? 'Lunas' : 'Belum Lunas',
+            'total_unpaid' => $totalUnpaid,
+            'months'       => $monthsData,
+        ];
+    }
+
+    // Urutkan berdasarkan status belum lunas dulu, lalu nama
+    usort($data, function ($a, $b) {
+        if ($a['status_agregat'] == $b['status_agregat']) {
+            return $a['siswa']->nama_lengkap <=> $b['siswa']->nama_lengkap;
+        }
+        return ($a['status_agregat'] == 'Belum Lunas') ? -1 : 1;
+    });
+
+    return view('bendahara.tagihan.unpaid-tracking', compact('data'));
+}
+
 }

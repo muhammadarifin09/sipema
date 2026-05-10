@@ -71,6 +71,8 @@ Route::middleware(['auth', 'role:admin'])
         
         //logs  aktivitas
         Route::get('/logs-aktivitas', [App\Http\Controllers\LogsAktivitasController::class, 'index'])->name('logs.index');
+
+        Route::get('/tagihan/unpaid-tracking', [App\Http\Controllers\Admin\TagihanController::class, 'unpaidTracking'])->name('tagihan.unpaid-tracking');
     });
 
 
@@ -149,8 +151,10 @@ Route::middleware(['auth', 'role:bendahara'])
         // Kelas
         Route::resource('kelas', KelasController::class);
 
-    
-});
+        
+        Route::get('/tagihan/unpaid-tracking', [App\Http\Controllers\Bendahara\TagihanController::class, 'unpaidTracking'])->name('tagihan.unpaid-tracking');
+    });
+
 
 /*
 |--------------------------------------------------------------------------

@@ -208,6 +208,30 @@
                            value="{{ old('no_telp_orangtua') }}" placeholder="081234567890">
                 </div>
             </div>
+
+            <!-- Wali Murid (Akun) -->
+            <div class="mb-8">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4 pb-2 border-b border-gray-200">
+                    <i class="fas fa-user-friends text-[#0b4f8c] mr-2"></i>
+                    Wali Murid (Akun Login)
+                </h3>
+                <div class="grid grid-cols-1 gap-6">
+                    <div>
+                        <label class="form-label">Pilih Wali Murid</label>
+                        <select name="wali_id" class="form-select">
+                            <option value="">-- Tidak ada wali --</option>
+                            @foreach($waliList as $wali)
+                            <option value="{{ $wali->id }}" {{ old('wali_id') == $wali->id ? 'selected' : '' }}>
+                                {{ $wali->name }} ({{ $wali->email }})
+                            </option>
+                            @endforeach
+                        </select>
+                        <p class="text-xs text-gray-500 mt-1">
+                            Jika wali belum terdaftar, silahkan buat terlebih dahulu di menu <a href="{{ route('admin.wali.create') }}" target="_blank" class="text-blue-600">Wali Murid</a>.
+                        </p>
+                    </div>
+                </div>
+            </div>
         </div>
         
         <!-- Opsi Tambahan -->

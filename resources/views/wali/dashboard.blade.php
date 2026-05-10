@@ -163,23 +163,22 @@
                         <span class="text-xs text-gray-500">6 bulan terakhir</span>
                     </div>
                     @php
-                        if(isset($pembayaranPerBulan) && is_array($pembayaranPerBulan)) {
+                        // Pastikan $chartData selalu array dengan setidaknya satu elemen
+                        if (isset($pembayaranPerBulan) && is_array($pembayaranPerBulan) && count($pembayaranPerBulan) > 0) {
                             $chartData = $pembayaranPerBulan;
                         } else {
-                            $chartData = [
-                                'Nov' => 0,
-                                'Des' => 0,
-                                'Jan' => 100000,
-                                'Feb' => 120000,
-                                'Mar' => 920000,
-                                'Apr' => 200000,
-                            ];
+                            // Buat data dummy 6 bulan terakhir dengan nilai 0
+                            $chartData = [];
+                            for ($i = 5; $i >= 0; $i--) {
+                                $bulan = now()->subMonths($i);
+                                $chartData[$bulan->translatedFormat('M')] = 0;
+                            }
                         }
-                        $maxValue = max($chartData);
+                        $maxValue = count($chartData) > 0 ? max($chartData) : 0;
                         $totalBayar = array_sum($chartData);
                         $targetPerBulan = 1000000;
                         $totalTarget = $targetPerBulan * count($chartData);
-                        $persentase = $totalTarget > 0 ? round(($totalBayar / $totalTarget) * 100) : 0;
+                        $persentase = ($totalTarget > 0 && count($chartData) > 0) ? round(($totalBayar / $totalTarget) * 100) : 0;
                     @endphp
 
                     <div class="bg-white rounded-2xl p-5 shadow-md border border-gray-200 overflow-x-auto">

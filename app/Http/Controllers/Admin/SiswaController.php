@@ -18,7 +18,7 @@ class SiswaController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Siswa::with('kelas');
+        $query = Siswa::with('kelas' , 'wali');
 
         // Filter berdasarkan kelas
         if ($request->filled('kelas_id')) {
@@ -57,7 +57,9 @@ class SiswaController extends Controller
     public function create()
     {
         $kelasList = Kelas::all();
-        return view('admin.siswa.create', compact('kelasList'));
+        $waliList = User::where('role_id', 3)->orderBy('name')->get(); // role_id=3 untuk wali
+        return view('admin.siswa.create', compact('kelasList', 'waliList'));
+
     }
 
     /**
@@ -114,6 +116,7 @@ class SiswaController extends Controller
             'no_telp_orangtua' => $request->no_telp_orangtua,
             'foto' => $fotoPath,
             'status' => $request->status,
+            'wali_id' => $request->wali_id,
         ]);
 
         // Buat akun user untuk login jika dicentang
@@ -147,7 +150,8 @@ class SiswaController extends Controller
     {
         $siswa = Siswa::findOrFail($id);
         $kelasList = Kelas::all();
-        return view('admin.siswa.edit', compact('siswa', 'kelasList'));
+        $waliList = User::where('role_id', 3)->orderBy('name')->get(); // role_id=3 untuk wali
+        return view('admin.siswa.edit', compact('siswa', 'kelasList', 'waliList'));
     }
 
     /**
@@ -172,6 +176,7 @@ class SiswaController extends Controller
             'no_telp_orangtua' => 'nullable|string|max:15',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'status' => 'required|in:aktif,alumni,keluar',
+            'wali_id' => 'nullable|exists:users,id',
         ]);
 
         // Data yang akan diupdate
@@ -189,6 +194,8 @@ class SiswaController extends Controller
             'nama_ibu' => $request->nama_ibu,
             'no_telp_orangtua' => $request->no_telp_orangtua,
             'status' => $request->status,
+            'wali_id' => $request->wali_id,
+            
         ];
 
         // Upload foto baru jika ada

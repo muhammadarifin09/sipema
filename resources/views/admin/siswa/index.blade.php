@@ -115,8 +115,6 @@
     </form>
 </div>
 
-
-
 <!-- Siswa Table -->
 <div class="table-container animate-slide-in delay-2">
     <div class="overflow-x-auto">
@@ -134,14 +132,37 @@
             </thead>
             <tbody>
                 @forelse($data as $index => $siswa)
-                <tr class="table-row" data-id="{{ $siswa->id }}">
+                @php
+                    // Siapkan data untuk atribut data-*
+                    $waliName = $siswa->wali ? $siswa->wali->name : '-';
+                    $fotoUrl = $siswa->foto ? Storage::url($siswa->foto) : '';
+                    $userEmail = $siswa->user ? $siswa->user->email : '';
+                    $tanggalLahirFormatted = $siswa->tanggal_lahir ? $siswa->tanggal_lahir->format('d F Y') : '-';
+                    $tempatLahir = $siswa->tempat_lahir ?? '-';
+                @endphp
+                <tr class="table-row" 
+                    data-id="{{ $siswa->id }}"
+                    data-nis="{{ $siswa->nis }}"
+                    data-nama="{{ $siswa->nama_lengkap }}"
+                    data-jk="{{ $siswa->jenis_kelamin == 'L' ? 'Laki-laki' : 'Perempuan' }}"
+                    data-kelas="{{ $siswa->kelas->nama_kelas ?? '-' }}"
+                    data-status="{{ $siswa->status }}"
+                    data-wali="{{ $waliName }}"
+                    data-tempat-lahir="{{ $tempatLahir }}"
+                    data-tanggal-lahir="{{ $tanggalLahirFormatted }}"
+                    data-alamat="{{ $siswa->alamat ?? '-' }}"
+                    data-email="{{ $siswa->email ?? '-' }}"
+                    data-no-telp="{{ $siswa->no_telp ?? '-' }}"
+                    data-nama-ayah="{{ $siswa->nama_ayah ?? '-' }}"
+                    data-nama-ibu="{{ $siswa->nama_ibu ?? '-' }}"
+                    data-no-telp-ortu="{{ $siswa->no_telp_orangtua ?? '-' }}"
+                    data-foto="{{ $fotoUrl }}"
+                    data-user-email="{{ $userEmail }}"
+                >
                     <td class="px-6 py-4 text-sm text-gray-700">{{ $data->firstItem() + $index }}</td>
                     <td class="px-6 py-4 text-sm font-mono text-gray-700">{{ $siswa->nis }}</td>
                     <td class="px-6 py-4">
                         <div class="font-medium text-gray-800">{{ $siswa->nama_lengkap }}</div>
-                        @if($siswa->email)
-                            <div class="text-xs text-gray-500">{{ $siswa->email }}</div>
-                        @endif
                     </td>
                     <td class="px-6 py-4">
                         @if($siswa->jenis_kelamin == 'L')
@@ -162,11 +183,12 @@
                     </td>
                     <td class="px-6 py-4">
                         <div class="flex items-center space-x-2">
-                            <a href="{{ route('admin.siswa.show', $siswa->id) }}" 
-                               class="text-blue-600 hover:text-blue-700 p-2 hover:bg-blue-50 rounded-xl transition-all" 
-                               title="Detail">
+                            <button onclick="showDetailModal(this)" 
+                                    data-id="{{ $siswa->id }}"
+                                    class="text-blue-600 hover:text-blue-700 p-2 hover:bg-blue-50 rounded-xl transition-all" 
+                                    title="Detail">
                                 <i class="fas fa-eye"></i>
-                            </a>
+                            </button>
                             <a href="{{ route('admin.siswa.edit', $siswa->id) }}" 
                                class="text-green-600 hover:text-green-700 p-2 hover:bg-green-50 rounded-xl transition-all" 
                                title="Edit">
@@ -182,7 +204,7 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="9" class="px-6 py-12 text-center">
+                    <td colspan="7" class="px-6 py-12 text-center">
                         <div class="flex flex-col items-center justify-center">
                             <i class="fas fa-users text-5xl text-gray-300 mb-4"></i>
                             <p class="text-gray-500 text-lg mb-2">Belum ada data siswa</p>
@@ -203,6 +225,21 @@
         </p>
         <div class="flex items-center space-x-2">
             {{ $data->links() }}
+        </div>
+    </div>
+</div>
+
+<!-- MODAL DETAIL SISWA -->
+<div id="siswaDetailModal" class="modal-overlay" style="display: none;">
+    <div class="modal-content max-w-4xl">
+        <div class="flex justify-between items-start mb-4">
+            <h3 class="text-xl font-bold text-gray-800">Detail Siswa</h3>
+            <button onclick="closeDetailModal()" class="text-gray-400 hover:text-gray-600">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+        </div>
+        <div id="modalDetailContent" class="max-h-[80vh] overflow-y-auto">
+            <!-- Akan diisi dengan JS -->
         </div>
     </div>
 </div>
@@ -290,7 +327,154 @@
 
 @push('scripts')
 <script>
-    // ==================== DELETE MODAL ====================
+    // ==================== DETAIL MODAL ====================
+    function showDetailModal(button) {
+        // Dapatkan baris tr terdekat
+        const row = button.closest('tr');
+        if (!row) return;
+        
+        // Ambil data dari atribut data-* di tr
+        const data = {
+            id: row.getAttribute('data-id'),
+            nis: row.getAttribute('data-nis'),
+            nama: row.getAttribute('data-nama'),
+            jk: row.getAttribute('data-jk'),
+            kelas: row.getAttribute('data-kelas'),
+            status: row.getAttribute('data-status'),
+            wali: row.getAttribute('data-wali'),
+            tempat_lahir: row.getAttribute('data-tempat-lahir'),
+            tanggal_lahir: row.getAttribute('data-tanggal-lahir'),
+            alamat: row.getAttribute('data-alamat'),
+            email: row.getAttribute('data-email'),
+            no_telp: row.getAttribute('data-no-telp'),
+            nama_ayah: row.getAttribute('data-nama-ayah'),
+            nama_ibu: row.getAttribute('data-nama-ibu'),
+            no_telp_ortu: row.getAttribute('data-no-telp-ortu'),
+            foto: row.getAttribute('data-foto'),
+            user_email: row.getAttribute('data-user-email')
+        };
+        
+        // Bangun HTML modal detail (mirip dengan halaman show)
+        let fotoHtml = '';
+        if (data.foto) {
+            fotoHtml = `<img src="${data.foto}" alt="${data.nama}" class="w-full h-full object-cover rounded-2xl">`;
+        } else {
+            fotoHtml = `<span class="text-4xl text-white font-bold">${data.nama.substring(0, 2).toUpperCase()}</span>`;
+        }
+        
+        let statusBadge = '';
+        if (data.status === 'aktif') statusBadge = '<span class="badge-success text-sm px-3 py-1.5">Aktif</span>';
+        else if (data.status === 'alumni') statusBadge = '<span class="badge-info text-sm px-3 py-1.5">Alumni</span>';
+        else statusBadge = '<span class="badge-danger text-sm px-3 py-1.5">Keluar</span>';
+        
+        let userHtml = '';
+        if (data.user_email) {
+            userHtml = `
+                <div class="md:col-span-2 mt-4">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4 pb-2 border-b border-gray-200">
+                        <i class="fas fa-lock text-[#0b4f8c] mr-2"></i> Informasi Akun Login
+                    </h3>
+                    <div class="bg-blue-50 border border-blue-200 rounded-xl p-4">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm text-blue-800 mb-1">Email: <span class="font-mono">${data.user_email}</span></p>
+                                <p class="text-xs text-blue-600">Akun ini digunakan siswa untuk login ke sistem</p>
+                            </div>
+                            <span class="badge-success">Active</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        const modalContent = `
+            <div class="flex flex-col md:flex-row items-start md:items-center gap-8 mb-8 pb-8 border-b border-gray-200">
+                <div class="relative">
+                    <div class="profile-avatar w-32 h-32 bg-gradient-to-br from-[#0b4f8c] to-[#1e6f9f]">
+                        ${fotoHtml}
+                    </div>
+                    <div class="absolute -bottom-2 -right-2">
+                        ${statusBadge}
+                    </div>
+                </div>
+                <div class="flex-1">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-2">${data.nama}</h2>
+                    <div class="flex flex-wrap items-center gap-4 text-gray-600">
+                        <div class="flex items-center"><i class="fas fa-id-card w-5 text-[#0b4f8c]"></i><span class="ml-2">${data.nis}</span></div>
+                        <div class="flex items-center"><i class="fas fa-graduation-cap w-5 text-[#0b4f8c]"></i><span class="ml-2">${data.kelas}</span></div>
+                        <div class="flex items-center"><i class="fas fa-venus-mars w-5 text-[#0b4f8c]"></i><span class="ml-2">${data.jk}</span></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4 pb-2 border-b border-gray-200">
+                        <i class="fas fa-user text-[#0b4f8c] mr-2"></i> Informasi Pribadi
+                    </h3>
+                    <div class="space-y-3">
+                        <div><span class="w-32 inline-block text-sm text-gray-600">NIS</span>: ${data.nis}</div>
+                        <div><span class="w-32 inline-block text-sm text-gray-600">Nama Lengkap</span>: ${data.nama}</div>
+                        <div><span class="w-32 inline-block text-sm text-gray-600">Jenis Kelamin</span>: ${data.jk}</div>
+                        <div><span class="w-32 inline-block text-sm text-gray-600">Tempat, Tgl Lahir</span>: ${data.tempat_lahir !== '-' ? data.tempat_lahir + ', ' : ''}${data.tanggal_lahir}</div>
+                        <div><span class="w-32 inline-block text-sm text-gray-600">Email</span>: ${data.email}</div>
+                        <div><span class="w-32 inline-block text-sm text-gray-600">No. Telepon</span>: ${data.no_telp}</div>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4 pb-2 border-b border-gray-200">
+                        <i class="fas fa-graduation-cap text-[#0b4f8c] mr-2"></i> Informasi Akademik
+                    </h3>
+                    <div class="space-y-3">
+                        <div><span class="w-32 inline-block text-sm text-gray-600">Kelas</span>: ${data.kelas}</div>
+                        <div><span class="w-32 inline-block text-sm text-gray-600">Status</span>: ${statusBadge}</div>
+                        <div><span class="w-32 inline-block text-sm text-gray-600">Wali Murid</span>: ${data.wali}</div>
+                    </div>
+                </div>
+                <div class="md:col-span-2">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4 pb-2 border-b border-gray-200">
+                        <i class="fas fa-map-marker-alt text-[#0b4f8c] mr-2"></i> Alamat
+                    </h3>
+                    <div class="bg-gray-50 rounded-xl p-4"><p class="text-sm text-gray-700">${data.alamat}</p></div>
+                </div>
+                <div class="md:col-span-2">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4 pb-2 border-b border-gray-200">
+                        <i class="fas fa-users text-[#0b4f8c] mr-2"></i> Informasi Orang Tua
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="bg-gray-50 rounded-xl p-4"><p class="text-xs text-gray-500 mb-1">Nama Ayah</p><p class="text-sm font-medium text-gray-800">${data.nama_ayah}</p></div>
+                        <div class="bg-gray-50 rounded-xl p-4"><p class="text-xs text-gray-500 mb-1">Nama Ibu</p><p class="text-sm font-medium text-gray-800">${data.nama_ibu}</p></div>
+                        <div class="bg-gray-50 rounded-xl p-4"><p class="text-xs text-gray-500 mb-1">No. Telepon Orang Tua</p><p class="text-sm font-medium text-gray-800">${data.no_telp_ortu}</p></div>
+                    </div>
+                </div>
+                ${userHtml}
+            </div>
+            
+            <div class="flex items-center justify-end space-x-2 mt-8 pt-4 border-t border-gray-200">
+                <a href="/admin/siswa/${data.id}/edit" class="btn-primary">
+                    <i class="fas fa-edit mr-2"></i> Edit Data
+                </a>
+                <button onclick="confirmDeleteFromModal(${data.id}, '${data.nama}')" class="btn-danger">
+                    <i class="fas fa-trash mr-2"></i> Hapus Data
+                </button>
+            </div>
+        `;
+        
+        document.getElementById('modalDetailContent').innerHTML = modalContent;
+        document.getElementById('siswaDetailModal').style.display = 'flex';
+    }
+    
+    function closeDetailModal() {
+        document.getElementById('siswaDetailModal').style.display = 'none';
+    }
+    
+    // Override confirmDelete untuk dipanggil dari modal
+    function confirmDeleteFromModal(id, nama) {
+        closeDetailModal();
+        confirmDelete(id, nama);
+    }
+    
+    // ==================== DELETE MODAL (sama seperti sebelumnya) ====================
     function confirmDelete(id, namaSiswa) {
         document.getElementById('deleteMessage').innerHTML = `Apakah Anda yakin ingin menghapus siswa <strong>${namaSiswa}</strong>?`;
         document.getElementById('deleteForm').action = `/admin/siswa/${id}`;
@@ -301,55 +485,40 @@
         document.getElementById('deleteModal').style.display = 'none';
     }
     
-    // ==================== BULK DELETE ====================
+    // Bulk delete (dari template asli)
     const selectAllCheckbox = document.getElementById('selectAllCheckbox');
     const rowCheckboxes = document.querySelectorAll('.row-checkbox');
     
     function selectAll() {
-        rowCheckboxes.forEach(checkbox => {
-            checkbox.checked = true;
-        });
-        if (selectAllCheckbox) {
-            selectAllCheckbox.checked = true;
-        }
+        rowCheckboxes.forEach(checkbox => checkbox.checked = true);
+        if (selectAllCheckbox) selectAllCheckbox.checked = true;
     }
     
     function deselectAll() {
-        rowCheckboxes.forEach(checkbox => {
-            checkbox.checked = false;
-        });
-        if (selectAllCheckbox) {
-            selectAllCheckbox.checked = false;
-        }
+        rowCheckboxes.forEach(checkbox => checkbox.checked = false);
+        if (selectAllCheckbox) selectAllCheckbox.checked = false;
     }
     
     if (selectAllCheckbox) {
         selectAllCheckbox.addEventListener('change', function() {
-            rowCheckboxes.forEach(checkbox => {
-                checkbox.checked = this.checked;
-            });
+            rowCheckboxes.forEach(checkbox => checkbox.checked = this.checked);
         });
     }
     
     rowCheckboxes.forEach(checkbox => {
         checkbox.addEventListener('change', function() {
             if (selectAllCheckbox) {
-                const allChecked = Array.from(rowCheckboxes).every(cb => cb.checked);
-                selectAllCheckbox.checked = allChecked;
+                selectAllCheckbox.checked = Array.from(rowCheckboxes).every(cb => cb.checked);
             }
         });
     });
     
     function bulkDelete() {
-        const selected = Array.from(rowCheckboxes)
-            .filter(cb => cb.checked)
-            .map(cb => cb.value);
-        
+        const selected = Array.from(rowCheckboxes).filter(cb => cb.checked).map(cb => cb.value);
         if (selected.length === 0) {
             alert('Pilih minimal satu data siswa untuk dihapus');
             return;
         }
-        
         document.getElementById('selectedCount').textContent = selected.length;
         document.getElementById('selectedIds').value = JSON.stringify(selected);
         document.getElementById('bulkDeleteModal').style.display = 'flex';
@@ -359,24 +528,20 @@
         document.getElementById('bulkDeleteModal').style.display = 'none';
     }
     
-    // ==================== CLOSE MODALS WHEN CLICKING OUTSIDE ====================
+    // Tutup modal saat klik di luar
     window.addEventListener('click', function(e) {
         const deleteModal = document.getElementById('deleteModal');
         const bulkDeleteModal = document.getElementById('bulkDeleteModal');
-        
-        if (e.target === deleteModal) {
-            closeDeleteModal();
-        }
-        if (e.target === bulkDeleteModal) {
-            closeBulkDeleteModal();
-        }
+        const detailModal = document.getElementById('siswaDetailModal');
+        if (e.target === deleteModal) closeDeleteModal();
+        if (e.target === bulkDeleteModal) closeBulkDeleteModal();
+        if (e.target === detailModal) closeDetailModal();
     });
     
-    // Auto hide success/error messages after 5 seconds
-    setTimeout(function() {
+    // Auto hide success/error
+    setTimeout(() => {
         const successMsg = document.getElementById('successMessage');
         const errorMsg = document.getElementById('errorMessage');
-        
         if (successMsg) successMsg.remove();
         if (errorMsg) errorMsg.remove();
     }, 5000);

@@ -138,9 +138,6 @@
                     <td class="px-6 py-4 text-sm font-mono text-gray-700">{{ $item->siswa->nis ?? '-' }}</td>
                     <td class="px-6 py-4">
                         <div class="font-medium text-gray-800">{{ $item->siswa->nama_lengkap ?? 'Siswa Terhapus' }}</div>
-                        @if($item->siswa && $item->siswa->email)
-                            <div class="text-xs text-gray-500">{{ $item->siswa->email }}</div>
-                        @endif
                     </td>
                     <td class="px-6 py-4 text-sm text-gray-700">{{ $item->siswa->kelas->nama_kelas ?? '-' }}</td>
                     <td class="px-6 py-4">

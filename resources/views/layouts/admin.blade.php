@@ -454,14 +454,19 @@
         }
 
         .modal-content {
-            background: white;
-            border-radius: 2rem;
-            padding: 2rem;
-            max-width: 500px;
-            width: 90%;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
+        background: white;
+        border-radius: 2rem;
+        padding: 2rem;
+        max-width: 500px;
+        width: 90%;
+        max-height: 90vh;
+        overflow-y: auto;      /* tetap bisa scroll jika konten panjang */
+        scrollbar-width: none; /* Firefox - sembunyikan scroll bar */
+        -ms-overflow-style: none; /* IE/Edge */
+    }
+    .modal-content::-webkit-scrollbar {
+        display: none; /* Chrome, Safari, Opera */
+    }
 
         /* Animations */
         @keyframes slideIn {
@@ -547,16 +552,31 @@
                     </a>
                 </div>
 
-                <!-- Kelompok: Transaksi -->
+                
+              <!-- Kelompok: Transaksi -->
                 <div class="mb-4">
                     <div class="px-4 mb-2">
                         <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Transaksi</p>
                     </div>
-                    <a href="{{ route('admin.tagihan.index') }}" class="nav-item {{ request()->routeIs('admin.tagihan.*') ? 'active' : '' }}">
+
+                    @php
+                        $currentRoute = request()->route()->getName();
+                    @endphp
+
+                    <a href="{{ route('admin.tagihan.index') }}" 
+                    class="nav-item {{ str_starts_with($currentRoute, 'admin.tagihan.') && $currentRoute != 'admin.tagihan.unpaid-tracking' ? 'active' : '' }}">
                         <i class="fas fa-credit-card w-6"></i>
                         <span class="ml-3 font-medium">Tagihan Pembayaran</span>
                     </a>
-                    <a href="{{ route('admin.riwayat.index') }}" class="nav-item {{ request()->routeIs('admin.riwayat.*') ? 'active' : '' }}">
+
+                    <a href="{{ route('admin.tagihan.unpaid-tracking') }}" 
+                    class="nav-item {{ $currentRoute == 'admin.tagihan.unpaid-tracking' ? 'active' : '' }}">
+                        <i class="fas fa-chart-line w-6"></i>   <!-- icon berbeda agar tidak sama dengan menu di atas -->
+                        <span class="ml-3 font-medium">Monitoring Tunggakan</span>
+                    </a>
+
+                    <a href="{{ route('admin.riwayat.index') }}" 
+                    class="nav-item {{ request()->routeIs('admin.riwayat.*') ? 'active' : '' }}">
                         <i class="fas fa-history w-6"></i>
                         <span class="ml-3 font-medium">Riwayat Pembayaran</span>
                     </a>

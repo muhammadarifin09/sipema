@@ -421,6 +421,36 @@
             font-size: 1.1rem;
         }
 
+        /* Modal Overlay & Content */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+        
+        .modal-content {
+        background: white;
+        border-radius: 2rem;
+        padding: 2rem;
+        max-width: 500px;
+        width: 90%;
+        max-height: 90vh;
+        overflow-y: auto;      /* tetap bisa scroll jika konten panjang */
+        scrollbar-width: none; /* Firefox - sembunyikan scroll bar */
+        -ms-overflow-style: none; /* IE/Edge */
+    }
+    .modal-content::-webkit-scrollbar {
+        display: none; /* Chrome, Safari, Opera */
+    }
+
         /* Animations */
         @keyframes slideIn {
             from {
@@ -500,16 +530,30 @@
                     </a>
                 </div>
 
-                <!-- Kelompok: Transaksi -->
+              <!-- Kelompok: Transaksi -->
                 <div class="mb-4">
                     <div class="px-4 mb-2">
                         <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Transaksi</p>
                     </div>
-                    <a href="{{ route('bendahara.tagihan.index') }}" class="nav-item {{ request()->routeIs('bendahara.tagihan.*') ? 'active' : '' }}">
+
+                    @php
+                        $currentRoute = request()->route()->getName();
+                    @endphp
+
+                    <a href="{{ route('bendahara.tagihan.index') }}" 
+                    class="nav-item {{ str_starts_with($currentRoute, 'bendahara.tagihan.') && $currentRoute != 'bendahara.tagihan.unpaid-tracking' ? 'active' : '' }}">
                         <i class="fas fa-credit-card w-6"></i>
                         <span class="ml-3 font-medium">Tagihan Pembayaran</span>
                     </a>
-                    <a href="{{ route('bendahara.riwayat.index') }}" class="nav-item {{ request()->routeIs('bendahara.riwayat.*') ? 'active' : '' }}">
+
+                    <a href="{{ route('bendahara.tagihan.unpaid-tracking') }}" 
+                    class="nav-item {{ $currentRoute == 'bendahara.tagihan.unpaid-tracking' ? 'active' : '' }}">
+                        <i class="fas fa-chart-line w-6"></i>   <!-- icon berbeda agar tidak sama dengan menu di atas -->
+                        <span class="ml-3 font-medium">Monitoring Tunggakan</span>
+                    </a>
+
+                    <a href="{{ route('bendahara.riwayat.index') }}" 
+                    class="nav-item {{ request()->routeIs('bendahara.riwayat.*') ? 'active' : '' }}">
                         <i class="fas fa-history w-6"></i>
                         <span class="ml-3 font-medium">Riwayat Pembayaran</span>
                     </a>
