@@ -187,6 +187,10 @@ Route::middleware(['auth', 'role:wali'])
 
         Route::get('/notifikasi/{id}/read', [NotifikasiController::class, 'read'])
             ->name('notifikasi.read');
+
+        Route::get('/riwayat/export-pdf', [WaliRiwayatController::class, 'exportPdf'])
+    ->name('riwayat.export-pdf');
+    
     });
 
 require __DIR__.'/auth.php';

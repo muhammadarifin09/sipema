@@ -104,6 +104,8 @@ class Siswa extends Model
     return $this->hasOne(Pembayaran::class);
 }
 
+
+
 // Di dalam class Siswa
 
 

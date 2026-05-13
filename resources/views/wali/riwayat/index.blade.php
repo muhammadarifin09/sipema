@@ -25,7 +25,7 @@
             <div class="bg-gradient-to-br from-blue-700 via-blue-600 to-blue-300 rounded-2xl p-5 shadow-xl mb-6 border border-white/30 relative overflow-hidden">
                 <div class="absolute -right-10 -top-10 w-32 h-32 bg-white/10 rounded-full"></div>
                 <div class="absolute -right-5 -bottom-5 w-24 h-24 bg-white/5 rounded-full"></div>
-                <div class="relative z-10 md:flex md:items-center md:justify-between">
+                <div class="relative z-10">
                     <div>
                         <p class="text-white/80 text-xs uppercase tracking-wider flex items-center">
                             <i class="fas fa-history mr-2"></i>Riwayat Transaksi Pembayaran SPP
@@ -44,16 +44,10 @@
                             <p class="text-white/70 text-sm mt-1">Hubungi admin untuk menghubungkan siswa</p>
                         @endif
                     </div>
-                    <div class="mt-4 md:mt-0">
-                        <div class="bg-white/20 backdrop-blur-sm rounded-xl px-4 py-2 inline-flex items-center">
-                            <i class="fas fa-history text-white mr-2"></i>
-                            <span class="text-white text-sm">Riwayat</span>
-                        </div>
-                    </div>
                 </div>
             </div>
 
-            <!-- Filter Siswa -->
+            <!-- Filter Siswa (jika lebih dari 1) -->
             @if(isset($siswaList) && $siswaList->count() > 1)
             <div class="bg-white rounded-xl p-4 mb-6 shadow-sm border border-gray-200">
                 <div class="flex flex-wrap items-center gap-3">
@@ -80,11 +74,19 @@
                 </div>
             </div>
 
-            <!-- Pencarian -->
-            <div class="bg-white rounded-xl p-4 mb-6 shadow-sm border border-gray-200 flex flex-col sm:flex-row gap-3 justify-between items-center">
-                <div class="flex items-center text-gray-600 text-sm">
-                    <i class="fas fa-search mr-2"></i>
-                    <input type="text" id="searchInput" placeholder="Cari bulan..." class="bg-gray-50 border border-gray-300 rounded-lg px-3 py-1.5 text-sm">
+            <!-- Pencarian + Tombol Unduh dalam satu card -->
+            <div class="bg-white rounded-xl p-4 mb-6 shadow-sm border border-gray-200">
+                <div class="flex flex-col sm:flex-row gap-3 justify-between items-center">
+                    <div class="flex items-center text-gray-600 text-sm w-full sm:w-auto">
+                        <i class="fas fa-search mr-2"></i>
+                        <input type="text" id="searchInput" placeholder="Cari bulan..." class="bg-gray-50 border border-gray-300 rounded-lg px-3 py-1.5 text-sm w-full sm:w-64">
+                    </div>
+                    <!-- Tombol Unduh Kartu SPP -->
+                    <a href="{{ route('wali.riwayat.export-pdf', ['siswa_id' => request('siswa_id', $selectedSiswaId ?? null)]) }}" 
+                       class="bg-blue-600 hover:bg-blue-700 rounded-xl px-5 py-2 inline-flex items-center text-white shadow-md transition w-full sm:w-auto justify-center">
+                        <i class="fas fa-file-pdf mr-2"></i>
+                        <span class="text-sm font-medium">Unduh Kartu SPP</span>
+                    </a>
                 </div>
             </div>
 
@@ -204,7 +206,9 @@
             el.style.display = bulan.includes(term) ? '' : 'none';
         });
     }
-    searchInput?.addEventListener('keyup', filterRiwayat);
+    if (searchInput) {
+        searchInput.addEventListener('keyup', filterRiwayat);
+    }
 </script>
 
 <style>
