@@ -24,7 +24,7 @@
     background: white;
     border-radius: 1.5rem;
     width: 90%;
-    max-width: 600px;
+    max-width: 500px;
     margin: 2rem auto;
     padding: 1.5rem;
     position: relative;
@@ -104,6 +104,7 @@
             <tbody>
                 @foreach($tahunAjaran as $index => $ta)
                 <tr class="table-row" 
+                    data-id="{{ $ta->id }}"
                     data-tahun="{{ strtolower($ta->tahun) }}" 
                     data-semester="{{ strtolower($ta->semester) }}"
                     data-status="{{ strtolower($ta->status) }}">
@@ -132,11 +133,8 @@
                     </td>
                     <td class="px-6 py-4">
                         <div class="flex items-center space-x-2">
-                            <button onclick="openEditModal({{ $ta->id }})" class="text-green-600 hover:text-green-700 p-2 hover:bg-green-50 rounded-xl transition-all" title="Edit">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                            <button onclick="confirmDelete({{ $ta->id }}, '{{ $ta->tahun }} - {{ ucfirst($ta->semester) }}')" class="text-red-600 hover:text-red-700 p-2 hover:bg-red-50 rounded-xl transition-all" title="Hapus">
-                                <i class="fas fa-trash"></i>
+                            <button onclick="openDetailModal({{ $ta->id }})" class="text-blue-600 hover:text-blue-700 p-2 hover:bg-blue-50 rounded-xl transition-all" title="Detail">
+                                <i class="fas fa-eye"></i>
                             </button>
                         </div>
                     </td>
@@ -205,85 +203,43 @@
     </div>
 </div>
 
-<!-- EDIT MODAL -->
-<div class="modal-overlay" id="editModal" style="display: none;">
-    <div class="modal-content max-w-lg">
+<!-- DETAIL MODAL -->
+<div class="modal-overlay" id="detailModal" style="display: none;">
+    <div class="modal-content max-w-md">
         <div class="flex justify-between items-center mb-6">
-            <h3 class="text-xl font-bold text-gray-800">Edit Tahun Ajaran</h3>
-            <button onclick="closeEditModal()" class="text-gray-500 hover:text-gray-700">
+            <h3 class="text-xl font-bold text-gray-800">Detail Tahun Ajaran</h3>
+            <button onclick="closeDetailModal()" class="text-gray-500 hover:text-gray-700">
                 <i class="fas fa-times text-2xl"></i>
             </button>
         </div>
         
-        <form action="" method="POST" id="editForm">
-            @csrf
-            @method('PUT')
-            
-            <div class="space-y-4 mb-4">
-                <div>
-                    <label class="form-label">Tahun Ajaran <span class="text-red-500">*</span></label>
-                    <input type="text" name="tahun" id="edit_tahun" class="form-input" placeholder="Contoh: 2025/2026" required>
-                    <p class="text-xs text-gray-500 mt-1">Format: YYYY/YYYY (contoh: 2025/2026)</p>
-                </div>
-                
-                <div>
-                    <label class="form-label">Semester <span class="text-red-500">*</span></label>
-                    <select name="semester" id="edit_semester" class="form-select" required>
-                        <option value="">Pilih Semester</option>
-                        <option value="ganjil" style="color: #059669; font-weight: 600;">Ganjil</option>
-                        <option value="genap" style="color: #b45309; font-weight: 600;">Genap</option>
-                    </select>
-                </div>
-                
-                <div>
-                    <label class="form-label">Status <span class="text-red-500">*</span></label>
-                    <select name="status" id="edit_status" class="form-select" required>
-                        <option value="">Pilih Status</option>
-                        <option value="aktif" style="color: #059669; font-weight: 600;">Aktif</option>
-                        <option value="nonaktif" style="color: #b45309; font-weight: 600;">Nonaktif</option>
-                    </select>
-                    <p class="text-xs text-gray-500 mt-1">Hanya satu tahun ajaran yang dapat berstatus aktif</p>
+        <div class="space-y-4">
+            <div class="bg-gray-50 rounded-xl p-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-xs text-gray-500">Tahun Ajaran</label>
+                        <p class="text-lg font-semibold text-gray-800" id="detailTahun">-</p>
+                    </div>
+                    <div>
+                        <label class="text-xs text-gray-500">Semester</label>
+                        <p class="text-lg font-semibold" id="detailSemester">-</p>
+                    </div>
+                    <div>
+                        <label class="text-xs text-gray-500">Status</label>
+                        <div id="detailStatus"></div>
+                    </div>
+                    <div>
+                        <label class="text-xs text-gray-500">Dibuat pada</label>
+                        <p class="text-sm text-gray-700" id="detailCreatedAt">-</p>
+                    </div>
                 </div>
             </div>
-            
-            <div class="flex items-center justify-end space-x-4 mt-6 pt-4 border-t border-gray-200">
-                <button type="button" onclick="closeEditModal()" class="btn-secondary">
-                    Batal
-                </button>
-                <button type="submit" class="btn-primary">
-                    <i class="fas fa-save mr-2"></i>
-                    Update
-                </button>
-            </div>
-        </form>
-    </div>
-</div>
-
-<!-- DELETE CONFIRMATION MODAL -->
-<div class="modal-overlay" id="deleteModal" style="display: none;">
-    <div class="modal-content max-w-md">
-        <div class="text-center">
-            <div class="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <i class="fas fa-exclamation-triangle text-red-600 text-4xl"></i>
-            </div>
-            
-            <h3 class="text-xl font-bold text-gray-800 mb-2">Konfirmasi Hapus</h3>
-            <p class="text-gray-600 mb-6" id="deleteMessage">Apakah Anda yakin ingin menghapus tahun ajaran ini?</p>
-            
-            <form action="" method="POST" id="deleteForm">
-                @csrf
-                @method('DELETE')
-                
-                <div class="flex items-center justify-center space-x-4">
-                    <button type="button" onclick="closeDeleteModal()" class="btn-secondary">
-                        Batal
-                    </button>
-                    <button type="submit" class="btn-danger">
-                        <i class="fas fa-trash mr-2"></i>
-                        Ya, Hapus
-                    </button>
-                </div>
-            </form>
+        </div>
+        
+        <div class="flex items-center justify-end mt-6 pt-4 border-t border-gray-200">
+            <button onclick="closeDetailModal()" class="btn-secondary">
+                Tutup
+            </button>
         </div>
     </div>
 </div>
@@ -313,7 +269,7 @@
 
 @push('scripts')
 <script>
-    // Data tahun ajaran untuk edit
+    // Data tahun ajaran untuk detail modal
     const tahunAjaranData = @json($tahunAjaran);
     
     // ==================== CREATE MODAL ====================
@@ -328,39 +284,40 @@
         document.body.style.overflow = '';
     }
     
-    // ==================== EDIT MODAL ====================
-    function openEditModal(id) {
+    // ==================== DETAIL MODAL ====================
+    function openDetailModal(id) {
         const ta = tahunAjaranData.find(item => item.id === id);
         
         if (ta) {
-            document.getElementById('edit_tahun').value = ta.tahun;
-            document.getElementById('edit_semester').value = ta.semester;
-            document.getElementById('edit_status').value = ta.status;
+            document.getElementById('detailTahun').textContent = ta.tahun;
             
-            // Set form action ke route bendahara
-            document.getElementById('editForm').action = `/bendahara/tahun-ajaran/${id}`;
+            // Semester badge
+            const semesterEl = document.getElementById('detailSemester');
+            if (ta.semester === 'ganjil') {
+                semesterEl.innerHTML = '<span class="badge-success">Ganjil</span>';
+            } else {
+                semesterEl.innerHTML = '<span class="badge-warning">Genap</span>';
+            }
             
-            document.getElementById('editModal').style.display = 'flex';
+            // Status badge
+            const statusEl = document.getElementById('detailStatus');
+            if (ta.status === 'aktif') {
+                statusEl.innerHTML = '<span class="badge-success">Aktif</span>';
+            } else {
+                statusEl.innerHTML = '<span class="badge-danger">Nonaktif</span>';
+            }
+            
+            // Created at (format tanggal)
+            const createdAt = ta.created_at ? new Date(ta.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) : '-';
+            document.getElementById('detailCreatedAt').textContent = createdAt;
+            
+            document.getElementById('detailModal').style.display = 'flex';
             document.body.style.overflow = 'hidden';
         }
     }
     
-    function closeEditModal() {
-        document.getElementById('editModal').style.display = 'none';
-        document.getElementById('editForm').reset();
-        document.body.style.overflow = '';
-    }
-    
-    // ==================== DELETE MODAL ====================
-    function confirmDelete(id, tahunAjaran) {
-        document.getElementById('deleteMessage').innerHTML = `Apakah Anda yakin ingin menghapus tahun ajaran <strong>${tahunAjaran}</strong>?`;
-        document.getElementById('deleteForm').action = `/bendahara/tahun-ajaran/${id}`;
-        document.getElementById('deleteModal').style.display = 'flex';
-        document.body.style.overflow = 'hidden';
-    }
-    
-    function closeDeleteModal() {
-        document.getElementById('deleteModal').style.display = 'none';
+    function closeDetailModal() {
+        document.getElementById('detailModal').style.display = 'none';
         document.body.style.overflow = '';
     }
     
@@ -398,20 +355,17 @@
     // ==================== CLOSE MODALS WHEN CLICKING OUTSIDE ====================
     window.addEventListener('click', function(e) {
         const createModal = document.getElementById('createModal');
-        const editModal = document.getElementById('editModal');
-        const deleteModal = document.getElementById('deleteModal');
+        const detailModal = document.getElementById('detailModal');
         
         if (e.target === createModal) closeCreateModal();
-        if (e.target === editModal) closeEditModal();
-        if (e.target === deleteModal) closeDeleteModal();
+        if (e.target === detailModal) closeDetailModal();
     });
     
     // ==================== CLOSE WITH ESC KEY ====================
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
             closeCreateModal();
-            closeEditModal();
-            closeDeleteModal();
+            closeDetailModal();
         }
     });
     

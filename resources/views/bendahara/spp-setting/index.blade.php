@@ -24,7 +24,7 @@
     background: white;
     border-radius: 1.5rem;
     width: 90%;
-    max-width: 700px;
+    max-width: 600px;
     margin: 2rem auto;
     padding: 1.5rem;
     position: relative;
@@ -126,11 +126,8 @@
                     </td>
                     <td class="px-6 py-4">
                         <div class="flex items-center space-x-2">
-                            <button onclick="openEditModal({{ $item->id }})" class="text-green-600 hover:text-green-700 p-2 hover:bg-green-50 rounded-xl transition-all" title="Edit">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                            <button onclick="confirmDelete({{ $item->id }}, '{{ $item->tahunAjaran->tahun ?? 'Tahun Ajaran' }}')" class="text-red-600 hover:text-red-700 p-2 hover:bg-red-50 rounded-xl transition-all" title="Hapus">
-                                <i class="fas fa-trash"></i>
+                            <button onclick="openDetailModal({{ $item->id }})" class="text-blue-600 hover:text-blue-700 p-2 hover:bg-blue-50 rounded-xl transition-all" title="Detail">
+                                <i class="fas fa-eye"></i>
                             </button>
                         </div>
                     </td>
@@ -247,133 +244,51 @@
     </div>
 </div>
 
-<!-- EDIT MODAL (Bendahara) -->
-<div class="modal-overlay" id="editModal" style="display: none;">
-    <div class="modal-content max-w-2xl">
+<!-- DETAIL MODAL -->
+<div class="modal-overlay" id="detailModal" style="display: none;">
+    <div class="modal-content max-w-md">
         <div class="flex justify-between items-center mb-6">
-            <h3 class="text-xl font-bold text-gray-800">Edit Setting SPP</h3>
-            <button onclick="closeEditModal()" class="text-gray-500 hover:text-gray-700">
+            <h3 class="text-xl font-bold text-gray-800">Detail Setting SPP</h3>
+            <button onclick="closeDetailModal()" class="text-gray-500 hover:text-gray-700">
                 <i class="fas fa-times text-2xl"></i>
             </button>
         </div>
         
-        <form action="" method="POST" id="editForm">
-            @csrf
-            @method('PUT')
-            
-            <div class="grid grid-cols-1 gap-4 mb-4">
-                <!-- Tahun Ajaran -->
-                <div>
-                    <label class="form-label">Tahun Ajaran <span class="text-red-500">*</span></label>
-                    <select name="tahun_ajaran_id" id="edit_tahun_ajaran_id" class="form-select" required>
-                        <option value="">-- Pilih Tahun Ajaran --</option>
-                        @foreach($tahunAjaran as $ta)
-                            <option value="{{ $ta->id }}"
-                                @if($ta->status == 'aktif') style="color: #059669; font-weight: 600; background-color: #f0fdf4;" @endif
-                            >
-                                {{ $ta->tahun }} 
-                                @if($ta->status == 'aktif') 
-                                    (Aktif) 👑
-                                @endif
-                            </option>
-                        @endforeach
-                    </select>
-                    <p class="text-xs text-gray-500 mt-1">Pilih tahun ajaran yang akan diatur SPP-nya</p>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <!-- Nominal SPP -->
+        <div class="space-y-4">
+            <div class="bg-gray-50 rounded-xl p-4">
+                <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="form-label">Nominal SPP <span class="text-red-500">*</span></label>
-                        <div class="relative">
-                            <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 font-medium">Rp</span>
-                            <input type="number" 
-                                   name="nominal" 
-                                   id="edit_nominal" 
-                                   class="form-input pl-12 pr-4" 
-                                   required min="0" 
-                                   step="1000">
-                        </div>
-                    </div>
-                    
-                    <!-- Tanggal Jatuh Tempo -->
-                    <div>
-                        <label class="form-label">Tanggal Jatuh Tempo <span class="text-red-500">*</span></label>
-                        <div class="relative">
-                            <select name="tanggal_jatuh_tempo" id="edit_tanggal_jatuh_tempo" class="form-select appearance-none" required>
-                                <option value="">-- Pilih Tanggal --</option>
-                                @for($i = 1; $i <= 31; $i++)
-                                    <option value="{{ $i }}">{{ $i }}</option>
-                                @endfor
-                            </select>
-                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">
-                                <i class="fas fa-calendar-alt"></i>
-                            </div>
-                        </div>
-                        <p class="text-xs text-gray-500 mt-1 flex items-center">
-                            <i class="fas fa-info-circle mr-1"></i>
-                            Pilih tanggal jatuh tempo pembayaran SPP setiap bulannya
-                        </p>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Info Card -->
-            <div class="bg-gradient-to-r from-blue-50 to-indigo-50 p-4 rounded-xl mb-4 border border-blue-100">
-                <div class="flex items-start space-x-3">
-                    <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
-                        <i class="fas fa-info-circle text-blue-600"></i>
+                        <label class="text-xs text-gray-500">Tahun Ajaran</label>
+                        <p class="text-lg font-semibold text-gray-800" id="detailTahunAjaran">-</p>
                     </div>
                     <div>
-                        <h4 class="text-sm font-semibold text-blue-800">Informasi Setting SPP</h4>
-                        <p class="text-xs text-blue-600 mt-1">
-                            Setting SPP akan berlaku untuk tahun ajaran yang dipilih. 
-                            Tanggal jatuh tempo akan digunakan untuk menentukan batas pembayaran SPP setiap bulannya.
-                        </p>
+                        <label class="text-xs text-gray-500">Nominal SPP</label>
+                        <p class="text-lg font-semibold text-green-600" id="detailNominal">-</p>
+                    </div>
+                    <div>
+                        <label class="text-xs text-gray-500">Tanggal Jatuh Tempo</label>
+                        <p class="text-sm text-gray-700" id="detailTanggalJatuhTempo">-</p>
+                    </div>
+                    <div>
+                        <label class="text-xs text-gray-500">Status</label>
+                        <div id="detailStatus"></div>
+                    </div>
+                    <div>
+                        <label class="text-xs text-gray-500">Dibuat pada</label>
+                        <p class="text-sm text-gray-700" id="detailCreatedAt">-</p>
+                    </div>
+                    <div>
+                        <label class="text-xs text-gray-500">Diperbarui pada</label>
+                        <p class="text-sm text-gray-700" id="detailUpdatedAt">-</p>
                     </div>
                 </div>
             </div>
-            
-            <div class="flex items-center justify-end space-x-4 mt-6 pt-4 border-t border-gray-200">
-                <button type="button" onclick="closeEditModal()" class="btn-secondary px-6 py-3">
-                    <i class="fas fa-times mr-2"></i>
-                    Batal
-                </button>
-                <button type="submit" class="btn-primary px-6 py-3">
-                    <i class="fas fa-save mr-2"></i>
-                    Update Setting
-                </button>
-            </div>
-        </form>
-    </div>
-</div>
-
-<!-- DELETE CONFIRMATION MODAL (Bendahara) -->
-<div class="modal-overlay" id="deleteModal" style="display: none;">
-    <div class="modal-content max-w-md">
-        <div class="text-center">
-            <div class="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <i class="fas fa-exclamation-triangle text-red-600 text-4xl"></i>
-            </div>
-            
-            <h3 class="text-xl font-bold text-gray-800 mb-2">Konfirmasi Hapus</h3>
-            <p class="text-gray-600 mb-6" id="deleteMessage">Apakah Anda yakin ingin menghapus setting SPP ini?</p>
-            
-            <form action="" method="POST" id="deleteForm">
-                @csrf
-                @method('DELETE')
-                
-                <div class="flex items-center justify-center space-x-4">
-                    <button type="button" onclick="closeDeleteModal()" class="btn-secondary px-6 py-3">
-                        <i class="fas fa-times mr-2"></i>
-                        Batal
-                    </button>
-                    <button type="submit" class="btn-danger px-6 py-3">
-                        <i class="fas fa-trash mr-2"></i>
-                        Ya, Hapus
-                    </button>
-                </div>
-            </form>
+        </div>
+        
+        <div class="flex items-center justify-end mt-6 pt-4 border-t border-gray-200">
+            <button onclick="closeDetailModal()" class="btn-secondary">
+                Tutup
+            </button>
         </div>
     </div>
 </div>
@@ -449,7 +364,7 @@
 
 @push('scripts')
 <script>
-    // Data spp settings untuk edit
+    // Data spp settings untuk detail modal
     const sppData = @json($data);
     
     // ==================== CREATE MODAL ====================
@@ -464,39 +379,42 @@
         document.body.style.overflow = '';
     }
     
-    // ==================== EDIT MODAL ====================
-    function openEditModal(id) {
+    // ==================== DETAIL MODAL ====================
+    function openDetailModal(id) {
         const item = sppData.find(s => s.id === id);
         
         if (item) {
-            document.getElementById('edit_tahun_ajaran_id').value = item.tahun_ajaran_id;
-            document.getElementById('edit_nominal').value = item.nominal;
-            document.getElementById('edit_tanggal_jatuh_tempo').value = item.tanggal_jatuh_tempo;
+            // Tahun Ajaran
+            document.getElementById('detailTahunAjaran').textContent = item.tahun_ajaran?.tahun ?? '-';
             
-            // Set form action ke route bendahara
-            document.getElementById('editForm').action = `/bendahara/spp-setting/${id}`;
+            // Nominal
+            const nominalFormatted = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(item.nominal);
+            document.getElementById('detailNominal').textContent = nominalFormatted;
             
-            document.getElementById('editModal').style.display = 'flex';
+            // Tanggal Jatuh Tempo
+            document.getElementById('detailTanggalJatuhTempo').textContent = `Tanggal ${item.tanggal_jatuh_tempo} setiap bulan`;
+            
+            // Status
+            const statusDiv = document.getElementById('detailStatus');
+            if (item.tahun_ajaran && item.tahun_ajaran.status === 'aktif') {
+                statusDiv.innerHTML = '<span class="badge-success">Aktif</span>';
+            } else {
+                statusDiv.innerHTML = '<span class="badge-warning">Tidak Aktif</span>';
+            }
+            
+            // Created At & Updated At
+            const createdAt = item.created_at ? new Date(item.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '-';
+            const updatedAt = item.updated_at ? new Date(item.updated_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '-';
+            document.getElementById('detailCreatedAt').textContent = createdAt;
+            document.getElementById('detailUpdatedAt').textContent = updatedAt;
+            
+            document.getElementById('detailModal').style.display = 'flex';
             document.body.style.overflow = 'hidden';
         }
     }
     
-    function closeEditModal() {
-        document.getElementById('editModal').style.display = 'none';
-        document.getElementById('editForm').reset();
-        document.body.style.overflow = '';
-    }
-    
-    // ==================== DELETE MODAL ====================
-    function confirmDelete(id, tahunAjaran) {
-        document.getElementById('deleteMessage').innerHTML = `Apakah Anda yakin ingin menghapus setting SPP untuk <strong>${tahunAjaran}</strong>?`;
-        document.getElementById('deleteForm').action = `/bendahara/spp-setting/${id}`;
-        document.getElementById('deleteModal').style.display = 'flex';
-        document.body.style.overflow = 'hidden';
-    }
-    
-    function closeDeleteModal() {
-        document.getElementById('deleteModal').style.display = 'none';
+    function closeDetailModal() {
+        document.getElementById('detailModal').style.display = 'none';
         document.body.style.overflow = '';
     }
     
@@ -527,20 +445,17 @@
     // ==================== CLOSE MODALS WHEN CLICKING OUTSIDE ====================
     window.addEventListener('click', function(e) {
         const createModal = document.getElementById('createModal');
-        const editModal = document.getElementById('editModal');
-        const deleteModal = document.getElementById('deleteModal');
+        const detailModal = document.getElementById('detailModal');
         
         if (e.target === createModal) closeCreateModal();
-        if (e.target === editModal) closeEditModal();
-        if (e.target === deleteModal) closeDeleteModal();
+        if (e.target === detailModal) closeDetailModal();
     });
     
     // ==================== CLOSE WITH ESC KEY ====================
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
             closeCreateModal();
-            closeEditModal();
-            closeDeleteModal();
+            closeDetailModal();
         }
     });
     

@@ -87,7 +87,14 @@ Route::middleware(['auth', 'role:admin'])
         Route::resource('wali', App\Http\Controllers\WaliMuridController::class);
     });
 
-
+// Tambahkan route untuk Bendahara
+Route::middleware(['auth', 'role:bendahara'])
+    ->prefix('bendahara')
+    ->name('bendahara.')
+    ->group(function () {
+        // Route wali murid untuk bendahara
+        Route::resource('wali', App\Http\Controllers\WaliMuridController::class);
+    });
 
 /*
 |--------------------------------------------------------------------------

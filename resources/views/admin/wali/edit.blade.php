@@ -86,6 +86,22 @@
                     @enderror
                 </div>
 
+                <!-- ALAMAT - TAMBAHAN BARU -->
+                <div>
+                    <label class="form-label flex items-center">
+                        <i class="fas fa-map-marker-alt text-[#6b21a5] mr-2"></i>
+                        Alamat
+                        <span class="text-gray-400 text-xs ml-2">(Opsional)</span>
+                    </label>
+                    <textarea name="alamat" 
+                              rows="3"
+                              class="form-input @error('alamat') border-red-500 @enderror" 
+                              placeholder="Masukkan alamat lengkap wali">{{ old('alamat', $wali->alamat) }}</textarea>
+                    @error('alamat')
+                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
+
                 <!-- Password (Opsional) -->
                 <div>
                     <label class="form-label flex items-center">
@@ -106,7 +122,7 @@
                 </div>
             </div>
 
-            <!-- Kolom Kanan -->
+            <!-- Kolom Kanan (sama seperti sebelumnya, tidak berubah) -->
             <div class="space-y-4">
                 <!-- Pilih Siswa (Multiple) -->
                 <div>
@@ -224,7 +240,7 @@
             </div>
         </div>
 
-        <!-- Informasi Tambahan -->
+        <!-- Informasi Tambahan (update dengan mencantumkan alamat) -->
         <div class="mt-6 p-4 bg-blue-50 rounded-xl">
             <div class="flex items-start space-x-3">
                 <i class="fas fa-shield-alt text-blue-600 mt-1"></i>
@@ -234,6 +250,7 @@
                         • Email digunakan untuk login ke sistem<br>
                         • Password minimal 6 karakter (kosongkan jika tidak diubah)<br>
                         • Nomor HP digunakan untuk komunikasi dan notifikasi<br>
+                        • Alamat lengkap wali untuk keperluan administrasi<br>
                         • Wali murid dapat melihat data semua siswa yang terhubung
                     </p>
                 </div>
@@ -254,9 +271,8 @@
     </form>
 </div>
 
-<!-- Preview Card -->
+<!-- Preview Card (sama seperti sebelumnya) -->
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
-    <!-- Info Wali -->
     <div class="glass-card rounded-2xl p-5 animate-slide-in delay-2 lg:col-span-2">
         <h3 class="font-semibold text-gray-800 mb-4 flex items-center">
             <i class="fas fa-info-circle text-[#6b21a5] mr-2"></i>
@@ -278,7 +294,6 @@
         </div>
     </div>
 
-    <!-- Quick Actions -->
     <div class="glass-card rounded-2xl p-5 animate-slide-in delay-3">
         <h3 class="font-semibold text-gray-800 mb-4 flex items-center">
             <i class="fas fa-bolt text-[#6b21a5] mr-2"></i>
@@ -297,7 +312,7 @@
     </div>
 </div>
 
-<!-- Success/Error Messages -->
+<!-- Messages -->
 @if(session('success'))
 <div class="fixed bottom-4 right-4 bg-green-500 text-white px-6 py-3 rounded-xl shadow-lg flex items-center space-x-2 animate-slide-in z-50" id="successMessage">
     <i class="fas fa-check-circle"></i>
@@ -331,7 +346,7 @@
 
 @push('scripts')
 <script>
-    // Auto hide success/error messages after 5 seconds
+    // Auto hide messages
     setTimeout(function() {
         const successMsg = document.getElementById('successMessage');
         const errorMsg = document.getElementById('errorMessage');
@@ -371,16 +386,14 @@
         const checkboxes = document.querySelectorAll('input[name="siswa_id[]"]:checked');
         const count = checkboxes.length;
         
-        // Update info jumlah yang dipilih
         const countInfo = document.getElementById('selectedCountInfo');
         if (countInfo) {
             countInfo.textContent = count > 0 ? `${count} siswa dipilih` : '0 siswa dipilih';
         }
-        
         return count;
     }
 
-    // Select All functionality
+    // Select All
     document.getElementById('selectAllBtn')?.addEventListener('click', function() {
         const checkboxes = document.querySelectorAll('input[name="siswa_id[]"]');
         checkboxes.forEach(checkbox => {
@@ -389,7 +402,7 @@
         updateSelectedCount();
     });
 
-    // Deselect All functionality
+    // Deselect All
     document.getElementById('deselectAllBtn')?.addEventListener('click', function() {
         const checkboxes = document.querySelectorAll('input[name="siswa_id[]"]');
         checkboxes.forEach(checkbox => {
@@ -398,17 +411,15 @@
         updateSelectedCount();
     });
 
-    // Event listener untuk checkbox
+    // Event listener checkbox
     document.querySelectorAll('input[name="siswa_id[]"]').forEach(checkbox => {
         checkbox.addEventListener('change', updateSelectedCount);
     });
 
-    // Initial count
     updateSelectedCount();
 
-    // Format nomor HP (opsional)
+    // Format nomor HP
     document.querySelector('input[name="no_hp"]')?.addEventListener('input', function(e) {
-        // Hanya izinkan angka
         this.value = this.value.replace(/[^0-9]/g, '');
     });
 </script>

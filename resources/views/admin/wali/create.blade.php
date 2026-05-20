@@ -97,6 +97,22 @@
                         <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                     @enderror
                 </div>
+
+                <!-- ALAMAT - TAMBAHAN BARU -->
+                <div>
+                    <label class="form-label flex items-center">
+                        <i class="fas fa-map-marker-alt text-[#6b21a5] mr-2"></i>
+                        Alamat
+                        <span class="text-gray-400 text-xs ml-2">(Opsional)</span>
+                    </label>
+                    <textarea name="alamat" 
+                              rows="3"
+                              class="form-input @error('alamat') border-red-500 @enderror" 
+                              placeholder="Masukkan alamat lengkap wali">{{ old('alamat') }}</textarea>
+                    @error('alamat')
+                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
             </div>
 
             <!-- Kolom Kanan -->
@@ -177,8 +193,6 @@
                         <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                     @enderror
                 </div>
-
-               
             </div>
         </div>
 
@@ -192,6 +206,7 @@
                         • Email digunakan untuk login ke sistem<br>
                         • Password minimal 6 karakter<br>
                         • Nomor HP digunakan untuk komunikasi dan notifikasi<br>
+                        • Alamat lengkap wali untuk keperluan administrasi<br>
                         • Wali murid dapat melihat data semua siswa yang terhubung
                     </p>
                 </div>
@@ -335,7 +350,6 @@
 
     // Format nomor HP (hanya angka)
     document.querySelector('input[name="no_hp"]')?.addEventListener('input', function(e) {
-        // Hanya izinkan angka
         this.value = this.value.replace(/[^0-9]/g, '');
     });
 </script>

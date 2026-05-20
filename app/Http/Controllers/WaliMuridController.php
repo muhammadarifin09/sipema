@@ -10,6 +10,21 @@ use Illuminate\Support\Facades\Hash;
 
 class WaliMuridController extends Controller
 {
+    /**
+     * Mendapatkan prefix view berdasarkan role user yang login
+     * - Admin (role_id = 1) → 'admin'
+     * - Bendahara (role_id = 2) → 'bendahara'
+     * - default → 'admin'
+     */
+    private function getViewPrefix()
+    {
+        $user = auth()->user();
+        if ($user && $user->role_id == 2) {
+            return 'bendahara';
+        }
+        return 'admin'; // role_id 1 atau lainnya
+    }
+
     // tampil data wali
     public function index()
     {
@@ -17,41 +32,41 @@ class WaliMuridController extends Controller
                 ->where('role_id', 3)
                 ->get();
 
-        return view('admin.wali.index', compact('wali'));
+        $viewPrefix = $this->getViewPrefix();
+        return view("{$viewPrefix}.wali.index", compact('wali'));
     }
 
     // Tampilkan form tambah wali murid
     public function create()
     {
-        // Ambil semua siswa yang belum memiliki wali (wali_id = null)
         $siswa = Siswa::whereNull('wali_id')->get();
-        
-        return view('admin.wali.create', compact('siswa'));
+        $viewPrefix = $this->getViewPrefix();
+        return view("{$viewPrefix}.wali.create", compact('siswa'));
     }
 
     // Simpan data wali murid baru
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
+            'name'     => 'required|string|max:255',
+            'email'    => 'required|email|unique:users,email',
             'password' => 'required|min:6',
-            'no_hp' => 'nullable|string|max:20',
+            'no_hp'    => 'nullable|string|max:20',
+            'alamat'   => 'nullable|string',
             'siswa_id' => 'nullable|array',
-            'siswa_id.*' => 'exists:siswas,id' // Sesuaikan dengan nama tabel 'siswas'
+            'siswa_id.*' => 'exists:siswas,id'
         ]);
 
-        // Buat user baru dengan role wali (role_id = 3)
         $wali = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
+            'name'     => $request->name,
+            'email'    => $request->email,
             'password' => Hash::make($request->password),
-            'no_hp' => $request->no_hp,
-            'role_id' => 3,
-            'active' => $request->has('active') ? true : false
+            'no_hp'    => $request->no_hp,
+            'alamat'   => $request->alamat,
+            'role_id'  => 3,
+            'active'   => $request->has('active') ? true : false
         ]);
 
-        // Hubungkan dengan siswa jika ada
         if ($request->has('siswa_id') && !empty($request->siswa_id)) {
             Siswa::whereIn('id', $request->siswa_id)->update([
                 'wali_id' => $wali->id
@@ -65,13 +80,12 @@ class WaliMuridController extends Controller
     public function edit($id)
     {
         $wali = User::with('siswa')->findOrFail($id);
-
-        // Ambil siswa yang belum memiliki wali ATAU sudah terhubung dengan wali ini
         $siswa = Siswa::whereNull('wali_id')
             ->orWhere('wali_id', $id)
             ->get();
 
-        return view('admin.wali.edit', compact('wali', 'siswa'));
+        $viewPrefix = $this->getViewPrefix();
+        return view("{$viewPrefix}.wali.edit", compact('wali', 'siswa'));
     }
 
     public function update(Request $request, $id)
@@ -79,19 +93,20 @@ class WaliMuridController extends Controller
         $wali = User::findOrFail($id);
 
         $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $id,
+            'name'     => 'required|string|max:255',
+            'email'    => 'required|email|unique:users,email,' . $id,
             'password' => 'nullable|min:6',
-            'no_hp' => 'nullable|string|max:20',
+            'no_hp'    => 'nullable|string|max:20',
+            'alamat'   => 'nullable|string',
             'siswa_id' => 'nullable|array',
-            'siswa_id.*' => 'exists:siswas,id' // Sesuaikan dengan nama tabel 'siswas'
+            'siswa_id.*' => 'exists:siswas,id'
         ]);
 
-        // Update data wali
         $data = [
-            'name' => $request->name,
-            'email' => $request->email,
-            'no_hp' => $request->no_hp,
+            'name'   => $request->name,
+            'email'  => $request->email,
+            'no_hp'  => $request->no_hp,
+            'alamat' => $request->alamat,
             'active' => $request->has('active') ? true : false
         ];
 
@@ -101,12 +116,8 @@ class WaliMuridController extends Controller
 
         $wali->update($data);
 
-        // Reset semua siswa yang sebelumnya terhubung
-        Siswa::where('wali_id', $wali->id)->update([
-            'wali_id' => null
-        ]);
+        Siswa::where('wali_id', $wali->id)->update(['wali_id' => null]);
 
-        // Hubungkan siswa baru jika ada
         if ($request->has('siswa_id') && !empty($request->siswa_id)) {
             Siswa::whereIn('id', $request->siswa_id)->update([
                 'wali_id' => $wali->id
@@ -120,12 +131,7 @@ class WaliMuridController extends Controller
     public function destroy($id)
     {
         $wali = User::findOrFail($id);
-        
-        // Reset siswa yang terhubung dengan wali ini
-        Siswa::where('wali_id', $wali->id)->update([
-            'wali_id' => null
-        ]);
-        
+        Siswa::where('wali_id', $wali->id)->update(['wali_id' => null]);
         $wali->delete();
 
         return redirect()->route('admin.wali.index')

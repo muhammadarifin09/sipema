@@ -17,8 +17,8 @@ class User extends Authenticatable
         'password',
         'role_id',
         'no_hp',
+        'alamat',      // <-- tambahkan ini
         'active',
-        // HAPUS 'siswa_id' dari sini karena tidak digunakan lagi
     ];
 
     protected $hidden = [
@@ -41,7 +41,7 @@ class User extends Authenticatable
         return $this->belongsTo(Role::class);
     }
 
-    // PERBAIKAN: Relasi ke siswa (one-to-many)
+    // Relasi ke siswa (one-to-many)
     public function siswa()
     {
         return $this->hasMany(Siswa::class, 'wali_id', 'id');
@@ -69,8 +69,7 @@ class User extends Authenticatable
     }
 
     public function waliProfile()
-{
-    return $this->hasOne(WaliProfile::class);
-}
-
+    {
+        return $this->hasOne(WaliProfile::class);
+    }
 }

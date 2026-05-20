@@ -516,7 +516,7 @@
                         <i class="fas fa-users w-6"></i>
                         <span class="ml-3 font-medium">Data Siswa</span>
                     </a>
-                      <a href="" class="nav-item {{ request()->routeIs('admin.wali.*') ? 'active' : '' }}">
+                      <a href="{{ route('bendahara.wali.index') }}" class="nav-item {{ request()->routeIs('bendahara.wali.*') ? 'active' : '' }}">
                         <i class="fas fa-user-friends w-6"></i>
                         <span class="ml-3 font-medium">Data Wali Murid</span>
                     </a>
