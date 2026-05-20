@@ -1,6 +1,6 @@
 @extends('layouts.bendahara')
 
-@section('title', 'Riwayat Pembayaran - SMA PGRI Pelaihari')
+@section('title', 'Riwayat Pembayaran - SIPEMA')
 
 @section('content')
 <!-- Header -->

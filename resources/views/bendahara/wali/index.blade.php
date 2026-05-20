@@ -1,6 +1,6 @@
 @extends('layouts.bendahara')
 
-@section('title', 'Data Wali Murid - SMA PGRI Pelaihari')
+@section('title', 'Data Wali Murid - SIPEMA')
 
 @section('content')
 <!-- Header -->

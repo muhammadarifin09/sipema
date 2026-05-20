@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Data Tahun Ajaran - SMA PGRI Pelaihari')
+@section('title', 'Data Tahun Ajaran - Admin - SIPEMA')
 
 @section('content')
 <!-- Header -->

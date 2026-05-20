@@ -1,6 +1,6 @@
 @extends('layouts.bendahara')
 
-@section('title', 'Data SPP Setting - Bendahara SMA PGRI Pelaihari')
+@section('title', 'Data SPP Setting - Bendahara - SIPEMA')
 
 @push('styles')
 <style>

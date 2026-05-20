@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Data SPP Setting - SMA PGRI Pelaihari')
+@section('title', 'Data SPP Setting - Admin - SIPEMA')
 
 @section('content')
 <!-- Header -->

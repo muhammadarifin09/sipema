@@ -1,6 +1,6 @@
 @extends('layouts.bendahara')
 
-@section('title', 'Data Tahun Ajaran - Bendahara SMA PGRI Pelaihari')
+@section('title', 'Data Tahun Ajaran - Bendahara - SIPEMA')
 
 @push('styles')
 <style>

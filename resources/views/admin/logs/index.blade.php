@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Log Aktivitas')
+@section('title', 'Log Aktivitas - Admin - SIPEMA')
 
 @section('content')
 <!-- Header -->

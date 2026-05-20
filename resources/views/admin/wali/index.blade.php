@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Data Wali Murid - SMA PGRI Pelaihari')
+@section('title', 'Data Wali Murid - Admin - SIPEMA')
 
 @section('content')
 <!-- Header -->

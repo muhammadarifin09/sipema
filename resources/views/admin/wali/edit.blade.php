@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Edit Wali Murid - SMA PGRI Pelaihari')
+@section('title', 'Edit Wali Murid - SIPEMA')
 
 @section('content')
 <!-- Header dengan tombol back -->

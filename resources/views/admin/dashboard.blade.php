@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Dashboard Admin - SMA PGRI Pelaihari')
+@section('title', 'Dashboard Admin - SIPEMA')
 
 @section('content')
 <!-- Welcome Header -->

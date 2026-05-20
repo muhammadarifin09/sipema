@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Tagihan SPP - SMA PGRI Pelaihari')
+@section('title', 'Tagihan SPP - SIPEMA')
 
 @section('content')
 <div class="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-100">

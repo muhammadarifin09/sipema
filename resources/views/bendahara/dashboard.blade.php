@@ -1,6 +1,6 @@
 @extends('layouts.bendahara')
 
-@section('title', 'Dashboard Bendahara - SMA PGRI Pelaihari')
+@section('title', 'Dashboard Bendahara - SIPEMA')
 
 @section('content')
 <!-- Welcome Header -->

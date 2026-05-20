@@ -1,6 +1,6 @@
 @extends('layouts.bendahara')
 
-@section('title', 'Data Kelas - Bendahara SMA PGRI Pelaihari')
+@section('title', 'Data Kelas - Bendahara - SIPEMA')
 
 @push('styles')
 <!-- style sama seperti sebelumnya, tidak perlu diubah -->

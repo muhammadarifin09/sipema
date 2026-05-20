@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Dashboard Wali Murid - SMA PGRI Pelaihari')
+@section('title', 'Dashboard Wali Murid - SIPEMA')
 
 @section('content')
 <div x-data="{ sidebarOpen: true }" class="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-100 overflow-x-hidden">
