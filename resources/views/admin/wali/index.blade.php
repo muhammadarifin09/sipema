@@ -41,59 +41,7 @@
 </div>
 
 <!-- Statistik Cards -->
-<div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6 animate-slide-in delay-1">
-    <!-- Total Wali -->
-    <div class="stat-card">
-        <div class="flex items-center justify-between">
-            <div>
-                <p class="text-gray-500 text-sm">Total Wali Murid</p>
-                <h3 class="text-2xl font-bold text-gray-800">{{ $wali->count() }}</h3>
-            </div>
-            <div class="stat-icon" style="background: linear-gradient(135deg, #0b4f8c, #0b4f8c);">
-                <i class="fas fa-users text-white"></i>
-            </div>
-        </div>
-    </div>
 
-    <!-- Terhubung -->
-    <div class="stat-card">
-        <div class="flex items-center justify-between">
-            <div>
-                <p class="text-gray-500 text-sm">Terhubung dg Siswa</p>
-                <h3 class="text-2xl font-bold text-green-600">{{ $wali->filter(function($w) { return $w->siswa && $w->siswa->count() > 0; })->count() }}</h3>
-            </div>
-            <div class="stat-icon" style="background: linear-gradient(135deg, #059669, #10b981);">
-                <i class="fas fa-link text-white"></i>
-            </div>
-        </div>
-    </div>
-
-    <!-- Belum Terhubung -->
-    <div class="stat-card">
-        <div class="flex items-center justify-between">
-            <div>
-                <p class="text-gray-500 text-sm">Belum Terhubung</p>
-                <h3 class="text-2xl font-bold text-red-600">{{ $wali->filter(function($w) { return !$w->siswa || $w->siswa->count() == 0; })->count() }}</h3>
-            </div>
-            <div class="stat-icon" style="background: linear-gradient(135deg, #b45309, #d97706);">
-                <i class="fas fa-unlink text-white"></i>
-            </div>
-        </div>
-    </div>
-
-    <!-- Total Siswa Terhubung -->
-    <div class="stat-card">
-        <div class="flex items-center justify-between">
-            <div>
-                <p class="text-gray-500 text-sm">Total Siswa Terhubung</p>
-                <h3 class="text-2xl font-bold text-blue-600">{{ $wali->sum(function($w) { return $w->siswa ? $w->siswa->count() : 0; }) }}</h3>
-            </div>
-            <div class="stat-icon" style="background: linear-gradient(135deg, #2563eb, #3b82f6);">
-                <i class="fas fa-user-graduate text-white"></i>
-            </div>
-        </div>
-    </div>
-</div>
 
 <!-- Wali Murid Table -->
 <div class="table-container animate-slide-in delay-2">

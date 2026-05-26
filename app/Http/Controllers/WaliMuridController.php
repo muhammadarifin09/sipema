@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\Siswa;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class WaliMuridController extends Controller
@@ -18,7 +19,7 @@ class WaliMuridController extends Controller
      */
     private function getViewPrefix()
     {
-        $user = auth()->user();
+        $user = Auth::user();
         if ($user && $user->role_id == 2) {
             return 'bendahara';
         }

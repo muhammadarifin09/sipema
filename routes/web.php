@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PembayaranController;
 use App\Http\Controllers\RiwayatPembayaranController;
+use App\Http\Controllers\Admin\LaporanController;
 
 /*
 |--------------------------------------------------------------------------
@@ -73,6 +74,13 @@ Route::middleware(['auth', 'role:admin'])
         Route::get('/logs-aktivitas', [App\Http\Controllers\LogsAktivitasController::class, 'index'])->name('logs.index');
 
         Route::get('/tagihan/unpaid-tracking', [App\Http\Controllers\Admin\TagihanController::class, 'unpaidTracking'])->name('tagihan.unpaid-tracking');
+
+        Route::get('/laporan',
+        [LaporanController::class, 'index']
+    )->name('laporan.index');
+
+       Route::get('laporan/export-pdf', [LaporanController::class, 'exportPdf'])->name('laporan.export-pdf');
+
     });
 
 
@@ -94,6 +102,15 @@ Route::middleware(['auth', 'role:bendahara'])
     ->group(function () {
         // Route wali murid untuk bendahara
         Route::resource('wali', App\Http\Controllers\WaliMuridController::class);
+    });
+
+Route::middleware(['auth', 'role:bendahara'])
+    ->prefix('bendahara')
+    ->name('bendahara.')
+    ->group(function () {
+        // ... route yang sudah ada
+        Route::get('/laporan', [App\Http\Controllers\Bendahara\LaporanController::class, 'index'])->name('laporan.index');
+        Route::get('/laporan/export-pdf', [App\Http\Controllers\Bendahara\LaporanController::class, 'exportPdf'])->name('laporan.export-pdf');
     });
 
 /*

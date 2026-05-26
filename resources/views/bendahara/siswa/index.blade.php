@@ -14,56 +14,7 @@
     </div>
 </div>
 
-<!-- Statistics Cards -->
-<div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8 animate-slide-in delay-1">
-    <div class="glass-card rounded-2xl p-6">
-        <div class="flex items-center justify-between">
-            <div>
-                <p class="text-sm text-gray-600 mb-1">Total Siswa</p>
-                <h3 class="text-3xl font-bold text-[#0b4f8c]">{{ $data->total() }}</h3>
-            </div>
-            <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-                <i class="fas fa-users text-2xl text-blue-600"></i>
-            </div>
-        </div>
-    </div>
-    
-    <div class="glass-card rounded-2xl p-6">
-        <div class="flex items-center justify-between">
-            <div>
-                <p class="text-sm text-gray-600 mb-1">Siswa Aktif</p>
-                <h3 class="text-3xl font-bold text-green-600">{{ App\Models\Siswa::where('status', 'aktif')->count() }}</h3>
-            </div>
-            <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
-                <i class="fas fa-user-check text-2xl text-green-600"></i>
-            </div>
-        </div>
-    </div>
-    
-    <div class="glass-card rounded-2xl p-6">
-        <div class="flex items-center justify-between">
-            <div>
-                <p class="text-sm text-gray-600 mb-1">Laki-laki</p>
-                <h3 class="text-3xl font-bold text-blue-600">{{ App\Models\Siswa::where('jenis_kelamin', 'L')->count() }}</h3>
-            </div>
-            <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-                <i class="fas fa-male text-2xl text-blue-600"></i>
-            </div>
-        </div>
-    </div>
-    
-    <div class="glass-card rounded-2xl p-6">
-        <div class="flex items-center justify-between">
-            <div>
-                <p class="text-sm text-gray-600 mb-1">Perempuan</p>
-                <h3 class="text-3xl font-bold text-pink-600">{{ App\Models\Siswa::where('jenis_kelamin', 'P')->count() }}</h3>
-            </div>
-            <div class="w-12 h-12 bg-pink-100 rounded-xl flex items-center justify-center">
-                <i class="fas fa-female text-2xl text-pink-600"></i>
-            </div>
-        </div>
-    </div>
-</div>
+
 
 <!-- Search & Filter -->
 <div class="glass-card rounded-2xl p-4 mb-6 animate-slide-in delay-1">

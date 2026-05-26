@@ -53,10 +53,6 @@
             <h1 class="text-3xl font-bold text-white drop-shadow-lg">Data SPP Setting</h1>
             <p class="text-white/80 mt-1">Kelola pengaturan SPP per tahun ajaran (Bendahara)</p>
         </div>
-        <button onclick="openCreateModal()" class="btn-primary">
-            <i class="fas fa-plus mr-2"></i>
-            Tambah Setting SPP
-        </button>
     </div>
 </div>
 

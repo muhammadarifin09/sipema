@@ -23,55 +23,7 @@
     $latestAction = $logs->first()?->created_at->diffForHumans() ?? '-';
 @endphp
 
-<div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8 animate-slide-in delay-1">
-    <div class="glass-card rounded-2xl p-6">
-        <div class="flex items-center justify-between">
-            <div>
-                <p class="text-sm text-gray-600 mb-1">Total Aktivitas</p>
-                <h3 class="text-3xl font-bold text-[#0b4f8c]">{{ $totalLogs }}</h3>
-            </div>
-            <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-                <i class="fas fa-history text-2xl text-blue-600"></i>
-            </div>
-        </div>
-    </div>
-    
-    <div class="glass-card rounded-2xl p-6">
-        <div class="flex items-center justify-between">
-            <div>
-                <p class="text-sm text-gray-600 mb-1">Aktivitas Hari Ini</p>
-                <h3 class="text-3xl font-bold text-green-600">{{ $todayLogs }}</h3>
-            </div>
-            <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
-                <i class="fas fa-calendar-day text-2xl text-green-600"></i>
-            </div>
-        </div>
-    </div>
-    
-    <div class="glass-card rounded-2xl p-6">
-        <div class="flex items-center justify-between">
-            <div>
-                <p class="text-sm text-gray-600 mb-1">Pengguna Aktif</p>
-                <h3 class="text-3xl font-bold text-purple-600">{{ $uniqueUsers }}</h3>
-            </div>
-            <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
-                <i class="fas fa-users text-2xl text-purple-600"></i>
-            </div>
-        </div>
-    </div>
-    
-    <div class="glass-card rounded-2xl p-6">
-        <div class="flex items-center justify-between">
-            <div>
-                <p class="text-sm text-gray-600 mb-1">Aktivitas Terbaru</p>
-                <h3 class="text-2xl font-bold text-orange-600">{{ $latestAction }}</h3>
-            </div>
-            <div class="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center">
-                <i class="fas fa-clock text-2xl text-orange-600"></i>
-            </div>
-        </div>
-    </div>
-</div>
+
 
 <!-- Search & Filter -->
 <div class="glass-card rounded-2xl p-4 mb-6 animate-slide-in delay-1">

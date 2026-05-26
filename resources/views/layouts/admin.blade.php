@@ -587,7 +587,7 @@
                     <div class="px-4 mb-2">
                         <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Laporan & Aktivitas</p>
                     </div>
-                    <a href="#" class="nav-item">
+                    <a href="{{ route('admin.laporan.index') }} " class="nav-item {{ request()->routeIs('admin.laporan.*') ? 'active' : '' }}">
                         <i class="fas fa-chart-bar w-6"></i>
                         <span class="ml-3 font-medium">Laporan</span>
                     </a>

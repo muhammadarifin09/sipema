@@ -14,68 +14,7 @@
     </div>
 </div>
 
-<!-- Statistics Cards -->
-@php
-    // Hitung statistik dari collection
-    $allData = $data->getCollection(); // Ambil data dari paginator
-    
-    $totalNominal = $allData->sum('nominal');
-    $bulanIni = $allData->filter(function($item) {
-        return \Carbon\Carbon::parse($item->tanggal_bayar)->month == now()->month && 
-               \Carbon\Carbon::parse($item->tanggal_bayar)->year == now()->year;
-    })->count();
-    $siswaPembayar = $allData->unique('siswa_id')->count();
-@endphp
 
-<div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8 animate-slide-in delay-1">
-    <div class="glass-card rounded-2xl p-6">
-        <div class="flex items-center justify-between">
-            <div>
-                <p class="text-sm text-gray-600 mb-1">Total Pembayaran</p>
-                <h3 class="text-3xl font-bold text-[#0b4f8c]">{{ $data->total() }}</h3>
-            </div>
-            <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-                <i class="fas fa-history text-2xl text-blue-600"></i>
-            </div>
-        </div>
-    </div>
-    
-    <div class="glass-card rounded-2xl p-6">
-        <div class="flex items-center justify-between">
-            <div>
-                <p class="text-sm text-gray-600 mb-1">Total Nominal</p>
-                <h3 class="text-3xl font-bold text-green-600">Rp {{ number_format($totalNominal, 0, ',', '.') }}</h3>
-            </div>
-            <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
-                <i class="fas fa-money-bill-wave text-2xl text-green-600"></i>
-            </div>
-        </div>
-    </div>
-    
-    <div class="glass-card rounded-2xl p-6">
-        <div class="flex items-center justify-between">
-            <div>
-                <p class="text-sm text-gray-600 mb-1">Bulan Ini</p>
-                <h3 class="text-3xl font-bold text-purple-600">{{ $bulanIni }}</h3>
-            </div>
-            <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
-                <i class="fas fa-calendar-alt text-2xl text-purple-600"></i>
-            </div>
-        </div>
-    </div>
-    
-    <div class="glass-card rounded-2xl p-6">
-        <div class="flex items-center justify-between">
-            <div>
-                <p class="text-sm text-gray-600 mb-1">Siswa Pembayar</p>
-                <h3 class="text-3xl font-bold text-orange-600">{{ $siswaPembayar }}</h3>
-            </div>
-            <div class="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center">
-                <i class="fas fa-user-graduate text-2xl text-orange-600"></i>
-            </div>
-        </div>
-    </div>
-</div>
 
 <!-- Search & Filter -->
 <div class="glass-card rounded-2xl p-4 mb-6 animate-slide-in delay-1">
