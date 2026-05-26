@@ -10,7 +10,10 @@ use App\Models\SppSetting;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Models\Notifikasi;
-use App\Helpers\LogHelper; // Import LogHelper
+use App\Helpers\FonnteHelper;  
+use App\Models\User; 
+use App\Helpers\LogHelper; 
+use Illuminate\Support\Facades\Log;
 
 class TagihanController extends Controller
 {
@@ -54,7 +57,10 @@ class TagihanController extends Controller
         $siswas = Siswa::all();
 
         $jumlahGenerate = 0;
-        $detailTagihan = []; // untuk mencatat detail log
+        $detailTagihan = []; // untuk catatan log detail
+
+        // Kelompokkan tagihan baru per wali untuk keperluan WA
+        $tagihanPerWali = [];
 
         foreach ($siswas as $siswa) {
             $tagihan = Tagihan::firstOrCreate(
@@ -79,7 +85,7 @@ class TagihanController extends Controller
                     'nominal' => $spp->nominal,
                 ];
 
-                // Notifikasi ke wali
+                // Notifikasi ke wali (di database)
                 if ($siswa->wali_id) {
                     Notifikasi::create([
                         'user_id' => $siswa->wali_id,
@@ -87,11 +93,67 @@ class TagihanController extends Controller
                         'pesan' => 'Tagihan SPP bulan ' . $bulan . ' telah dibuat.',
                         'status' => 'unread'
                     ]);
+
+                    // Kelompokkan untuk keperluan WA
+                    $tagihanPerWali[$siswa->wali_id][] = [
+                        'nama_lengkap' => $siswa->nama_lengkap,
+                        'nominal' => $tagihan->nominal,
+                    ];
                 }
             }
         }
 
-        // Catat log aktivitas: generate tagihan
+        // ========== KIRIM WHATSAPP VIA FONNTE ==========
+        $sentNumbers = [];
+
+        foreach ($tagihanPerWali as $wali_id => $listSiswa) {
+            $wali = User::find($wali_id);
+
+            if (!$wali || !$wali->no_hp) {
+                Log::warning("Wali ID {$wali_id} tidak punya nomor HP");
+                continue;
+            }
+
+            // Normalisasi nomor HP
+            $no_hp = $wali->no_hp;
+            if (substr($no_hp, 0, 1) == '0') {
+                $no_hp = '62' . substr($no_hp, 1);
+            }
+            $no_hp = str_replace('+', '', $no_hp);
+
+            // Hindari duplikasi nomor
+            if (in_array($no_hp, $sentNumbers)) {
+                continue;
+            }
+            $sentNumbers[] = $no_hp;
+
+            // Susun pesan WA
+            $pesan = "Yth. Bapak/Ibu Wali Murid,\n\n"
+                . "Kami informasikan bahwa tagihan SPP untuk bulan {$bulan}/{$tahun} telah tersedia.\n\n"
+                . "Berikut rincian tagihan:\n\n";
+
+            foreach ($listSiswa as $s) {
+                $pesan .= "- {$s['nama_lengkap']} : Rp " . number_format($s['nominal'], 0, ',', '.') . "\n";
+            }
+
+            $pesan .= "\nPembayaran dapat dilakukan sesuai dengan ketentuan yang berlaku.\n"
+                . "Mohon untuk melakukan pembayaran sebelum tanggal jatuh tempo.\n\n"
+                . "Atas perhatian dan kerja samanya, kami ucapkan terima kasih.\n\n"
+                . "Hormat kami,\n"
+                . "Bendahara Sekolah";
+
+            // Kirim via Fonnte
+            $response = FonnteHelper::send($no_hp, $pesan);
+
+            // Catat log (opsional)
+            Log::info('Fonnte Response (Bendahara)', [
+                'no_hp' => $no_hp,
+                'response' => $response
+            ]);
+        }
+        // ========== END KIRIM WA ==========
+
+        // Catat log aktivitas generate tagihan (tetap pakai LogHelper)
         if ($jumlahGenerate > 0) {
             LogHelper::add(
                 'create',
@@ -118,7 +180,7 @@ class TagihanController extends Controller
             );
         }
 
-        return back()->with('success', "Berhasil generate {$jumlahGenerate} tagihan untuk bulan ini.");
+        return back()->with('success', "Berhasil generate {$jumlahGenerate} tagihan untuk bulan ini. WA notifikasi telah dikirim ke wali.");
     }
 
     /**

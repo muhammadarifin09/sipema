@@ -6,308 +6,202 @@
 <!-- Welcome Header -->
 <div class="mb-8 animate-slide-in">
     <h1 class="text-3xl font-bold text-white drop-shadow-lg">Dashboard Bendahara</h1>
-    <p class="text-white/80 mt-1">Selamat datang, <span class="font-semibold">{{ auth()->user()->name ?? 'Bendahara' }}</span>! Berikut ringkasan keuangan hari ini.</p>
+    <p class="text-white/80 mt-1">Selamat datang, <span class="font-semibold">{{ auth()->user()->name }}</span>! Berikut ringkasan data user dan pembayaran.</p>
 </div>
 
-<!-- Stat Cards Utama -->
+<!-- Stat Cards Sederhana -->
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-    <!-- Total Penerimaan Bulan Ini -->
+    <!-- Total Users -->
     <div class="stat-card animate-slide-in delay-1">
         <div class="stat-icon">
-            <i class="fas fa-money-bill-wave"></i>
+            <i class="fas fa-users-cog"></i>
         </div>
-        <p class="text-gray-500 text-sm font-medium">Penerimaan Bulan Ini</p>
-        <h3 class="text-2xl font-bold text-gray-800 mt-1">Rp 68.450.000</h3>
-        <p class="text-green-600 text-sm mt-2">
-            <i class="fas fa-arrow-up mr-1"></i>
-            +12.5% dari bulan lalu
-        </p>
-    </div>
-
-    <!-- Total Siswa Lunas -->
-    <div class="stat-card animate-slide-in delay-2">
-        <div class="stat-icon">
-            <i class="fas fa-check-circle"></i>
-        </div>
-        <p class="text-gray-500 text-sm font-medium">Siswa Lunas</p>
-        <h3 class="text-3xl font-bold text-gray-800 mt-1">342</h3>
-        <div class="progress-bar mt-3">
-            <div class="progress-fill" style="width: 75%"></div>
-        </div>
-        <p class="text-gray-500 text-xs mt-2">
-            <span class="text-green-600 font-medium">75%</span> dari total siswa
-        </p>
-    </div>
-
-    <!-- Total Tunggakan -->
-    <div class="stat-card animate-slide-in delay-3">
-        <div class="stat-icon">
-            <i class="fas fa-exclamation-triangle"></i>
-        </div>
-        <p class="text-gray-500 text-sm font-medium">Total Tunggakan</p>
-        <h3 class="text-2xl font-bold text-gray-800 mt-1">Rp 12.540.000</h3>
-        <p class="text-red-600 text-sm mt-2">
-            <i class="fas fa-arrow-down mr-1"></i>
-            114 siswa menunggak
-        </p>
-    </div>
-
-    <!-- Transaksi Hari Ini -->
-    <div class="stat-card animate-slide-in delay-4">
-        <div class="stat-icon">
-            <i class="fas fa-exchange-alt"></i>
-        </div>
-        <p class="text-gray-500 text-sm font-medium">Transaksi Hari Ini</p>
-        <h3 class="text-3xl font-bold text-gray-800 mt-1">47</h3>
+        <p class="text-gray-500 text-sm font-medium">Total Users</p>
+        <h3 class="text-3xl font-bold text-gray-800 mt-1">{{ $totalUsers }}</h3>
         <p class="text-blue-600 text-sm mt-2">
-            <i class="fas fa-clock mr-1"></i>
-            Total: Rp 7.050.000
+            <i class="fas fa-user-check mr-1"></i>
+            Seluruh user terdaftar
+        </p>
+    </div>
+
+    <!-- Total Admin -->
+    <div class="stat-card animate-slide-in delay-2">
+        <div class="stat-icon" style="background: linear-gradient(135deg, #059669, #10b981);">
+            <i class="fas fa-user-tie"></i>
+        </div>
+        <p class="text-gray-500 text-sm font-medium">Admin</p>
+        <h3 class="text-3xl font-bold text-gray-800 mt-1">{{ $totalAdmin }}</h3>
+        <p class="text-gray-500 text-xs mt-2">
+            Administrator sistem
+        </p>
+    </div>
+
+    <!-- Total Bendahara -->
+    <div class="stat-card animate-slide-in delay-3">
+        <div class="stat-icon" style="background: linear-gradient(135deg, #b45309, #d97706);">
+            <i class="fas fa-wallet"></i>
+        </div>
+        <p class="text-gray-500 text-sm font-medium">Bendahara</p>
+        <h3 class="text-3xl font-bold text-gray-800 mt-1">{{ $totalBendahara }}</h3>
+        <p class="text-gray-500 text-xs mt-2">
+            Petugas keuangan
+        </p>
+    </div>
+
+    <!-- Total Wali Murid -->
+    <div class="stat-card animate-slide-in delay-4">
+        <div class="stat-icon" style="background: linear-gradient(135deg, #6b21a5, #8b5cf6);">
+            <i class="fas fa-user-friends"></i>
+        </div>
+        <p class="text-gray-500 text-sm font-medium">Wali Murid</p>
+        <h3 class="text-3xl font-bold text-gray-800 mt-1">{{ $totalWali }}</h3>
+        <p class="text-gray-500 text-xs mt-2">
+            Orang tua/wali siswa
         </p>
     </div>
 </div>
 
-<!-- Statistik Per Kelas -->
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-    <!-- Grafik Sederhana Per Kelas -->
-    <div class="info-card animate-slide-in delay-2 lg:col-span-2">
+<!-- GRAFIK SECTION (Line & Bar Chart) - Data Real dari Pembayaran -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+    <!-- Line Chart Card -->
+    <div class="info-card animate-slide-in delay-5">
         <div class="flex items-center justify-between mb-4">
-            <h3 class="font-semibold text-gray-800">Statistik Pembayaran Per Kelas</h3>
-            <i class="fas fa-chart-bar text-[#b45309] text-xl"></i>
+            <h3 class="font-semibold text-gray-800">Tren Pembayaran (Line Chart)</h3>
+            <i class="fas fa-chart-line text-[#0b4f8c] text-xl"></i>
         </div>
-        
-        <div class="space-y-4">
-            <div>
-                <div class="flex justify-between text-sm mb-1">
-                    <span class="text-gray-600">Kelas X</span>
-                    <span class="font-semibold text-gray-800">128 Lunas / 156 Siswa</span>
-                </div>
-                <div class="progress-bar">
-                    <div class="progress-fill" style="width: 82%"></div>
-                </div>
-                <p class="text-xs text-gray-500 mt-1">Tunggakan: Rp 4.200.000</p>
-            </div>
-            
-            <div>
-                <div class="flex justify-between text-sm mb-1">
-                    <span class="text-gray-600">Kelas XI</span>
-                    <span class="font-semibold text-gray-800">112 Lunas / 148 Siswa</span>
-                </div>
-                <div class="progress-bar">
-                    <div class="progress-fill" style="width: 76%"></div>
-                </div>
-                <p class="text-xs text-gray-500 mt-1">Tunggakan: Rp 5.400.000</p>
-            </div>
-            
-            <div>
-                <div class="flex justify-between text-sm mb-1">
-                    <span class="text-gray-600">Kelas XII</span>
-                    <span class="font-semibold text-gray-800">102 Lunas / 152 Siswa</span>
-                </div>
-                <div class="progress-bar">
-                    <div class="progress-fill" style="width: 67%"></div>
-                </div>
-                <p class="text-xs text-gray-500 mt-1">Tunggakan: Rp 7.500.000</p>
-            </div>
-        </div>
-
-        <div class="grid grid-cols-3 gap-2 mt-4 pt-4 border-t border-gray-100">
-            <div class="text-center p-2 bg-orange-50 rounded-xl">
-                <p class="text-xs text-gray-600">Total Penerimaan</p>
-                <p class="font-bold text-gray-800">Rp 68.4 Jt</p>
-            </div>
-            <div class="text-center p-2 bg-orange-50 rounded-xl">
-                <p class="text-xs text-gray-600">Target</p>
-                <p class="font-bold text-gray-800">Rp 91.2 Jt</p>
-            </div>
-            <div class="text-center p-2 bg-orange-50 rounded-xl">
-                <p class="text-xs text-gray-600">Kekurangan</p>
-                <p class="font-bold text-gray-800">Rp 22.8 Jt</p>
-            </div>
-        </div>
+        <canvas id="paymentLineChart" width="400" height="250"></canvas>
+        <p class="text-xs text-gray-400 mt-2 text-center">Data berdasarkan total nominal pembayaran per bulan</p>
     </div>
 
-    <!-- Info Penting -->
-    <div class="info-card animate-slide-in delay-3">
+    <!-- Bar Chart Card -->
+    <div class="info-card animate-slide-in delay-6">
         <div class="flex items-center justify-between mb-4">
-            <h3 class="font-semibold text-gray-800">Info Penting</h3>
-            <i class="fas fa-bullhorn text-[#b45309] text-xl"></i>
+            <h3 class="font-semibold text-gray-800">Total per Bulan (Bar Chart)</h3>
+            <i class="fas fa-chart-bar text-[#0b4f8c] text-xl"></i>
         </div>
-
-        <div class="space-y-3">
-            <div class="flex items-start space-x-3 p-3 bg-blue-50 rounded-xl">
-                <i class="fas fa-calendar-alt text-blue-600 mt-1"></i>
-                <div>
-                    <p class="text-sm font-medium text-gray-800">Jatuh Tempo SPP</p>
-                    <p class="text-xs text-gray-600">Batas pembayaran: 10 April 2024</p>
-                    <p class="text-xs text-red-600 mt-1">Sisa 5 hari lagi</p>
-                </div>
-            </div>
-
-            <div class="flex items-start space-x-3 p-3 bg-green-50 rounded-xl">
-                <i class="fas fa-chart-line text-green-600 mt-1"></i>
-                <div>
-                    <p class="text-sm font-medium text-gray-800">Target Bulan Ini</p>
-                    <p class="text-xs text-gray-600">Realisasi: Rp 68.4 Jt dari Rp 91.2 Jt</p>
-                    <div class="progress-bar mt-2">
-                        <div class="progress-fill" style="width: 75%"></div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="flex items-start space-x-3 p-3 bg-yellow-50 rounded-xl">
-                <i class="fas fa-exclamation-triangle text-yellow-600 mt-1"></i>
-                <div>
-                    <p class="text-sm font-medium text-gray-800">Perhatian!</p>
-                    <p class="text-xs text-gray-600">114 siswa belum membayar SPP bulan ini</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="mt-4 grid grid-cols-2 gap-2">
-            <div class="text-center p-3 bg-gray-50 rounded-xl">
-                <p class="text-xs text-gray-500">Hari Efektif</p>
-                <p class="text-lg font-bold text-gray-800">22</p>
-                <p class="text-[10px] text-gray-400">dari 30 hari</p>
-            </div>
-            <div class="text-center p-3 bg-gray-50 rounded-xl">
-                <p class="text-xs text-gray-500">Rata-rata Harian</p>
-                <p class="text-lg font-bold text-gray-800">Rp 3.1 Jt</p>
-                <p class="text-[10px] text-green-600">+8%</p>
-            </div>
-        </div>
+        <canvas id="paymentBarChart" width="400" height="250"></canvas>
+        <p class="text-xs text-gray-400 mt-2 text-center">6 bulan terakhir (termasuk bulan berjalan)</p>
     </div>
 </div>
 
-<!-- 5 Pembayaran Terbaru -->
-<div class="table-container animate-slide-in delay-4">
-  <div class="flex items-center justify-between mb-6">
-    <h3 class="font-semibold text-gray-800">5 Pembayaran Terbaru</h3>
-    <a href="" class="text-sm text-[#0b4f8c] hover:text-[#1e6f9f] hover:underline">
-        Lihat Semua <i class="fas fa-arrow-right ml-1"></i>
-    </a>
-</div>
 
-    <div class="overflow-x-auto">
-        <table class="w-full">
-            <thead>
-                <tr class="bg-gradient-to-r from-[#0b4f8c] to-[#0b4f8c] text-white">
-                    <th class="px-6 py-3 text-left text-sm font-semibold rounded-tl-xl">No.</th>
-                    <th class="px-6 py-3 text-left text-sm font-semibold">NIS</th>
-                    <th class="px-6 py-3 text-left text-sm font-semibold">Nama Siswa</th>
-                    <th class="px-6 py-3 text-left text-sm font-semibold">Kelas</th>
-                    <th class="px-6 py-3 text-left text-sm font-semibold">Jumlah</th>
-                    <th class="px-6 py-3 text-left text-sm font-semibold">Bulan</th>
-                    <th class="px-6 py-3 text-left text-sm font-semibold">Status</th>
-                    <th class="px-6 py-3 text-left text-sm font-semibold rounded-tr-xl">Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr class="table-row">
-                    <td class="px-6 py-4 text-sm text-gray-700">1</td>
-                    <td class="px-6 py-4 text-sm text-gray-700">2024001</td>
-                    <td class="px-6 py-4 text-sm font-medium text-gray-800">Budi Santoso</td>
-                    <td class="px-6 py-4 text-sm text-gray-700">XII IPA 1</td>
-                    <td class="px-6 py-4 text-sm text-gray-700">Rp 150.000</td>
-                    <td class="px-6 py-4 text-sm text-gray-700">Maret 2024</td>
-                    <td class="px-6 py-4"><span class="badge-success">Lunas</span></td>
-                    <td class="px-6 py-4">
-                        <a href="#" class="text-[#b45309] hover:text-[#d97706] mr-3" title="Cetak">
-                            <i class="fas fa-print"></i>
-                        </a>
-                        <a href="#" class="text-green-600 hover:text-green-700" title="Detail">
-                            <i class="fas fa-eye"></i>
-                        </a>
-                    </td>
-                </tr>
-                <tr class="table-row">
-                    <td class="px-6 py-4 text-sm text-gray-700">2</td>
-                    <td class="px-6 py-4 text-sm text-gray-700">2024045</td>
-                    <td class="px-6 py-4 text-sm font-medium text-gray-800">Siti Aisyah</td>
-                    <td class="px-6 py-4 text-sm text-gray-700">XI IPS 2</td>
-                    <td class="px-6 py-4 text-sm text-gray-700">Rp 150.000</td>
-                    <td class="px-6 py-4 text-sm text-gray-700">Maret 2024</td>
-                    <td class="px-6 py-4"><span class="badge-success">Lunas</span></td>
-                    <td class="px-6 py-4">
-                        <a href="#" class="text-[#b45309] hover:text-[#d97706] mr-3" title="Cetak">
-                            <i class="fas fa-print"></i>
-                        </a>
-                        <a href="#" class="text-green-600 hover:text-green-700" title="Detail">
-                            <i class="fas fa-eye"></i>
-                        </a>
-                    </td>
-                </tr>
-                <tr class="table-row">
-                    <td class="px-6 py-4 text-sm text-gray-700">3</td>
-                    <td class="px-6 py-4 text-sm text-gray-700">2024089</td>
-                    <td class="px-6 py-4 text-sm font-medium text-gray-800">Ahmad Hidayat</td>
-                    <td class="px-6 py-4 text-sm text-gray-700">X IPA 3</td>
-                    <td class="px-6 py-4 text-sm text-gray-700">Rp 150.000</td>
-                    <td class="px-6 py-4 text-sm text-gray-700">Maret 2024</td>
-                    <td class="px-6 py-4"><span class="badge-warning">Menunggu</span></td>
-                    <td class="px-6 py-4">
-                        <a href="#" class="text-[#b45309] hover:text-[#d97706] mr-3" title="Cetak">
-                            <i class="fas fa-print"></i>
-                        </a>
-                        <a href="#" class="text-green-600 hover:text-green-700" title="Detail">
-                            <i class="fas fa-eye"></i>
-                        </a>
-                    </td>
-                </tr>
-                <tr class="table-row">
-                    <td class="px-6 py-4 text-sm text-gray-700">4</td>
-                    <td class="px-6 py-4 text-sm text-gray-700">2024012</td>
-                    <td class="px-6 py-4 text-sm font-medium text-gray-800">Dewi Lestari</td>
-                    <td class="px-6 py-4 text-sm text-gray-700">XII IPS 1</td>
-                    <td class="px-6 py-4 text-sm text-gray-700">Rp 150.000</td>
-                    <td class="px-6 py-4 text-sm text-gray-700">Maret 2024</td>
-                    <td class="px-6 py-4"><span class="badge-success">Lunas</span></td>
-                    <td class="px-6 py-4">
-                        <a href="#" class="text-[#b45309] hover:text-[#d97706] mr-3" title="Cetak">
-                            <i class="fas fa-print"></i>
-                        </a>
-                        <a href="#" class="text-green-600 hover:text-green-700" title="Detail">
-                            <i class="fas fa-eye"></i>
-                        </a>
-                    </td>
-                </tr>
-                <tr class="table-row">
-                    <td class="px-6 py-4 text-sm text-gray-700">5</td>
-                    <td class="px-6 py-4 text-sm text-gray-700">2024078</td>
-                    <td class="px-6 py-4 text-sm font-medium text-gray-800">Rizki Pratama</td>
-                    <td class="px-6 py-4 text-sm text-gray-700">XI IPA 1</td>
-                    <td class="px-6 py-4 text-sm text-gray-700">Rp 150.000</td>
-                    <td class="px-6 py-4 text-sm text-gray-700">Maret 2024</td>
-                    <td class="px-6 py-4"><span class="badge-success">Lunas</span></td>
-                    <td class="px-6 py-4">
-                        <a href="#" class="text-[#b45309] hover:text-[#d97706] mr-3" title="Cetak">
-                            <i class="fas fa-print"></i>
-                        </a>
-                        <a href="#" class="text-green-600 hover:text-green-700" title="Detail">
-                            <i class="fas fa-eye"></i>
-                        </a>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-</div>
 
-<!-- Tombol Cepat -->
-<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
-    <a href="{{ route('bendahara.dashboard') }}" class="bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl p-4 text-white hover:bg-white/20 transition-all text-center">
-        <i class="fas fa-money-bill-wave text-2xl mb-2"></i>
-        <p class="font-medium">Input Pembayaran</p>
-        <p class="text-xs text-white/70 mt-1">Catat pembayaran SPP baru</p>
-    </a>
-    <a href="{{ route('bendahara.dashboard') }}" class="bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl p-4 text-white hover:bg-white/20 transition-all text-center">
-        <i class="fas fa-download text-2xl mb-2"></i>
-        <p class="font-medium">Ekspor Laporan</p>
-        <p class="text-xs text-white/70 mt-1">Download laporan keuangan</p>
-    </a>
-    <a href="{{ route('bendahara.dashboard') }}" class="bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl p-4 text-white hover:bg-white/20 transition-all text-center">
-        <i class="fas fa-search text-2xl mb-2"></i>
-        <p class="font-medium">Cek Tunggakan</p>
-        <p class="text-xs text-white/70 mt-1">Lihat siswa yang menunggak</p>
-    </a>
-</div>
+
 @endsection
+
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Data dari controller
+        const months = @json($months);
+        const payments = @json($paymentsData);
+
+        console.log('Months:', months);
+        console.log('Payments:', payments);
+
+        // Cek apakah data valid
+        if (!months || !payments || months.length === 0) {
+            console.error('Data grafik kosong atau tidak valid.');
+            // Tampilkan pesan di dalam canvas
+            const lineCanvas = document.getElementById('paymentLineChart');
+            const barCanvas = document.getElementById('paymentBarChart');
+            if (lineCanvas && lineCanvas.parentNode) {
+                lineCanvas.parentNode.insertAdjacentHTML('beforeend', '<p class="text-red-500 text-sm mt-2">⚠️ Belum ada data pembayaran untuk grafik.</p>');
+            }
+            if (barCanvas && barCanvas.parentNode) {
+                barCanvas.parentNode.insertAdjacentHTML('beforeend', '<p class="text-red-500 text-sm mt-2">⚠️ Belum ada data pembayaran untuk grafik.</p>');
+            }
+            return;
+        }
+
+        // Pastikan payments adalah array number (jika string, konversi)
+        const paymentsNumber = payments.map(v => typeof v === 'number' ? v : parseFloat(v) || 0);
+
+        // Line Chart
+        const ctxLine = document.getElementById('paymentLineChart').getContext('2d');
+        new Chart(ctxLine, {
+            type: 'line',
+            data: {
+                labels: months,
+                datasets: [{
+                    label: 'Total Pembayaran (Rp)',
+                    data: paymentsNumber,
+                    borderColor: '#0b4f8c',
+                    backgroundColor: 'rgba(11, 79, 140, 0.1)',
+                    borderWidth: 2,
+                    tension: 0.3,
+                    fill: true,
+                    pointBackgroundColor: '#0b4f8c',
+                    pointBorderColor: '#fff',
+                    pointRadius: 4,
+                    pointHoverRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return 'Rp ' + context.raw.toLocaleString('id-ID');
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return 'Rp ' + value.toLocaleString('id-ID');
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Bar Chart
+        const ctxBar = document.getElementById('paymentBarChart').getContext('2d');
+        new Chart(ctxBar, {
+            type: 'bar',
+            data: {
+                labels: months,
+                datasets: [{
+                    label: 'Total Pembayaran (Rp)',
+                    data: paymentsNumber,
+                    backgroundColor: 'rgba(11, 79, 140, 0.7)',
+                    borderColor: '#0b4f8c',
+                    borderWidth: 1,
+                    borderRadius: 6,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return 'Rp ' + context.raw.toLocaleString('id-ID');
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return 'Rp ' + value.toLocaleString('id-ID');
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    });
+</script>
+@endpush

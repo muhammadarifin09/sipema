@@ -12,10 +12,10 @@
         </div>
         <div class="flex items-center space-x-4">
             <!-- Tombol Export PDF -->
-            <a href="{{ route('admin.laporan.export-pdf', request()->query()) }}" class="btn-danger">
+            <a href="{{ route('bendahara.laporan.export-pdf', request()->query()) }}" class="btn-danger">
                 <i class="fas fa-file-pdf mr-2"></i> Export PDF
             </a>
-            <a href="{{ route('admin.dashboard') }}" class="btn-secondary">
+            <a href="{{ route('bendahara.dashboard') }}" class="btn-secondary">
                 <i class="fas fa-arrow-left mr-2"></i> Kembali
             </a>
         </div>
@@ -24,7 +24,7 @@
 
 <!-- Filter Card -->
 <div class="glass-card rounded-2xl p-6 mb-6 animate-slide-in delay-1">
-    <form method="GET" action="{{ route('admin.laporan.index') }}">
+    <form method="GET" action="{{ route('bendahara.laporan.index') }}">
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div>
                 <label class="form-label flex items-center">
@@ -66,7 +66,7 @@
             <button type="submit" class="btn-primary">
                 <i class="fas fa-filter mr-2"></i> Terapkan Filter
             </button>
-            <a href="{{ route('admin.laporan.index') }}" class="btn-secondary ml-2">
+            <a href="{{ route('bendahara.laporan.index') }}" class="btn-secondary ml-2">
                 <i class="fas fa-redo-alt mr-2"></i> Reset
             </a>
         </div>

@@ -62,6 +62,9 @@ Route::middleware(['auth', 'role:admin'])
         // Pengaturan SPP
         Route::resource('spp-setting', App\Http\Controllers\Admin\SppSettingController::class);
 
+         Route::post('/pembayaran/manual', [App\Http\Controllers\PembayaranController::class, 'storeManual'])
+        ->name('pembayaran.manual.store');
+
         // Tagihan
         Route::get('tagihan', [App\Http\Controllers\Admin\TagihanController::class, 'index'])->name('tagihan.index');
         Route::post('tagihan/generate', [App\Http\Controllers\Admin\TagihanController::class, 'generate'])->name('tagihan.generate');

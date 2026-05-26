@@ -52,11 +52,9 @@
             </div>
         </div>
     </div>
-    
-
 </div>
 
-<!-- Tabel Data dengan kolom Nama, NIS, Status (Lunas/Belum), Detail -->
+<!-- Tabel Data -->
 <div class="table-container animate-slide-in delay-2">
     <div class="overflow-x-auto">
         <table class="w-full">
@@ -87,10 +85,9 @@
                             <span class="{{ $statusBadgeClass }} px-3 py-1 rounded-full text-xs font-semibold">
                                 {{ $statusOverall }}
                             </span>
-                
                         </td>
                         <td class="px-6 py-4 text-center">
-                            <button onclick="showDetail({{ json_encode($item['months']) }}, '{{ $item['siswa']->nama_lengkap }}', '{{ $item['siswa']->nis ?? '-' }}')" 
+                            <button onclick="showDetail({{ json_encode($item['months']) }}, '{{ $item['siswa']->nama_lengkap }}', '{{ $item['siswa']->nis ?? '-' }}', {{ $item['total_unpaid'] }})" 
                                     class="px-3 py-1.5 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-xs transition">
                                 <i class="fas fa-eye"></i> Detail
                             </button>
@@ -112,7 +109,7 @@
     </div>
 </div>
 
-<!-- Modal Detail (menampilkan NIS, nama, dan rincian per bulan) -->
+<!-- Modal Detail (menampilkan NIS, nama, total tunggakan, dan rincian per bulan) -->
 <div id="detailModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
     <div class="bg-white rounded-2xl max-w-3xl mx-4 w-full p-6">
         <div class="flex justify-between items-center mb-4">
@@ -137,7 +134,7 @@
 </div>
 
 <script>
-function showDetail(months, siswaName, nis) {
+function showDetail(months, siswaName, nis, totalUnpaid) {
     const modal = document.getElementById('detailModal');
     const modalTitle = document.getElementById('modalTitle');
     const modalContent = document.getElementById('modalContent');
@@ -149,10 +146,33 @@ function showDetail(months, siswaName, nis) {
         return;
     }
     
+    // Hitung total tunggakan dari months (jika totalUnpaid tidak dikirim, fallback)
+    let calculatedTotal = 0;
+    if (totalUnpaid === undefined) {
+        // Hitung dari months
+        months.forEach(month => {
+            if (month.status !== 'lunas') {
+                calculatedTotal += month.nominal;
+            }
+        });
+    } else {
+        calculatedTotal = totalUnpaid;
+    }
+    
     let html = `
         <div class="mb-4 p-3 bg-gray-50 rounded-lg">
             <p><strong>Nama:</strong> ${siswaName}</p>
             <p><strong>NIS:</strong> ${nis}</p>
+        </div>
+        <!-- Ringkasan tunggakan -->
+        <div class="mb-5 p-4 ${calculatedTotal > 0 ? 'bg-red-50 border border-red-200' : 'bg-green-50 border border-green-200'} rounded-xl">
+            <div class="flex justify-between items-center">
+                <span class="font-semibold text-gray-700">💰 Total Tunggakan:</span>
+                <span class="text-xl font-bold ${calculatedTotal > 0 ? 'text-red-600' : 'text-green-600'}">
+                    Rp ${new Intl.NumberFormat('id-ID').format(calculatedTotal)}
+                </span>
+            </div>
+            ${calculatedTotal > 0 ? '<p class="text-xs text-red-500 mt-1">* Masih terdapat tagihan yang belum dibayar</p>' : '<p class="text-xs text-green-500 mt-1">* Semua tagihan sudah lunas</p>'}
         </div>
         <table class="min-w-full border rounded-lg">
             <thead class="bg-gray-100">
