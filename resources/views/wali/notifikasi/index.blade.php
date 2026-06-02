@@ -164,27 +164,7 @@
         </div>
     </div>
 
-    {{-- Bottom Navigation Mobile --}}
-    <div class="fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-sm border-t border-gray-100 px-5 py-2 shadow-lg md:hidden z-20">
-        <div class="flex justify-around items-center">
-            <a href="{{ route('wali.dashboard') }}" class="flex flex-col items-center">
-                <i class="fas fa-home text-gray-400 text-xl"></i>
-                <span class="text-[10px] text-gray-400 mt-1">Beranda</span>
-            </a>
-            <a href="{{ route('wali.tagihan.index') }}" class="flex flex-col items-center">
-                <i class="fas fa-file-invoice text-gray-400 text-xl"></i>
-                <span class="text-[10px] text-gray-400 mt-1">Tagihan</span>
-            </a>
-            <a href="{{ route('wali.riwayat.index') }}" class="flex flex-col items-center">
-                <i class="fas fa-history text-gray-400 text-xl"></i>
-                <span class="text-[10px] text-gray-400 mt-1">Riwayat</span>
-            </a>
-            <a href="#" class="flex flex-col items-center">
-                <i class="fas fa-user text-gray-400 text-xl"></i>
-                <span class="text-[10px] text-gray-400 mt-1">Profil</span>
-            </a>
-        </div>
-    </div>
+  
     <div class="h-16 md:hidden"></div>
 </div>
 

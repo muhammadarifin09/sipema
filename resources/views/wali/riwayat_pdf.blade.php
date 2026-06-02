@@ -93,6 +93,11 @@
             border-top: 1px dashed #ccc;
             padding-top: 5px;
         }
+        .empty {
+            text-align: center;
+            padding: 20px;
+            font-style: italic;
+        }
     </style>
 </head>
 <body>
@@ -110,15 +115,24 @@
 
 <div class="info-siswa">
     <table>
-        <tr><td width="120">Nama Siswa</td><td>{{ $siswa->nama_lengkap }}</td></tr>
-        <tr><td>NIS</td><td>{{ $siswa->nis ?? '-' }} </td></tr>
-        <tr><td>Kelas</td><td>{{ $siswa->kelas->nama_kelas ?? '-' }}</td></tr>
-        <tr><td>Alamat</td><td>{{ $siswa->alamat ?? '-' }}</td></tr>
+        <tr>
+            <td width="120">Nama Siswa</td>
+            <td width="200">{{ $siswa->nama_lengkap }}</td>
+            <td width="100">NIS</td>
+            <td>{{ $siswa->nis ?? '-' }}</td>
+        </tr>
+        <tr>
+            <td>Kelas</td>
+            <td>{{ $siswa->kelas->nama_kelas ?? '-' }}</td>
+            <td>Alamat</td>
+            <td>{{ $siswa->alamat ?? '-' }}</td>
+        </tr>
     </table>
 </div>
 
-<table>
-    <thead>
+@if($riwayat->count() > 0)
+    <table>
+        <thead>
         <tr>
             <th>No</th>
             <th>Bulan</th>
@@ -128,25 +142,35 @@
             <th>Metode</th>
             <th>Keterangan</th>
         </tr>
-    </thead>
-    <tbody>
-        @foreach($dataTable as $index => $row)
-        <tr>
-            <td>{{ $index + 1 }}</td>
-            <td class="text-left">{{ $row['bulan_nama'] }}</td>
-            <td>{{ $row['tahun'] }}</td>
-            <td>{{ $row['tanggal_bayar'] ?? '-' }}</td>
-            <td class="text-right">{{ $row['nominal'] > 0 ? 'Rp ' . number_format($row['nominal'],0,',','.') : '-' }}</td>
-            <td>{{ $row['metode'] }}</td>
-            <td>{{ $row['status'] == 'Lunas' ? 'LUNAS' : '' }}</td>
-        </tr>
-        @endforeach
-        <tr style="background: #f3f4f6; font-weight: bold;">
-            <td colspan="4" class="text-right">TOTAL PEMBAYARAN</td>
-            <td colspan="4" class="text-left">Rp {{ number_format($total_nominal,0,',','.') }}</td>
-        </tr>
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach($riwayat as $index => $payment)
+            @php
+                $bulanNama = \Carbon\Carbon::create()->month($payment->bulan)->translatedFormat('F');
+                $tanggalBayar = \Carbon\Carbon::parse($payment->tanggal_bayar)->translatedFormat('d F Y');
+            @endphp
+            <tr>
+                <td>{{ $index + 1 }}</td>
+                <td class="text-left">{{ $bulanNama }}</td>
+                <td>{{ $payment->tahun }}</td>
+                <td>{{ $tanggalBayar }}</td>
+                <td class="text-right">Rp {{ number_format($payment->nominal, 0, ',', '.') }}</td>
+                <td>{{ $payment->metode_pembayaran ?? '-' }}</td>
+                <td>LUNAS</td>
+            </tr>
+            @endforeach
+            <tr style="background: #f3f4f6; font-weight: bold;">
+                <td colspan="4" class="text-right">TOTAL PEMBAYARAN</td>
+                <td colspan="4" class="text-left">Rp {{ number_format($total_nominal, 0, ',', '.') }}</td>
+            </tr>
+        </tbody>
+    </table>
+@else
+    <div class="empty">
+        Belum ada pembayaran SPP yang tercatat.<br>
+        Silakan lakukan pembayaran sesuai tagihan.
+    </div>
+@endif
 
 <div class="footer">
     <div class="ttd">

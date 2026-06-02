@@ -68,52 +68,31 @@ class RiwayatPembayaranController extends Controller
         $selectedSiswa = $siswaList->find($siswaId);
     }
 
-    // Ambil semua riwayat pembayaran siswa
-    $riwayatRaw = RiwayatPembayaran::where('siswa_id', $selectedSiswa->id)
-                    ->orderBy('tahun', 'asc')
-                    ->orderBy('bulan', 'asc')
-                    ->get();
+    // Ambil semua riwayat pembayaran siswa yang sukses (sudah pasti sukses karena model RiwayatPembayaran)
+    $riwayat = RiwayatPembayaran::where('siswa_id', $selectedSiswa->id)
+                ->orderBy('tahun', 'asc')
+                ->orderBy('bulan', 'asc')
+                ->get();
 
-    // Tentukan tahun ajaran terbaru (ambil tahun maksimal dari data)
-    $maxTahun = $riwayatRaw->max('tahun') ?? date('Y');
-    // Kita buat kartu SPP untuk tahun ajaran yang mengandung bulan Juli tahun $maxTahun sampai Juni tahun $maxTahun+1
-    $tahunAjaranMulai = $maxTahun; 
-    $tahunAjaranSelesai = $maxTahun + 1;
+    // Hitung total nominal
+    $totalNominal = $riwayat->sum('nominal');
 
-    // Urutan bulan dalam tahun ajaran Indonesia: Juli (7) s/d Juni (6)
-    $bulanUrut = [
-        7 => 'Juli', 8 => 'Agustus', 9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember',
-        1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 4 => 'April', 5 => 'Mei', 6 => 'Juni'
-    ];
-
-    // Buat map pembayaran berdasarkan bulan dan tahun
-    $paymentMap = [];
-    foreach ($riwayatRaw as $payment) {
-        $paymentMap[$payment->tahun][$payment->bulan] = $payment;
-    }
-
-    // Siapkan data tabel untuk 12 bulan
-    $dataTable = [];
-    foreach ($bulanUrut as $bulanNum => $bulanNama) {
-        $tahun = ($bulanNum >= 7) ? $tahunAjaranMulai : $tahunAjaranSelesai;
-        $payment = $paymentMap[$tahun][$bulanNum] ?? null;
-        
-        $dataTable[] = [
-            'bulan_nama' => $bulanNama,
-            'tahun' => $tahun,
-            'tanggal_bayar' => $payment ? \Carbon\Carbon::parse($payment->tanggal_bayar)->translatedFormat('d/m/Y') : null,
-            'nominal' => $payment ? $payment->nominal : 0,
-            'metode' => $payment ? $payment->metode_pembayaran : '-',
-            'status' => $payment ? 'Lunas' : 'Belum Bayar'
-        ];
+    // Tentukan tahun ajaran (ambil dari tahun pertama dan terakhir jika ada, atau default)
+    if ($riwayat->isNotEmpty()) {
+        $minYear = $riwayat->min('tahun');
+        $maxYear = $riwayat->max('tahun');
+        // Tampilkan rentang tahun ajaran sederhana (misal 2024/2025)
+        $tahunAjaran = $minYear . '/' . ($maxYear + 1);
+    } else {
+        $tahunAjaran = date('Y') . '/' . (date('Y') + 1);
     }
 
     $data = [
-        'siswa'           => $selectedSiswa,
-        'dataTable'       => $dataTable,
-        'tahun_ajaran'    => $tahunAjaranMulai . '/' . $tahunAjaranSelesai,
-        'tanggal_cetak'   => now()->translatedFormat('d F Y H:i'),
-        'total_nominal'   => $riwayatRaw->sum('nominal'),
+        'siswa'         => $selectedSiswa,
+        'riwayat'       => $riwayat,   // kirim collection
+        'total_nominal' => $totalNominal,
+        'tahun_ajaran'  => $tahunAjaran,
+        'tanggal_cetak' => now()->translatedFormat('d F Y H:i'),
     ];
 
     $pdf = Pdf::loadView('wali.riwayat_pdf', $data);

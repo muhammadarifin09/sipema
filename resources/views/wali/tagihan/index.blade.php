@@ -125,7 +125,7 @@
                 <!-- Desktop View (Table) -->
                 <div class="hidden sm:block overflow-x-auto">
                     <table class="w-full" id="tagihanTable">
-                        <thead class="bg-gradient-to-r from-[#0B2A4A] to-[#1E3A5F] text-white">
+                        <thead class="bg-gradient-to-br from-blue-700 via-blue-600 to-blue-300 text-white">  
                             <tr>
                                 <th class="px-6 py-4 text-left text-sm font-semibold">No</th>
                                 <th class="px-6 py-4 text-left text-sm font-semibold">Bulan</th>

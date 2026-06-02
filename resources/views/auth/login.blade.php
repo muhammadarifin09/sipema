@@ -131,19 +131,19 @@
                     {{-- Remember & Forgot --}}
                     <div class="flex items-center justify-between mt-4">
                         <label class="flex items-center space-x-2 cursor-pointer">
-                            <input 
-                                id="remember_me" 
-                                type="checkbox" 
-                                name="remember"
-                                class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                            >
-                            <span class="text-sm text-gray-600">Ingat saya</span>
+                       
+                            
                         </label>
 
                         @if (Route::has('password.request'))
-                            <a href="{{ route('password.request') }}" class="text-sm text-blue-600 hover:text-blue-800 hover:underline">
-                                Lupa Password?
-                            </a>
+                            <p class="text-sm text-gray-500">
+                                Mengalami kendala login atau lupa password?
+                                <a href="https://wa.me/6283871916338"
+                                target="_blank"
+                                class="text-blue-600 hover:text-blue-800 hover:underline">
+                                    Hubungi admin sekolah
+                                </a>
+                            </p>
                         @endif
                     </div>
 
