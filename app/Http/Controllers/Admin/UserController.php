@@ -13,7 +13,7 @@ class UserController extends Controller
 {
     public function index()
     {
-        $users = User::with('role')->get();
+        $users = User::with('role')->paginate(10); // Ganti get() dengan paginate(10)
         $roles = Role::whereIn('nama_role', ['admin', 'bendahara', 'wali'])->get();
         return view('admin.users.index', compact('users', 'roles'));
     }

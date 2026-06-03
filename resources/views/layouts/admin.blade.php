@@ -617,13 +617,7 @@
                 </div>
             </div>
 
-            <!-- School Info -->
-            <div class="p-6 border-t border-gray-200/50">
-                <div class="flex items-center space-x-3 text-gray-500">
-                    <i class="fas fa-map-marker-alt text-[#0b4f8c]"></i>
-                    <span class="text-xs">Jl. A. Yani Km. 3, Pelaihari</span>
-                </div>
-            </div>
+        
         </div>
 
         <!-- Main Content -->

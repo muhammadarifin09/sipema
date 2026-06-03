@@ -97,9 +97,14 @@
         </table>
     </div>
 
-    <!-- Pagination Info -->
+    <!-- Pagination -->
     <div class="flex items-center justify-between mt-6">
-        <p class="text-sm text-gray-500">Menampilkan {{ $users->count() }} data</p>
+        <div class="text-sm text-gray-500">
+            Menampilkan {{ $users->firstItem() ?? 0 }} - {{ $users->lastItem() ?? 0 }} dari {{ $users->total() }} data
+        </div>
+        <div>
+            {{ $users->links() }}
+        </div>
     </div>
 </div>
 
@@ -285,7 +290,7 @@
 @push('scripts')
 <script>
     // Data users untuk edit (simpan dalam format JSON)
-    const usersData = @json($users);
+    const usersData = @json($users->items());
     
     // ==================== CREATE MODAL ====================
     function openCreateModal() {
