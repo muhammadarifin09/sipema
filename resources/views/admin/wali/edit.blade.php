@@ -16,9 +16,7 @@
             </div>
             <p class="text-white/80 mt-1">Edit data orang tua/wali murid</p>
         </div>
-        <div class="profile-avatar w-12 h-12 text-sm" style="background: linear-gradient(135deg, #6b21a5, #8b5cf6);">
-            <span>{{ strtoupper(substr($wali->name, 0, 2)) }}</span>
-        </div>
+      
     </div>
 </div>
 

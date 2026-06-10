@@ -95,12 +95,36 @@ class MidtransCallbackController extends Controller
                 // Kirim notifikasi WhatsApp
                 $user = \App\Models\User::find($transaksiPending->user_id);
                 if ($user && !empty($user->no_hp)) {
-                    $bulanList = $tagihans->pluck('bulan')->implode(', ');
+                    $namaBulan = [
+                    1 => 'Januari',
+                    2 => 'Februari',
+                    3 => 'Maret',
+                    4 => 'April',
+                    5 => 'Mei',
+                    6 => 'Juni',
+                    7 => 'Juli',
+                    8 => 'Agustus',
+                    9 => 'September',
+                    10 => 'Oktober',
+                    11 => 'November',
+                    12 => 'Desember'
+                ];
+
+                $bulanList = $tagihans->map(function ($tagihan) use ($namaBulan) {
+                    return "• " . $namaBulan[(int)$tagihan->bulan] . " " . $tagihan->tahun;
+                })->implode("\n");
                     $total = $transaksiPending->total;
-                    $pesan = "📢 *Pembayaran SPP Berhasil*\n\n" .
-                             "Anda telah membayar SPP untuk bulan: $bulanList\n" .
-                             "Total: Rp " . number_format($total, 0, ',', '.') . "\n" .
-                             "Tanggal: " . now()->format('d-m-Y H:i') . "\n\nTerima kasih.";
+                    $pesan = 
+                        "Yth. Orang Tua/Wali Murid,\n\n" .
+                        "Pembayaran SPP telah berhasil diterima dengan rincian:\n\n" .
+                        "👤 Nama Siswa : " . $tagihans->first()->siswa->nama_lengkap . "\n" .
+                        "🎓 NIS : " . $tagihan->siswa->nis . "\n" .
+                        "📅 Periode Pembayaran:\n" .
+                        $bulanList . "\n\n" .
+                        "💰 Total Pembayaran : Rp " . number_format($total, 0, ',', '.') . "\n" .
+                        "🕒 Tanggal Pembayaran : " . now()->format('d-m-Y H:i') . "\n" .
+                        "Terima kasih atas pembayaran yang telah dilakukan.\n\n" .
+                        "_Pesan ini dikirim secara otomatis oleh sistem._";
                     FonnteService::send($user->no_hp, $pesan);
                 }
 
@@ -162,13 +186,33 @@ class MidtransCallbackController extends Controller
 
                     $nomor = optional($tagihan->siswa->wali)->no_hp;
                     if ($nomor) {
-                        $pesan = "📢 *Konfirmasi Pembayaran SPP*\n\n" .
-                                 "Pembayaran berhasil dilakukan.\n\n" .
-                                 "👤 Siswa : " . $tagihan->siswa->nama_lengkap . "\n" .
-                                 "📅 Bulan : " . $tagihan->bulan . "\n" .
-                                 "💰 Nominal : Rp " . number_format($tagihan->nominal, 0, ',', '.') . "\n" .
-                                 "🕒 Tanggal : " . now()->format('d-m-Y H:i') . "\n\n" .
-                                 "Terima kasih.";
+                    $namaBulan = [
+                        1 => 'Januari',
+                        2 => 'Februari',
+                        3 => 'Maret',
+                        4 => 'April',
+                        5 => 'Mei',
+                        6 => 'Juni',
+                        7 => 'Juli',
+                        8 => 'Agustus',
+                        9 => 'September',
+                        10 => 'Oktober',
+                        11 => 'November',
+                        12 => 'Desember'
+                    ];
+
+$periode = $namaBulan[(int)$tagihan->bulan] . ' ' . $tagihan->tahun;
+                       $pesan = 
+                        "Yth. Orang Tua/Wali Murid,\n\n" .
+                        "Pembayaran SPP telah berhasil diterima dengan rincian:\n\n" .
+                        "👤 Nama Siswa : " . $tagihan->siswa->nama_lengkap . "\n" .
+                        "🎓 NIS : " . $tagihan->siswa->nis . "\n" .
+                       "📅 Periode Pembayaran:\n" .
+                        "• " . $periode . "\n\n" .
+                        "💰 Total Pembayaran : Rp " . number_format($tagihan->nominal, 0, ',', '.') . "\n" .
+                        "🕒 Tanggal Pembayaran : " . now()->format('d-m-Y H:i') . "\n" .
+                        "Terima kasih atas pembayaran yang telah dilakukan.\n\n" .
+                        "_Pesan ini dikirim secara otomatis oleh sistem._";
                         FonnteService::send($nomor, $pesan);
                     }
                 }

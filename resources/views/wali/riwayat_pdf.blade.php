@@ -110,7 +110,6 @@
 
 <div class="judul">
     KARTU SUMBANGAN PEMBINAAN PENDIDIKAN (SPP)<br>
-    TAHUN PELAJARAN {{ $tahun_ajaran }}
 </div>
 
 <div class="info-siswa">
